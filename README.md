@@ -33,10 +33,9 @@ TEM Image Analysis software tool.
 - make -j8
 
 ## Contributors
-
-Tomasz Bednarz, CSIRO, tomasz.bednarz@gmail.com
-Wesley Griffin, NIST, wesley.griffin@nist.gov
-John Hagedorn, NIST, john.hagedorn@nist.gov
+- Tomasz Bednarz, CSIRO, tomasz.bednarz@gmail.com
+- Wesley Griffin, NIST, wesley.griffin@nist.gov
+- John Hagedorn, NIST, john.hagedorn@nist.gov
 
 
 ## PI
