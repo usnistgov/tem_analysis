@@ -1,0 +1,39 @@
+{
+   "name" : "filter.invert",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+      {
+         "name" : "input",
+         "type" : "file",
+         "form" : "Input image",
+         "value" : "is is input little"
+      },
+      {
+         "name" : "output",
+         "type" : "file",
+         "form" : "Output image",
+         "value" : "it is output little"
+      },
+      {
+         "name" : "threshold",
+         "type" : "float",
+         "form" : "Threshold",
+         "value" : "0.5"
+      },
+      {
+         "name" : "entropy",
+         "type" : "float",
+         "form" : "Entropy",
+         "value" : "0.15"
+      },
+      {
+         "name" : "pika",
+         "type" : "bool",
+         "form" : "Pika yes/no",
+         "value" : "1"
+      }
+   ],
+   "dependancies" : []
+}

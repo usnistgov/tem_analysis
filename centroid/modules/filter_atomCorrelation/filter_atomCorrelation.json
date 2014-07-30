@@ -1,0 +1,32 @@
+{
+   "name" : "02_AtomCorrelation",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+
+      {
+         "name" : "inputDir",
+         "type" : "file",
+         "form" : "Input Folder",
+         "value" : "./subset",
+         "projectRelative": true,
+         "tooltip" : "Select the folder that contains the input image files."
+      },
+
+      {
+         "name" : "outputDir",
+         "type" : "file",
+         "form" : "Output Folder",
+         "value" : "./atomCorrelation",
+         "projectRelative": true,
+         "tooltip" : "Select the folder where the output image files are to be written."
+      }
+
+
+
+   ],
+   "dependancies" : []
+}
+
+

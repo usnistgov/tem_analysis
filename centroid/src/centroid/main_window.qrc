@@ -1,0 +1,24 @@
+<RCC>
+  <qresource>
+    <file>icons/new.png</file>
+    <file>icons/select-minus-global.png</file>
+    <file>icons/select-global.png</file>
+    <file>icons/remove.png</file>
+    <file>icons/select-minus.png</file>
+    <file>icons/view-multi.png</file>
+    <file>icons/triangles.png</file>
+    <file>icons/line.png</file>
+    <file>icons/photo.png</file>
+    <file>icons/particles.png</file>
+    <file>icons/select.png</file>
+    <file>icons/hand.png</file>
+    <file>icons/zoom-in.png</file>
+    <file>icons/zoom-out.png</file>
+    <file>icons/open.png</file>
+    <file>icons/forward.png</file>
+    <file>icons/back.png</file>
+    <file>icons/play.png</file>
+    <file>icons/view.png</file>
+    <file>icons/select-particles.png</file>
+  </qresource>
+</RCC>

@@ -1,0 +1,28 @@
+{
+   "name" : "filter.median",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+      {
+         "name" : "input",
+         "type" : "file",
+         "form" : "Input image",
+         "value" : "median in",
+         "tooltip" : "this is input dir"
+      },
+      {
+         "name" : "output",
+         "type" : "file",
+         "form" : "Output image",
+         "value" : "median out"
+      },
+      {
+         "name" : "threshold",
+         "type" : "float",
+         "form" : "Threshold",
+         "value" : "0.6"
+      }
+   ],
+   "dependancies" : []
+}

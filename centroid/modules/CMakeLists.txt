@@ -1,0 +1,6 @@
+# add_subdirectory(filter_median)
+add_subdirectory(filter_subset)
+add_subdirectory(filter_atomCorrelation)
+add_subdirectory(filter_atomPositions)
+add_subdirectory(filter_registerImages)
+add_subdirectory(filter_applyRegistration)

@@ -1,0 +1,38 @@
+{
+   "name" : "03_AtomPositions",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+
+      {
+         "name" : "inputDir",
+         "type" : "file",
+         "form" : "Input Folder",
+         "value" : "./atomCorrelation",
+         "tooltip" : "Select the folder that contains the input image files."
+      },
+
+      {
+         "name" : "outputDir",
+         "type" : "file",
+         "form" : "Output Folder",
+         "value" : "./atomPositions",
+         "tooltip" : "Select the folder where the output position files are to be written."
+      },
+
+
+      {
+         "name" : "percentThreshold",
+         "type" : "float",
+         "form" : "Percent Threshold",
+         "value" : "5.0",
+         "tooltip" : "Percent of input image range to exclude from atom clusters."
+      }
+
+
+   ],
+   "dependancies" : []
+}
+
+

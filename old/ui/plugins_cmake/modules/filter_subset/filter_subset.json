@@ -1,0 +1,80 @@
+{
+   "name" : "01_Subset",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+      {
+         "name" : "input",
+         "type" : "file",
+         "form" : "Input image folder",
+         "value" : "./original",
+         "tooltip" : "Select the folder that contains the input image sequence to be subsetted."
+      },
+      {
+         "name" : "output",
+         "type" : "file",
+         "form" : "Output image",
+         "value" : "./subset",
+         "tooltip" : "Select the folder where the output images will be written."
+      },
+
+      {
+         "name" : "rmDups",
+         "type" : "bool",
+         "form" : "Remove Duplicates",
+         "value" : "1",
+         "tooltip" : "Remove images that are identical to the previous image in the sequence."
+      },
+
+      {
+         "name" : "rmSingles",
+         "type" : "bool",
+         "form" : "Remove Singles",
+         "value" : "1",
+         "tooltip" : "Remove images that appear only once in the original image sequence."
+      },
+
+      {
+         "name" : "rmNonBWs",
+         "type" : "bool",
+         "form" : "Remove Imgs with color",
+         "value" : "1",
+         "tooltip" : "Remove images that have pixels that are not gray-level."
+      },
+
+      {
+         "name" : "cropLowerX",
+         "type" : "int",
+         "form" : "Crop CornerA X",
+         "value" : "0"
+      },
+
+
+      {
+         "name" : "cropLowerY",
+         "type" : "int",
+         "form" : "Crop CornerA Y",
+         "value" : "0"
+      },
+
+
+      {
+         "name" : "cropUpperX",
+         "type" : "int",
+         "form" : "Crop CornerB X",
+         "value" : "0"
+      },
+
+
+      {
+         "name" : "cropUpperY",
+         "type" : "int",
+         "form" : "Crop CornerB Y",
+         "value" : "0"
+      }
+
+
+   ],
+   "dependancies" : []
+}

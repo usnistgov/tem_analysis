@@ -1,0 +1,37 @@
+{
+   "name" : "04_RegisterImages",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+
+      {
+         "name" : "inputImageDir",
+         "type" : "file",
+         "form" : "Input Image Folder",
+         "value" : "./atomCorrelation",
+         "tooltip" : "Select the folder that contains the input image files."
+      },
+
+      {
+         "name" : "outputTransformDir",
+         "type" : "file",
+         "form" : "Output Transform Folder",
+         "value" : "./registrationTransforms",
+         "tooltip" : "Select the folder where the output registration transform files are to be written."
+      },
+
+      {
+         "name" : "outputImageDir",
+         "type" : "file",
+         "form" : "Output Image Folder",
+         "value" : "./registeredAtomCorrelation",
+         "tooltip" : "Select the folder where the output registered image files are to be written."
+      }
+
+
+   ],
+   "dependancies" : []
+}
+
+

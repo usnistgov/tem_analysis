@@ -1,0 +1,25 @@
+#!/bin/sh
+
+CMAKE28=cmake
+if [ -x /usr/bin/cmake28 ]; then
+    CMAKE28=cmake28
+fi
+
+tar xvzf InsightToolkit-4.5.0-nist.tar.gz
+mv InsightToolkit-4.5.0 ITK-4.5.0
+cd ITK-4.5.0
+mkdir build
+cd build
+$CMAKE28 ..
+make -j8
+cd ../..
+
+
+tar xvzf VTK-6.1.0-nist.tar.gz
+cd VTK-6.1.0
+mkdir build
+cd build
+$CMAKE28 ..
+make -j8
+cd ../..
+

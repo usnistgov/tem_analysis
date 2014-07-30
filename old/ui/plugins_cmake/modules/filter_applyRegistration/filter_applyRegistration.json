@@ -1,0 +1,35 @@
+{
+   "name" : "05_ApplyRegistration",
+   "version" : "0.0.1",
+   "type" : "imaging",
+   "parameters" : 
+   [ 
+      {
+         "name" : "inputImageDir",
+         "type" : "file",
+         "form" : "Input Folder",
+         "value" : "./atomCorrelation",
+         "tooltip" : "Select the folder that contains the images or position files to which to apply the registration transformations."
+      },
+
+      {
+         "name" : "inputTransformDir",
+         "type" : "file",
+         "form" : "Input Transform Folder",
+         "value" : "./regXforms",
+         "tooltip" : "Select the folder that contains the registration transform files."
+      },
+
+      {
+         "name" : "outputImageDir",
+         "type" : "file",
+         "form" : "Output Folder",
+         "value" : "./atomReg",
+         "tooltip" : "Select the folder where the registered output files are to be written."
+      }
+
+   ],
+   "dependancies" : []
+}
+
+
