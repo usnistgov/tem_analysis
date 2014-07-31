@@ -15,7 +15,6 @@
 
 MainViewerForm::MainViewerForm(QWidget *parent) 
    : QWidget(parent),
-     current_view_mode(0),
      current_frame(0),
      number_of_frames(0),
      animate_forward(true),
@@ -102,54 +101,49 @@ void MainViewerForm::draw_frame(int frame)
    frameSpinBox->setValue(current_frame+1);
    scene->clear();
 
-   switch(current_view_mode)
+   if (file_list_images->size() > 0)
    {
-      case VIEW_MODE_IMAGES_ONLY:
-
-         if (file_list_images->size() > 0)
+      QImage *image = new QImage;
+      if (image->load(file_list_images->at(current_frame).absoluteFilePath()));
+      {
+         if (image->format() == QImage::Format_Invalid)
          {
-            QImage *image = new QImage;
-            if (image->load(file_list_images->at(current_frame).absoluteFilePath()));
+            UCharImageType::Pointer img;
+            readAndRescaleTo8Bit (file_list_images->at(current_frame).absoluteFilePath().toStdString().c_str(), img);
+            const UCharImageType::SizeType & imgSize = img->GetLargestPossibleRegion().GetSize();
+            unsigned char *imgData = img->GetBufferPointer();
+
+            QImage *imageBW = new QImage(imgSize[0], imgSize[1], QImage::Format_RGB32);
+
+            for (unsigned int i=0; i<imgSize[0]; i++)
             {
-               if (image->format() == QImage::Format_Invalid)
+               for(unsigned int j=0; j<imgSize[1]; j++)
                {
-                  UCharImageType::Pointer img;
-                  readAndRescaleTo8Bit (file_list_images->at(current_frame).absoluteFilePath().toStdString().c_str(), img);
-                  const UCharImageType::SizeType & imgSize = img->GetLargestPossibleRegion().GetSize();
-                  unsigned char *imgData = img->GetBufferPointer();
-
-                  QImage *imageBW = new QImage(imgSize[0], imgSize[1], QImage::Format_RGB32);
-
-                  for (unsigned int i=0; i<imgSize[0]; i++)
-                  {
-                     for(unsigned int j=0; j<imgSize[1]; j++)
-                     {
-                        unsigned int pv= imgData[i+j*imgSize[0]];
-                        imageBW->setPixel(i, j, pv+(pv<<8)+(pv<<16));
-                     }
-                  }
-                  QPixmap pixmap = QPixmap::fromImage(*imageBW);
-                  scene->addPixmap(pixmap); 
-                  delete(image);
-               }
-               else
-               {
-                  QPixmap pixmap = QPixmap::fromImage(*image);
-                  scene->addPixmap(pixmap); 
-                  delete(image);
+                  unsigned int pv= imgData[i+j*imgSize[0]];
+                  imageBW->setPixel(i, j, pv+(pv<<8)+(pv<<16));
                }
             }
+            QPixmap pixmap = QPixmap::fromImage(*imageBW);
+            scene->addPixmap(pixmap); 
+            delete(image);
          }
-         break;
-      case VIEW_MODE_PARTICLES:
-            particles->set_is_positive_selection_on(is_positive_selection_on);
-            particles->draw_background_image(scene, frame);
-            if (is_triangulation_on)
-            {
-               particles->draw_triangles(scene, frame);
-            }
-            particles->draw_particles(scene, frame);
-         break;
+         else
+         {
+            QPixmap pixmap = QPixmap::fromImage(*image);
+            scene->addPixmap(pixmap); 
+            delete(image);
+         }
+      }
+   }
+
+   if (particles->get_number_of_frames() > 0)
+   {
+      particles->set_is_positive_selection_on(is_positive_selection_on);
+      if (is_triangulation_on)
+      {
+         particles->draw_triangles(scene, frame);
+      }
+      particles->draw_particles(scene, frame);
    }
 }
 
@@ -279,7 +273,6 @@ void MainViewerForm::images_from_dir(const QString& str)
 {
    // reset viewing mode
    //
-   current_view_mode = VIEW_MODE_IMAGES_ONLY;
    current_frame = 0;
 
    // prepare list with of files
@@ -308,7 +301,6 @@ void MainViewerForm::particles_from_dir(const QString& str)
 {
    // reset viewing mode
    //
-   current_view_mode = VIEW_MODE_PARTICLES;
    current_frame = 0;
 
    // read particles data

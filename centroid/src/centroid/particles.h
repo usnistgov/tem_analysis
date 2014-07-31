@@ -46,7 +46,6 @@ public:
 
    int get_number_of_frames();
 
-   void draw_background_image(ViewerGraphicsScene *scene, int frame);
    void draw_particles(ViewerGraphicsScene *scene, int frame);
    void draw_triangles(ViewerGraphicsScene *scene, int frame);
 

@@ -277,29 +277,6 @@ int Particles::get_number_of_frames()
 
 //////////////////////////////////////////////////////////////////////////
 
-void Particles::draw_background_image(ViewerGraphicsScene *scene, int frame)
-{
-   if (get_number_of_frames() == 0) return;
-
-   // load and draw image under the particles
-   //
-   QFile file(file_list_images_layers->at(frame).absoluteFilePath());
-   if (!file.open(QIODevice::ReadOnly)) 
-   {
-      return;
-   }
-   QTextStream in(&file);
-   QString str;
-   in >> str;
-   QImage *image = new QImage;
-   image->load(str);
-   QPixmap pixmap = QPixmap::fromImage(*image);
-   scene->addPixmap(pixmap); 
-   delete(image);
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 void Particles::draw_particles(ViewerGraphicsScene *scene, int frame)
 {
    if (get_number_of_frames() == 0) return;

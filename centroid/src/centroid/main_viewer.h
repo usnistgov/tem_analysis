@@ -11,12 +11,6 @@ class QStatusBar;
 
 //////////////////////////////////////////////////////////////////////////
 
-#define VIEW_MODE_IMAGES_ONLY 1
-#define VIEW_MODE_PARTICLES 2
-#define VIEW_MODE_MULTIPLE_IMAGES 3
-
-//////////////////////////////////////////////////////////////////////////
-
 class MainViewerForm : public QWidget, public Ui::MainViewerForm
 {
    Q_OBJECT
@@ -63,7 +57,6 @@ private:
    void viewer_icons_show(bool is_enabled);
 
    ViewerGraphicsScene *scene;
-   unsigned int current_view_mode;
    bool is_triangulation_on;
 
    // modifications to be carried out on every frame (if global) 
