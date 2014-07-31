@@ -1,5 +1,11 @@
 <RCC>
   <qresource>
+    <file>icons/pause.png</file>
+    <file>icons/jump_beg_vcr.png</file>
+    <file>icons/jump_end_vcr.png</file>
+    <file>icons/play_backwards.png</file>
+    <file>icons/forward_vcr.png</file>
+    <file>icons/back_vcr.png</file>
     <file>icons/new.png</file>
     <file>icons/select-minus-global.png</file>
     <file>icons/select-global.png</file>

@@ -67,10 +67,7 @@
    <addaction name="action_ImageViewer"/>
    <addaction name="action_ParticlesViewer"/>
    <addaction name="separator"/>
-   <addaction name="action_PlayFrames"/>
    <addaction name="action_ReadData"/>
-   <addaction name="action_PreviousFrame"/>
-   <addaction name="action_NextFrame"/>
    <addaction name="action_ZoomOut"/>
    <addaction name="action_ZoomIn"/>
    <addaction name="action_ScrollHandDrag"/>
@@ -244,39 +241,6 @@
    </property>
    <property name="toolTip">
     <string>Image Viewer</string>
-   </property>
-  </action>
-  <action name="action_PreviousFrame">
-   <property name="icon">
-    <iconset resource="../main_window.qrc">
-     <normaloff>:/icons/back.png</normaloff>:/icons/back.png</iconset>
-   </property>
-   <property name="text">
-    <string>Previous Frame</string>
-   </property>
-   <property name="toolTip">
-    <string>Previous Frame</string>
-   </property>
-  </action>
-  <action name="action_NextFrame">
-   <property name="icon">
-    <iconset resource="../main_window.qrc">
-     <normaloff>:/icons/forward.png</normaloff>:/icons/forward.png</iconset>
-   </property>
-   <property name="text">
-    <string>Next Frame</string>
-   </property>
-  </action>
-  <action name="action_PlayFrames">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../main_window.qrc">
-     <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
-   </property>
-   <property name="text">
-    <string>Play Frames</string>
    </property>
   </action>
   <action name="action_ZoomIn">

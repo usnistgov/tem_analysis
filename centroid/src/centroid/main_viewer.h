@@ -32,12 +32,8 @@ public:
    void images_from_dir(const QString& dir);
    void particles_from_dir(const QString& dir);
 
-   void frame_next();
-   void frame_previous();
    void zoom_in();
    void zoom_out();
-
-   void animate_start_stop();
 
    int get_number_of_frames();
 
@@ -53,9 +49,19 @@ public:
    void select_all_particles_global(const QPointF& p0, const QPointF& p1, bool state);
 
 private slots:
+   void on_action_JumpToFirst_triggered();
+   void on_action_PlayBackward_triggered();
+   void on_action_StepBackward_triggered();
+   void on_action_Pause_triggered();
+   void on_action_StepForward_triggered();
+   void on_action_PlayForward_triggered();
+   void on_action_JumpToLast_triggered();
+   void set_frame(int);
    void animate_loop();
 
 private:
+   void viewer_icons_show(bool is_enabled);
+
    ViewerGraphicsScene *scene;
    unsigned int current_view_mode;
    bool is_triangulation_on;
@@ -74,7 +80,7 @@ private:
    QFileInfoList *file_list_images;
    Particles *particles;
 
-   bool is_animating;
+   bool animate_forward;
    QTimer *timer;
 
    QStatusBar *status_bar;

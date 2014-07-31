@@ -29,9 +29,6 @@ private slots:
    void on_action_ReadData_triggered(); 
    void on_action_ImageViewer_triggered();
    void on_action_ImageViewerMulti_triggered();
-   void on_action_PlayFrames_triggered();
-   void on_action_PreviousFrame_triggered();
-   void on_action_NextFrame_triggered();
    void on_action_ZoomIn_triggered();
    void on_action_ZoomOut_triggered();
    void on_action_ScrollHandDrag_triggered();

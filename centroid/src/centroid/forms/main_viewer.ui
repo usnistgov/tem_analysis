@@ -19,10 +19,373 @@
      <item>
       <widget class="QGraphicsView" name="graphicsView"/>
      </item>
+     <item>
+      <layout class="QHBoxLayout" name="controlsLayout">
+       <item>
+        <widget class="QPushButton" name="jumpToFirstButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/jump_beg_vcr.png</normaloff>:/icons/jump_beg_vcr.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="playBackwardButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/play_backwards.png</normaloff>:/icons/play_backwards.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="stepBackwardButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/back_vcr.png</normaloff>:/icons/back_vcr.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pauseButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/pause.png</normaloff>:/icons/pause.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="stepForwardButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/forward_vcr.png</normaloff>:/icons/forward_vcr.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="playForwardButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="jumpToLastButton">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/forward_vcr.png</normaloff>:/icons/forward_vcr.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>16</width>
+           <height>16</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSlider" name="frameSlider">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="frameSpinBox">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="minimum">
+          <number>1</number>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
     </layout>
    </item>
   </layout>
+  <action name="action_PlayForward">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/play.png</normaloff>:/icons/play.png</iconset>
+   </property>
+   <property name="text">
+    <string>Play Forward</string>
+   </property>
+   <property name="toolTip">
+    <string>Play forwards</string>
+   </property>
+  </action>
+  <action name="action_JumpToFirst">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/jump_beg_vcr.png</normaloff>:/icons/jump_beg_vcr.png</iconset>
+   </property>
+   <property name="text">
+    <string>JumpToFirst</string>
+   </property>
+   <property name="toolTip">
+    <string>Jump to the first frame</string>
+   </property>
+  </action>
+  <action name="action_PlayBackward">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/play_backwards.png</normaloff>:/icons/play_backwards.png</iconset>
+   </property>
+   <property name="text">
+    <string>Play Backward</string>
+   </property>
+   <property name="toolTip">
+    <string>Play backwards</string>
+   </property>
+  </action>
+  <action name="action_StepBackward">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/back_vcr.png</normaloff>:/icons/back_vcr.png</iconset>
+   </property>
+   <property name="text">
+    <string>Step Backward</string>
+   </property>
+   <property name="toolTip">
+    <string>Step backward</string>
+   </property>
+  </action>
+  <action name="action_Pause">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/pause.png</normaloff>:/icons/pause.png</iconset>
+   </property>
+   <property name="text">
+    <string>Pause</string>
+   </property>
+   <property name="toolTip">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="action_StepForward">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/forward_vcr.png</normaloff>:/icons/forward_vcr.png</iconset>
+   </property>
+   <property name="text">
+    <string>Step Forward</string>
+   </property>
+   <property name="toolTip">
+    <string>Step forward</string>
+   </property>
+  </action>
+  <action name="action_JumpToLast">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/jump_end_vcr.png</normaloff>:/icons/jump_end_vcr.png</iconset>
+   </property>
+   <property name="text">
+    <string>JumpToLast</string>
+   </property>
+   <property name="toolTip">
+    <string>Jump to the last frame</string>
+   </property>
+  </action>
  </widget>
- <resources/>
- <connections/>
+ <resources>
+  <include location="../main_window.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>jumpToFirstButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_JumpToFirst</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>309</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>playBackwardButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_PlayBackward</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>455</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stepBackwardButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_StepBackward</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>504</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>pauseButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_Pause</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>528</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stepForwardButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_StepForward</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>543</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>playForwardButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_PlayForward</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>282</x>
+     <y>475</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>jumpToLastButton</sender>
+   <signal>clicked()</signal>
+   <receiver>action_JumpToLast</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>559</x>
+     <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

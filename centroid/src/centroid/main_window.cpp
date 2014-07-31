@@ -240,20 +240,6 @@ void MainWindow::on_action_ReadData_triggered()
 
 //////////////////////////////////////////////////////////////////////////
 
-void MainWindow::on_action_NextFrame_triggered()
-{
-   main_viewer_form->frame_next();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void MainWindow::on_action_PreviousFrame_triggered()
-{
-   main_viewer_form->frame_previous();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 void MainWindow::on_action_ZoomIn_triggered()
 {
    main_viewer_form->zoom_in();
@@ -264,20 +250,6 @@ void MainWindow::on_action_ZoomIn_triggered()
 void MainWindow::on_action_ZoomOut_triggered()
 {
    main_viewer_form->zoom_out();   
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void MainWindow::on_action_PlayFrames_triggered()
-{
-   if (main_viewer_form->get_number_of_frames() > 1)
-   {
-      main_viewer_form->animate_start_stop();
-   } 
-   else
-   {
-      action_PlayFrames->setChecked(false);
-   }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -311,9 +283,6 @@ void MainWindow::write_settings() {
 
 void MainWindow::viewer_icons_show(bool is_enabled)
 {
-   action_PlayFrames->setEnabled(is_enabled);
-   action_PreviousFrame->setEnabled(is_enabled);
-   action_NextFrame->setEnabled(is_enabled);
    action_ZoomIn->setEnabled(is_enabled);
    action_ZoomOut->setEnabled(is_enabled);
    action_ScrollHandDrag->setEnabled(is_enabled);

@@ -18,7 +18,7 @@ MainViewerForm::MainViewerForm(QWidget *parent)
      current_view_mode(0),
      current_frame(0),
      number_of_frames(0),
-     is_animating(false),
+     animate_forward(true),
      is_triangulation_on(false),
      is_positive_selection_on(true),
      is_selection_global(false)
@@ -40,6 +40,8 @@ MainViewerForm::MainViewerForm(QWidget *parent)
    graphicsView->setInteractive(true);
 
    scene->addText("Particles Viewer"); 
+   viewer_icons_show(false);
+   connect(frameSpinBox, SIGNAL(valueChanged(int)), this, SLOT(set_frame(int)));
 
    timer = new QTimer(parent);
    connect(timer, SIGNAL(timeout()), this, SLOT(animate_loop())); 
@@ -94,17 +96,10 @@ readAndRescaleTo8Bit(const char *inFN, UCharImageType::Pointer & img)
 
 void MainViewerForm::draw_frame(int frame)
 {
-   if (frame > get_number_of_frames()) return;
+   if (frame > get_number_of_frames() || frame < 0) return;
 
    current_frame = frame;
-
-   QString statusStr;
-   statusStr.append("Frame ");
-   statusStr.append(QString::number(frame+1));
-   statusStr.append(" of ");
-   statusStr.append(QString::number(get_number_of_frames()));
-   status_bar->showMessage(statusStr);
-
+   frameSpinBox->setValue(current_frame+1);
    scene->clear();
 
    switch(current_view_mode)
@@ -160,24 +155,6 @@ void MainViewerForm::draw_frame(int frame)
 
 //////////////////////////////////////////////////////////////////////////
 
-void MainViewerForm::frame_next()
-{
-   if (current_frame < (get_number_of_frames()-1)) ++current_frame;
-   draw_frame(current_frame);
-   update();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void MainViewerForm::frame_previous()
-{
-   if (current_frame > 0) --current_frame;
-   draw_frame(current_frame);
-   update();
-}
-
-//////////////////////////////////////////////////////////////////////////
-
 void MainViewerForm::zoom_in()
 {
    graphicsView->scale(1.2f, 1.2f);   
@@ -194,27 +171,99 @@ void MainViewerForm::zoom_out()
 
 //////////////////////////////////////////////////////////////////////////
 
-void MainViewerForm::animate_loop()
+void MainViewerForm::on_action_JumpToFirst_triggered()
 {
-   ++current_frame;
-   if (current_frame == get_number_of_frames()) current_frame = 0;
-   draw_frame(current_frame);
+   draw_frame(0);
    update();
 }
 
-//////////////////////////////////////////////////////////////////////////
-
-void MainViewerForm::animate_start_stop()
+void MainViewerForm::on_action_PlayBackward_triggered()
 {
-   if (!is_animating)
+   if (get_number_of_frames() > 1 && !timer->isActive())
    {
+      animate_forward = false;
       timer->start(100);
-   } 
-   else 
-   {
-      timer->stop();
    }
-   is_animating = !is_animating;   
+}
+
+void MainViewerForm::on_action_StepBackward_triggered()
+{
+   if (current_frame > 0)
+   {
+      draw_frame(current_frame-1);
+      update();
+   }
+}
+
+void MainViewerForm::on_action_Pause_triggered()
+{
+   timer->stop();
+}
+
+void MainViewerForm::on_action_StepForward_triggered()
+{
+   if (current_frame < (get_number_of_frames()-1))
+   {
+      draw_frame(current_frame+1);
+      update();
+   }
+}
+
+void MainViewerForm::on_action_PlayForward_triggered()
+{
+   if (get_number_of_frames() > 1 && !timer->isActive())
+   {
+      animate_forward = true;
+      timer->start(100);
+   }
+}
+
+void MainViewerForm::on_action_JumpToLast_triggered()
+{
+   draw_frame(get_number_of_frames()-1);
+   update();
+}
+
+void MainViewerForm::set_frame(int frame)
+{
+   draw_frame(frame-1);
+   update();
+}
+
+void MainViewerForm::animate_loop()
+{
+   if (animate_forward)
+   {
+       draw_frame((current_frame+1) % get_number_of_frames());
+   }
+   else
+   {
+       int frame = current_frame-1;
+       if (frame < 0) frame = get_number_of_frames()-1;
+       draw_frame(frame);
+   }
+
+   update();
+}
+
+void MainViewerForm::viewer_icons_show(bool is_enabled)
+{
+   action_JumpToFirst->setEnabled(is_enabled);
+   jumpToFirstButton->setEnabled(is_enabled);
+   action_PlayBackward->setEnabled(is_enabled);
+   playBackwardButton->setEnabled(is_enabled);
+   action_StepBackward->setEnabled(is_enabled);
+   stepBackwardButton->setEnabled(is_enabled);
+   action_Pause->setEnabled(is_enabled);
+   pauseButton->setEnabled(is_enabled);
+   action_StepForward->setEnabled(is_enabled);
+   stepForwardButton->setEnabled(is_enabled);
+   action_PlayForward->setEnabled(is_enabled);
+   playForwardButton->setEnabled(is_enabled);
+   action_JumpToLast->setEnabled(is_enabled);
+   jumpToLastButton->setEnabled(is_enabled);
+   frameSlider->setEnabled(is_enabled);
+   frameSpinBox->setEnabled(is_enabled);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -247,8 +296,10 @@ void MainViewerForm::images_from_dir(const QString& str)
    file_list_images->append(dir.entryInfoList());
 
    number_of_frames = file_list_images->size();
+   frameSpinBox->setMaximum(number_of_frames);
 
    draw_frame(0);
+   viewer_icons_show(true);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -276,6 +327,7 @@ void MainViewerForm::particles_from_dir(const QString& str)
    // file_list_images->append(dir.entryInfoList());
 
    draw_frame(0);
+   viewer_icons_show(true);
 }
 
 /////////////////////////////////////////////////////////////////////////
