@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 2.8.10)
 project(centroid)
 
 if (WIN32)
-    #set(CMAKE_CXX_FLAGS "-mwindows")
+    set(CMAKE_CXX_FLAGS "-mwindows")
 endif()
 
 set (ITK_DIR ${CMAKE_BINARY_DIR}/../../sdk/ITK-4.5.0/build)
