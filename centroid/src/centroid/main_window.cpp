@@ -146,6 +146,7 @@ MainWindow::MainWindow()
    // disable viewer's icons initially
    //
    viewer_icons_show(false);
+   viewer_particle_icons_show(false);
 
    // default mode for interaction with the viewer
    //
@@ -286,10 +287,14 @@ void MainWindow::viewer_icons_show(bool is_enabled)
    action_ZoomIn->setEnabled(is_enabled);
    action_ZoomOut->setEnabled(is_enabled);
    action_ScrollHandDrag->setEnabled(is_enabled);
+   action_Photo->setEnabled(is_enabled);
+}
+
+void MainWindow::viewer_particle_icons_show(bool is_enabled)
+{
    action_SelectionMode->setEnabled(is_enabled);  
    action_SelectionModeMinus->setEnabled(is_enabled);  
    action_SelectParticles->setEnabled(is_enabled);
-   action_Photo->setEnabled(is_enabled);
    action_LineSelection->setEnabled(is_enabled);
    action_ShowLines->setEnabled(is_enabled);
    action_RemoveParticles->setEnabled(is_enabled);
@@ -366,6 +371,7 @@ void MainWindow::on_action_ParticlesViewer_triggered()
    if (main_viewer_form->get_number_of_frames() > 0)
    {
       viewer_icons_show(true);
+      viewer_particle_icons_show(true);
    }
 }
 
@@ -390,7 +396,12 @@ void MainWindow::on_action_ImageViewer_triggered()
 
 void MainWindow::on_action_Photo_triggered()
 {
-   QString fileName = "snapshot_centroid.png";
+   file_dialog->setWindowTitle("Select screenshot filename");
+   file_dialog->setFileMode(QFileDialog::AnyFile);
+
+   if (!file_dialog->exec()) return;
+   QString fileName = file_dialog->selectedFiles()[0]; //"snapshot_centroid.png";
+
    QPixmap pm = main_viewer_form->graphicsView->grab(main_viewer_form->graphicsView->rect()); 
    pm.save(fileName);  
 }

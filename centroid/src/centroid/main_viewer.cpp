@@ -40,7 +40,9 @@ MainViewerForm::MainViewerForm(QWidget *parent)
 
    scene->addText("Particles Viewer"); 
    viewer_icons_show(false);
+
    connect(frameSpinBox, SIGNAL(valueChanged(int)), this, SLOT(set_frame(int)));
+   connect(frameSlider, SIGNAL(valueChanged(int)), this, SLOT(set_frame(int)));
 
    timer = new QTimer(parent);
    connect(timer, SIGNAL(timeout()), this, SLOT(animate_loop())); 
@@ -99,6 +101,7 @@ void MainViewerForm::draw_frame(int frame)
 
    current_frame = frame;
    frameSpinBox->setValue(current_frame+1);
+   frameSlider->setValue(current_frame+1);
    scene->clear();
 
    if (file_list_images->size() > 0)
@@ -290,6 +293,7 @@ void MainViewerForm::images_from_dir(const QString& str)
 
    number_of_frames = file_list_images->size();
    frameSpinBox->setMaximum(number_of_frames);
+   frameSlider->setMaximum(number_of_frames);
 
    draw_frame(0);
    viewer_icons_show(true);

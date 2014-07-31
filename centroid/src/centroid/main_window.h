@@ -51,6 +51,7 @@ private:
    void read_settings();
    void write_settings();
    void viewer_icons_show(bool is_enabled);
+   void viewer_particle_icons_show(bool is_enabled);
 
 private:
    QFileDialog *file_dialog;
