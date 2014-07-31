@@ -100,6 +100,8 @@ void MainWindow::addModuleToDock(Block *block)
 
    }
 
+   block->setStatusBar(statusbar);
+
    QPushButton *btn_execute = new QPushButton("Execute");
    connect(btn_execute, SIGNAL(released()), block, SLOT(execute()));
    btn_execute->setMaximumWidth(120);
@@ -130,7 +132,7 @@ MainWindow::MainWindow()
    read_settings();
 
    ModulesManager::instance()->init(plainLogsTextEdit);
-   connect(this, SIGNAL(projectLoaded(Project*)),
+   connect(this, SIGNAL(aboutToLoadProject(Project*)),
            ModulesManager::instance(), SLOT(initProject(Project*)));
 
    // add action allowsing to close/view docking widgets
@@ -141,7 +143,7 @@ MainWindow::MainWindow()
    // set central widget  
    //
    main_viewer_form = new MainViewerForm;
-   main_viewer_form->setStatusBar(statusbar);
+   //main_viewer_form->setStatusBar(statusbar);
    setCentralWidget(main_viewer_form);
 
    // disable viewer's icons initially
@@ -222,22 +224,24 @@ void MainWindow::on_action_OpenProject_triggered()
 
 void MainWindow::loadProject(Project* project)
 {
-   emit projectLoaded(project);
-   file_dialog->setDirectory(project->getBaseDirectory());
-   setWindowTitle(project->getShortTag() + " | TEM Analysis");
+   treeWidget->clear();
+   blocks.clear();
 
-   ModulesManager::instance()->setupAllFilterBlocks(blocks);
-
-   // adding loaded modules to Dock
-   //
    treeWidget->setRootIsDecorated(false);
    treeWidget->setIndentation(0);
+
+   emit aboutToLoadProject(project);
+   ModulesManager::instance()->setupAllFilterBlocks(blocks);
 
    QVectorIterator<Block*> i(blocks);
    while (i.hasNext())
    {
       addModuleToDock(i.next());
    }
+
+   file_dialog->setDirectory(project->getBaseDirectory());
+   setWindowTitle(project->getShortTag() + " | TEM Analysis");
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -479,6 +483,4 @@ void MainWindow::on_action_SelectionModeMinusGlobal_triggered()
    action_SelectionModeMinusGlobal->setChecked(true);
    main_viewer_form->draw_current_frame();
 }
-
-//////////////////////////////////////////////////////////////////////////
 

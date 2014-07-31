@@ -46,6 +46,8 @@ void ModulesManager::init(QPlainTextEdit *logsWidget)
 void ModulesManager::initProject(Project* proj)
 {
    project = proj;
+   imaging_instances.clear();
+   loaders.clear();
 
    QDir pluginsDir = QDir(qApp->applicationDirPath());
    pluginsDir.setSorting(QDir::Time | QDir::Reversed);

@@ -20,7 +20,7 @@ public:
    void addModuleToDock(Block *block);
 
 signals:
-   void projectLoaded(Project* proj);
+   void aboutToLoadProject(Project* proj);
 
 private slots:
    void on_action_About_triggered();

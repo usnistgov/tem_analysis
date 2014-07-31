@@ -6,6 +6,8 @@
 #include <QVariant>
 #include <QString>
 
+class QStatusBar;
+
 #define BLOCK_TYPE_UNDEFINED 0
 #define BLOCK_TYPE_IMAGING 1
 
@@ -32,6 +34,7 @@ public:
    QString getToolTip(const QString& name);
 
    void setValueOfParameter(int index, const QString& value);
+   void setStatusBar(QStatusBar* sb);
 
    unsigned int getNumberOfParameters();
 
@@ -50,6 +53,8 @@ private:
    // all parameters
    //
    QVector<QMap<QString, QVariant> > parameters;
+
+   QStatusBar *statusBar;
 };
 
 #endif // __H_BLOCK__

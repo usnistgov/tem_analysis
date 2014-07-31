@@ -1,4 +1,6 @@
 #include "block.h"
+#include <QApplication>
+#include <QStatusBar>
 #include <QDebug>
 #include "interface.h"
 
@@ -49,6 +51,11 @@ QString Block::getFormNameOfParameter(const QString& name)
    return "";
 }
 
+void Block::setStatusBar(QStatusBar* sb)
+{
+    statusBar = sb;
+}
+
 //////////////////////////////////////////////////////////////////////////
 
 unsigned int Block::getNumberOfParameters()
@@ -63,8 +70,14 @@ void Block::execute()
    switch(type)
    {
       case BLOCK_TYPE_IMAGING:
+         statusBar->showMessage("Executing " + getBlockName() + "...");
+         QApplication::setOverrideCursor(Qt::WaitCursor);
+
          FilterInterface *fi = (FilterInterface*)instance;                 
          fi->execute(parameters);
+
+         QApplication::restoreOverrideCursor();
+         statusBar->clearMessage();
          break;
    }
 }
