@@ -11,6 +11,7 @@
 
 #include "main_viewer.h"
 #include "new_project.h"
+#include "version.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -156,6 +157,12 @@ MainWindow::MainWindow()
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+void MainWindow::on_action_About_triggered()
+{
+    QMessageBox::about(this, "TEM Analysis",
+        QString("Version: %1\n\nContact: Wesley Griffin\nwesley.griffin@nist.gov").arg(TEM_ANALYSIS_VERSION));
+}
 
 void MainWindow::on_action_Quit_triggered()
 {
