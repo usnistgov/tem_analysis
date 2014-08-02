@@ -370,6 +370,37 @@ void Particles::set_selected(int frame, int id, bool selected)
    p[id].is_selected = selected;
 }
 
+
+
+
+void Particles::set_selected (int frame, 
+                                    const QPointF& p0, const QPointF& p1, 
+                                    bool selected)
+{
+   particles *ps = list_all_particles[frame];
+   QMutableVectorIterator<particle> i(*ps);
+   while (i.hasNext())
+      {
+         float x = i.peekNext().x;
+         float y = i.peekNext().y;
+         particle *p = &i.next();
+         if ((x > p0.x()) && (x<p1.x()))
+         {
+            if ((y > p0.y()) && (y<p1.y()))
+            {
+               p->is_selected = selected;               
+            }
+         }
+      }
+
+}  // end of set_selected
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////
 
 void Particles::set_selected_global(const QPointF& p0, const QPointF& p1, bool selected)

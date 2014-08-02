@@ -50,6 +50,9 @@ public:
    void draw_triangles(ViewerGraphicsScene *scene, int frame);
 
    void set_selected(int frame, int id, bool selected);
+   void set_selected (int frame, const QPointF& p0, const QPointF& p1,
+                                    bool selected);
+
    void set_selected_global(const QPointF& p0, const QPointF& p1, bool selected);
    bool is_selected(int frame, int id);
    void set_is_positive_selection_on(bool state) { is_positive_selection_on = state; }

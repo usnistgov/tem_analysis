@@ -378,6 +378,14 @@ void MainViewerForm::select_all_particles_global(const QPointF& p0, const QPoint
 /////////////////////////////////////////////////////////////////////////
 
 
+void MainViewerForm::select_all_particles_current_frame (const QPointF& p0, const QPointF& p1, bool state)
+{
+   particles->set_selected (current_frame, p0, p1, state);
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+
 
 
 

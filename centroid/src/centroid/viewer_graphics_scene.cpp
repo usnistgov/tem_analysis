@@ -46,6 +46,14 @@ void ViewerGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent
          myParent->select_all_particles_global(start_point, end_point, myParent->get_is_positive_selection_on());
          myParent->draw_current_frame();      
       }
+      else
+      {
+         // do the corresponding thing from current frame
+         myParent->select_all_particles_current_frame (start_point, 
+                        end_point, myParent->get_is_positive_selection_on());
+         myParent->draw_current_frame();      
+
+      }
    }
 
    QGraphicsScene::mouseReleaseEvent(mouseEvent);

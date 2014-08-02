@@ -41,6 +41,9 @@ public:
 
    void remove_all_particles_selected();
    void select_all_particles_global(const QPointF& p0, const QPointF& p1, bool state);
+   void select_all_particles_current_frame (const QPointF& p0, 
+                                            const QPointF& p1, 
+                                            bool state);
 
 private slots:
    void on_action_JumpToFirst_triggered();

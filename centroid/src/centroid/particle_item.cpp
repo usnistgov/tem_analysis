@@ -60,10 +60,25 @@ void ParticleItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *opti
 
 QVariant ParticleItem::itemChange(GraphicsItemChange change, const QVariant &value)
 {
+
+    // JGH: 
+    //      The problem here is that if we change the is_selected flag on
+    //      a particle as we drag the box over the point, then we have to
+    //      change it back if we uncover it during the drag. But we need
+    //      to change it back to what it was, not merely to what it isn't.
+    //      I'm not sure that we retain the information to do this.
+    //
+    // So the solution seems to be to do the is_selected change only
+    // at the button release, not during the drag.
+
+    return QGraphicsItem::itemChange(change, value);
+
+////////////////////////
+
     switch(change) 
     {
       case ItemSelectedChange:
-         // qDebug() << "ItemSelectedChange " << id << " " << isSelected() << " " << value << " " << value.toInt(); 
+         qDebug() << "ItemSelectedChange " << id << " " << isSelected() << " " << value << " " << value.toInt(); 
          if (is_positive_selection_on)
          {
             particles_all->set_selected(current_frame, id, true);

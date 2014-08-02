@@ -6,6 +6,7 @@
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QFileDialog>
+#include <QDebug>
 
 #include "block.h"
 
@@ -120,11 +121,33 @@ public slots:
    {
       if (block)
       {
-         QString directory = QFileDialog::getExistingDirectory(this, "Specify Directory", QDir::currentPath());
-         block->setValueOfParameter(index, directory);
+
+         // by default we use the current dir as our starting point
+         QString startDir = QDir::currentPath();
+
          if (lineEdit)
          {
-            lineEdit->setText(directory);
+            QString currFileName = lineEdit->text();
+            if (currFileName != "")
+            {
+                // if there's something in lineEdit, then use that dir
+                QFileInfo currFileInfo (currFileName);
+                startDir = currFileInfo.canonicalPath();
+            }
+         }
+
+
+         QString directory = 
+            QFileDialog::getExistingDirectory (this, 
+                                               "Specify Directory", 
+                                               startDir );
+         if (directory != "")  // don't do anything if nothing specified
+         {
+            block->setValueOfParameter(index, directory);
+            if (lineEdit)
+            {
+                lineEdit->setText(directory);
+            }
          }
       }
    }
