@@ -946,6 +946,7 @@ InputImageType::Pointer & templateImg
 
 static void
 atomCorr ( 
+  double atomTemplateRadius,
   const char * inImgFN, 
   const char *outImgFN 
   )
@@ -961,7 +962,8 @@ atomCorr (
 
 
     readImage (inImgFN, inImg);
-    makeTemplateImage (3.5, 39.0, 255.0, 2.0, inTemplateImg);
+    // makeTemplateImage (3.5, 39.0, 255.0, 2.0, inTemplateImg);
+    makeTemplateImage (atomTemplateRadius, 39.0, 255.0, 2.0, inTemplateImg);
 
     convertImgType (inTemplateImg, fltTemplateImg);
     convertImgType (inImg, fltInImg);
@@ -1009,6 +1011,7 @@ atomCorr (
 static void
 atomCorrelateImages
   (
+  double atomTemplateRadius,
   const QFileInfoList & inputFileList, 
   const QString & outputDir
   )
@@ -1060,7 +1063,8 @@ atomCorrelateImages
 
         writeLog ("AtomCorrelation: Processing image " + 
                                     inputFileList[i].filePath() + "\n");
-        atomCorr (  inputFileList[i].filePath().toStdString().c_str(), 
+        atomCorr (  atomTemplateRadius,
+                    inputFileList[i].filePath().toStdString().c_str(), 
                     outImgFN.toStdString().c_str()     );
         qDebug () << "  " << i << "  processing " << 
                                       inputFileList[i].filePath();
@@ -1086,6 +1090,7 @@ void FilterAtomCorrelation::execute
     //
     QString inputDir;   
     QString outputDir;
+    double atomTemplateRadius = 3.0;  // smaller radius seems to work better
    
     // get the parameters values
     // I'm going to try an alternative way of checking param names
@@ -1102,6 +1107,11 @@ void FilterAtomCorrelation::execute
         {
             outputDir = parameters[i]["value"].toString();
         }
+        else if (paramName == "atomTemplateRadius")
+        {
+            atomTemplateRadius = parameters[i]["value"].toFloat();
+        }
+
         else
         {
             // error
@@ -1151,7 +1161,7 @@ void FilterAtomCorrelation::execute
 
     // processing code below
     //
-    atomCorrelateImages (inputFileList, outputDir);
+    atomCorrelateImages (atomTemplateRadius, inputFileList, outputDir);
 
     qDebug () << "Done with atom correlation.\n";
 

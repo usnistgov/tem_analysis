@@ -9,6 +9,7 @@ NewProjectDialog::NewProjectDialog(QWidget *parent)
 {
    setupUi(this);
    connect(baseDirectoryPushButton, SIGNAL(clicked()), this, SLOT(chooseBaseDirectory()));
+    setWindowTitle("New Project");
 }
 
 Project* NewProjectDialog::getProject()

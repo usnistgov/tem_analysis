@@ -1095,7 +1095,8 @@ static void
 generateRegistrationTransformsIJ
   (
   const QString inputImageDir, 
-  const QString outputTransformDir
+  const QString outputTransformDir,
+  const bool allowRotation
   )
     {
 
@@ -1118,14 +1119,22 @@ generateRegistrationTransformsIJ
         return;
         }
 
+    const char * transformType = 
+            allowRotation ? "[Rigid Body]" : "Translation" ;
+
     tempFile.write( "\n" );
     tempFile.write( "run(\"Image Sequence...\",\n" );
     tempFile.write( "    \"open=" );
     tempFile.write(
         inputFileList[0].absoluteFilePath().toStdString().c_str() );
     tempFile.write( "  sort\");\n");
-    tempFile.write(
-        "run(\"VerboseStackReg \", \"transformation=[Rigid Body]\");\n");
+
+    tempFile.write( "run(\"VerboseStackReg \", \"transformation=" );
+    tempFile.write( allowRotation ? "[Rigid Body]" : "Translation" ) ;
+    tempFile.write( "\");\n" );
+
+        // "run(\"VerboseStackReg \", \"transformation=[Rigid Body]\");\n");
+
     tempFile.write( "run(\"Quit\");\n" );
     tempFile.flush();
     tempFile.close();
@@ -1217,6 +1226,7 @@ void FilterRegisterImages::execute
     QString inputImageDir;   
     QString outputTransformDir;
     QString outputImageDir;
+    bool allowRotation = false;
    
     // get the parameters values
     // I'm going to try an alternative way of checking param names
@@ -1236,6 +1246,10 @@ void FilterRegisterImages::execute
         else if (paramName == "outputImageDir")
         {
             outputImageDir = parameters[i]["value"].toString();
+        }
+       else if (paramName == "allowRotation")
+        {
+            allowRotation = parameters[i]["value"].toString() == "1";
         }
 
         else
@@ -1286,7 +1300,9 @@ void FilterRegisterImages::execute
     // QFileInfoList inputFileList;
     // getImageFileList (inputDir, inputFileList);
 
-    generateRegistrationTransformsIJ (inputImageDir, outputTransformDir);
+    generateRegistrationTransformsIJ (inputImageDir, 
+                                      outputTransformDir, 
+                                      allowRotation);
 
     if (transformImages)    
         {

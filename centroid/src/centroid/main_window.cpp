@@ -377,6 +377,12 @@ void MainWindow::on_action_ParticlesViewer_triggered()
 
    if (!file_dialog->exec()) return;
    QStringList directories = file_dialog->selectedFiles();
+
+    // JGH: Note that we are getting different behavior of this dialog
+    // compared to the way it's handled in module_button.h. In the
+    // latter case it always uses the static function
+    //    QFileDialog::getExistingDirectory
+    // Is this better ?  What is the behavior on windows?
  
    main_viewer_form->particles_from_dir(directories[0]);
    if (main_viewer_form->get_number_of_frames() > 0)

@@ -21,7 +21,17 @@
          "value" : "./atomCorrelation",
          "projectRelative": true,
          "tooltip" : "Select the folder where the output image files are to be written."
+      },
+
+
+      {
+         "name" : "atomTemplateRadius",
+         "type" : "float",
+         "form" : "Atom Template Radius",
+         "value" : "3.0",
+         "tooltip" : "Radius (in pixels) of the atom template image that is generated for correlation."
       }
+
 
 
 

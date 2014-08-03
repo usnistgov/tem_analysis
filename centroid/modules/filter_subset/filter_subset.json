@@ -7,7 +7,7 @@
       {
          "name" : "input",
          "type" : "file",
-         "form" : "Input image folder",
+         "form" : "Input Folder",
          "value" : "./original",
          "projectRelative": true,
          "tooltip" : "Select the folder that contains the input image sequence to be subsetted."
@@ -15,7 +15,7 @@
       {
          "name" : "output",
          "type" : "file",
-         "form" : "Output image",
+         "form" : "Output Folder",
          "value" : "./subset",
          "projectRelative": true,
          "tooltip" : "Select the folder where the output images will be written."
@@ -48,7 +48,7 @@
       {
          "name" : "cropLowerX",
          "type" : "int",
-         "form" : "Crop CornerA X",
+         "form" : "Crop Lower X",
          "value" : "0"
       },
 
@@ -56,7 +56,7 @@
       {
          "name" : "cropLowerY",
          "type" : "int",
-         "form" : "Crop CornerA Y",
+         "form" : "Crop Lower Y",
          "value" : "0"
       },
 
@@ -64,7 +64,7 @@
       {
          "name" : "cropUpperX",
          "type" : "int",
-         "form" : "Crop CornerB X",
+         "form" : "Crop Upper X",
          "value" : "0"
       },
 
@@ -72,7 +72,7 @@
       {
          "name" : "cropUpperY",
          "type" : "int",
-         "form" : "Crop CornerB Y",
+         "form" : "Crop Upper Y",
          "value" : "0"
       }
 
