@@ -27,6 +27,16 @@ void FilterInvert::execute(const QVector<QMap<QString, QVariant> >& parameters)
    writeLog(getName());
    writeLog(" executed.");
 
+
+
+   QString projectShortTag = getProject()->getShortTag();
+   if (projectShortTag == "")
+   {
+        projectShortTag = "p";
+   }
+   // qDebug() << "Project short tag is |" + projectShortTag + "|";
+
+
    // in metadata we specified three parameters: input, output, threshold
    //
    QStringList metadata_parameters;

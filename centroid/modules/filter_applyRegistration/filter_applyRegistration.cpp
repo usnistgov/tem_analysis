@@ -1049,11 +1049,12 @@ static void
 applyImageRegistration (
   const QFileInfoList &inputImgs, 
   const QFileInfoList &inputXforms, 
-  const QString &outputDir
+  const QString &outputDir,
+  const QString &projectShortTag
   )
     {
 
-    QString inImgDir, inImgProgTag, inImgOpTag, inImgExt;
+    QString inImgDir, inImgProjTag, inImgOpTag, inImgExt;
     QString inXDir, inXProgTag, inXOpTag, inXExt;
     QString outImgFN;
     int inImgN, inImgNDigits;
@@ -1067,7 +1068,7 @@ applyImageRegistration (
     for (int i = 0; i < inputImgs.size(); i++)
         {
         parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
-                                    inImgProgTag, inImgOpTag, inImgExt);
+                                    inImgProjTag, inImgOpTag, inImgExt);
 
         parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
                                     inXProgTag, inXOpTag, inXExt);
@@ -1085,9 +1086,14 @@ applyImageRegistration (
 
         bool deriveSeq = (inXNDigits >= 0) && (inImgNDigits >= 0);
 
+        if (inImgProjTag == "")
+        {
+            inImgProjTag = projectShortTag;
+        }
+
         makeOutFN (inputImgs[i].filePath(), outputDir, 
                     deriveSeq, i, 
-                    inImgProgTag+"."+inImgOpTag+".registered", 
+                    inImgProjTag+"."+inImgOpTag+".registered", 
                     inImgExt, outImgFN);
 
 
@@ -1104,6 +1110,7 @@ applyImageRegistration (
     } // end of applyImageRegistration
 
 
+#if 0
 static void
 writeLayerFile (const char *outLayerFN, const char * outCroppedFN)
     {
@@ -1120,20 +1127,22 @@ writeLayerFile (const char *outLayerFN, const char * outCroppedFN)
 
     return;
     }   // end of writeLayerFile
+#endif
 
 
 static void
 applyAtomPosRegistration (
   const QFileInfoList &inputImgs, 
   const QFileInfoList &inputXforms, 
-  const QString &outputDir
+  const QString &outputDir,
+  const QString &projectShortTag
   )
     {
 
 
     // code refers to Imgs but we're actually processing atom pos files.
 
-    QString inImgDir, inImgProgTag, inImgOpTag, inImgExt;
+    QString inImgDir, inImgProjTag, inImgOpTag, inImgExt;
     QString inXDir, inXProgTag, inXOpTag, inXExt;
     QString outImgFN;
     int inImgN, inImgNDigits;
@@ -1146,7 +1155,7 @@ applyAtomPosRegistration (
     for (int i = 0; i < inputImgs.size(); i++)
         {
         parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
-                                    inImgProgTag, inImgOpTag, inImgExt);
+                                    inImgProjTag, inImgOpTag, inImgExt);
 
         parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
                                     inXProgTag, inXOpTag, inXExt);
@@ -1164,18 +1173,26 @@ applyAtomPosRegistration (
 
         bool deriveSeq = (inXNDigits >= 0) && (inImgNDigits >= 0);
 
+
+        if (inImgProjTag == "")
+        {
+            inImgProjTag = projectShortTag;
+        }
+
         makeOutFN (inputImgs[i].filePath(), outputDir, 
                     deriveSeq, i, 
-                    inImgProgTag+"."+inImgOpTag+".registered", 
+                    inImgProjTag+"."+inImgOpTag+".registered", 
                     inImgExt, outImgFN);
 
 
 
+#if 0
+  This is an obsolete hack
         //////////////////////////////
         QString outLayerFN;
         makeOutFN (inputImgs[i].filePath(), outputDir, 
                     deriveSeq, i, 
-                    inImgProgTag+"."+inImgOpTag+".registered", 
+                    inImgProjTag+"."+inImgOpTag+".registered", 
                     "layer", outLayerFN);
 
         QString outputCroppedDir = outputDir + "/../subsetRegistered";
@@ -1186,13 +1203,14 @@ applyAtomPosRegistration (
         QString referencedImgFN;
         makeOutFN (inputImgs[i].filePath(), outputCroppedDir,
                     deriveSeq, i, 
-                    inImgProgTag + ".cropped.registered", 
+                    inImgProjTag + ".cropped.registered", 
                     "png", referencedImgFN);
 
         writeLayerFile (outLayerFN.toStdString().c_str(),
                         referencedImgFN.toStdString().c_str());
         //////////////////////////////
 
+#endif
 
 
 
@@ -1219,7 +1237,8 @@ static void
 applyRegistration (
   const QString &inputDir, 
   const QString &inputTransformDir, 
-  const QString &outputDir
+  const QString &outputDir,
+  const QString &projectShortTag
   )
     {
 
@@ -1237,13 +1256,15 @@ applyRegistration (
 
     if (imgFileList.size() == xformFileList.size())
         {
-        applyImageRegistration (imgFileList, xformFileList, outputDir);
+        applyImageRegistration (imgFileList, xformFileList, 
+                                    outputDir, projectShortTag);
         regDone = true;
         }
 
     if (aposFileList.size() == xformFileList.size())
         {
-        applyAtomPosRegistration (aposFileList, xformFileList, outputDir);
+        applyAtomPosRegistration (aposFileList, xformFileList, 
+                                        outputDir, projectShortTag);
         regDone = true;
         }
 
@@ -1266,6 +1287,16 @@ void FilterApplyRegistration::execute
     CurrentModuleInstance = this;  // this should be executable line
 
     // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+
+
+   QString projectShortTag = getProject()->getShortTag();
+   if (projectShortTag == "")
+   {
+        projectShortTag = "p";
+   }
+   // qDebug() << "Project short tag is |" + projectShortTag + "|";
+
+
 
 
     //
@@ -1350,7 +1381,9 @@ void FilterApplyRegistration::execute
         ("ApplyRegistration: Output folder :      " + 
         outputImageDir + "\n");
 
-    applyRegistration (inputImageDir, inputTransformDir, outputImageDir);
+
+    applyRegistration (inputImageDir, inputTransformDir, 
+                            outputImageDir, projectShortTag);
 
     writeLog ("ApplyRegistration: Done.\n");
     writeLog ("\n");

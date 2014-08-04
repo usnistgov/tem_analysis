@@ -941,7 +941,8 @@ static void
 applyImageRegistration (
   const QFileInfoList &inputImgs,
   const QFileInfoList &inputXforms,
-  const QString &outputDir
+  const QString &outputDir,
+  const QString &projectShortTag
   )
     {
 
@@ -980,6 +981,11 @@ applyImageRegistration (
 
         // qDebug() << "out tag = " << inImgProjTag+"."+inImgOpTag+".registered";
 
+        if (inImgProjTag == "")
+            {
+            inImgProjTag = projectShortTag;
+            }
+
         makeOutFN (inputImgs[i].filePath(), outputDir,
                     deriveSeq, i, 
                     inImgProjTag+"."+inImgOpTag+".registered", 
@@ -1008,7 +1014,8 @@ static void
 applyRegistration (
   const QString &inputDir,
   const QString &inputTransformDir,
-  const QString &outputDir
+  const QString &outputDir,
+  const QString &projectShortTag
   )
     {
 
@@ -1024,7 +1031,8 @@ applyRegistration (
 
     if (imgFileList.size() == xformFileList.size())
         {
-        applyImageRegistration (imgFileList, xformFileList, outputDir);
+        applyImageRegistration (imgFileList, xformFileList, 
+                                    outputDir, projectShortTag);
         regDone = true;
         }
     else
@@ -1222,6 +1230,15 @@ void FilterRegisterImages::execute
     // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
 
 
+    QString projectShortTag = getProject()->getShortTag();
+    if (projectShortTag == "")
+    {
+        projectShortTag = "p";
+    }
+    // qDebug() << "Project short tag is |" + projectShortTag + "|";
+
+
+
     //
     QString inputImageDir;   
     QString outputTransformDir;
@@ -1307,7 +1324,7 @@ void FilterRegisterImages::execute
     if (transformImages)    
         {
         applyRegistration (inputImageDir, outputTransformDir, 
-                                                        outputImageDir);
+                                            outputImageDir, projectShortTag);
         }
     
 

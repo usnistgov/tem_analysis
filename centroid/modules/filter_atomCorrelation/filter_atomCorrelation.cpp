@@ -1013,7 +1013,8 @@ atomCorrelateImages
   (
   double atomTemplateRadius,
   const QFileInfoList & inputFileList, 
-  const QString & outputDir
+  const QString & outputDir,
+  const QString & projectShortTag
   )
     {
 
@@ -1043,7 +1044,7 @@ atomCorrelateImages
 
     if (outProjTag == "")
         {
-        outProjTag = "XXX"; // JGH - temporary fix
+        outProjTag = projectShortTag; 
         }
     outProjTag += ".atomCorr";
 
@@ -1085,6 +1086,15 @@ void FilterAtomCorrelation::execute
     CurrentModuleInstance = this;  // this should be first line in execute
 
     // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+
+
+   QString projectShortTag = getProject()->getShortTag();
+   if (projectShortTag == "")
+   {
+        projectShortTag = "p";
+   }
+   // qDebug() << "Project short tag is |" + projectShortTag + "|";
+
 
 
     //
@@ -1161,7 +1171,8 @@ void FilterAtomCorrelation::execute
 
     // processing code below
     //
-    atomCorrelateImages (atomTemplateRadius, inputFileList, outputDir);
+    atomCorrelateImages (atomTemplateRadius, inputFileList, 
+                                    outputDir, projectShortTag);
 
     qDebug () << "Done with atom correlation.\n";
 

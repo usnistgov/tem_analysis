@@ -713,7 +713,7 @@ subsetImages
   const QString &inputDir, 
   const QFileInfoList & inputFileList, 
   const QString & outputDir, 
-  const QString & outProjTag, 
+  const QString & projTag, 
   const bool rmDups,
   const bool rmSingles,
   const bool rmNonBWs,
@@ -746,11 +746,12 @@ subsetImages
                         dirName, seqNum, seqNumDigits, 
                         outProjTag, opTag, extension);
 
-        if (outProjTag == "")
+        outProjTag = projTag;
+        if (projTag == "")
             {
-            outProjTag = "XXX"; // JGH - temporary fix
+            outProjTag = "p"; // JGH - temporary fix
             }
-        outProjTag += ".cropped";
+        outProjTag += ".subset";
 
         bool deriveSeqNumFromInputFN = seqNumDigits > 0;
 
@@ -771,6 +772,15 @@ subsetImages
 void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters) 
 {
    CurrentModuleInstance = this;  // this should be first line in execute
+
+
+   QString projectShortTag = getProject()->getShortTag();
+   if (projectShortTag == "")
+   {
+        projectShortTag = "p";
+   }
+   // qDebug() << "Project short tag is |" + projectShortTag + "|";
+
 
    // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
 
@@ -885,7 +895,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
    //
 
 
-    QString outProjTag = "TEM1";
+    QString outProjTag = projectShortTag;
 
     subsetImages (inputDir, inputFileList, outputDir, outProjTag, 
                             rmDups, rmSingles, rmNonBWs, cropRect);

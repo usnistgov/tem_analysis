@@ -549,7 +549,8 @@ atomPositions
   const int minClusterSize,
   const double threshold,
   const QFileInfoList & inputFileList, 
-  const QString & outputDir
+  const QString & outputDir,
+  const QString & projectShortTag 
   )
     {
 
@@ -581,7 +582,7 @@ atomPositions
 
     if (outProjTag == "")
         {
-        outProjTag = "XXX"; // JGH - temporary fix
+        outProjTag = projectShortTag;
         }
     outCroppedProjTag = outProjTag+".cropped";
     outProjTag += ".atomPos";
@@ -604,14 +605,15 @@ atomPositions
     for (int i=0; i < inputFileList.size(); i++)
         {
         QString outFN;
-        QString outLayerFN;
-        QString outCroppedFN;
 
         makeOutFN ( inputFileList[i].filePath(), outputDir,
                     deriveSeqNumFromInputFN, i,
                     outProjTag, outExtension, outFN );
 
 
+#if 0
+        QString outLayerFN;
+        QString outCroppedFN;
         ///////////////
         //  this part and the related stuff above is sort of a hack
         makeOutFN ( inputFileList[i].filePath(), outputDir,
@@ -627,6 +629,7 @@ atomPositions
                  outCroppedFN.toStdString().c_str());
         //  end of hack
         ///////////////
+#endif
 
         writeLog ("AtomPositions: processing " + 
                     inputFileList[i].filePath() + "\n");
@@ -655,6 +658,16 @@ void FilterAtomPositions::execute
     CurrentModuleInstance = this;  // this should be first line in execute
 
     // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+
+
+    
+    QString projectShortTag = getProject()->getShortTag();
+    if (projectShortTag == "")
+    {
+        projectShortTag = "p";
+    }
+    // qDebug() << "Project short tag is |" + projectShortTag + "|";
+
 
 
     //
@@ -716,7 +729,9 @@ void FilterAtomPositions::execute
         }
     else if ( ! mkDirectory (outputDir) )
         {
-        writeLog ("AtomPositions: Error accessing or creating output folder: " + outputDir);
+        writeLog (
+            "AtomPositions: Error accessing or creating output folder: " + 
+            outputDir );
         return;
         }
 
@@ -734,7 +749,8 @@ void FilterAtomPositions::execute
 
     // processing code below
     //
-    atomPositions (minClusterSize, threshold, inputFileList, outputDir);
+    atomPositions (minClusterSize, threshold, 
+                        inputFileList, outputDir, projectShortTag);
 
     qDebug () << "Done with atom position calculation.\n";
 
