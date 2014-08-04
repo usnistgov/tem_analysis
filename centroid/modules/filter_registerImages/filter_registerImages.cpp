@@ -6,6 +6,7 @@
 #include <libgen.h>
 
 #include <QDebug>
+#include <QCoreApplication>
 #include <QDir>
 #include <QTemporaryFile>
 #include <QProcess>
@@ -1166,8 +1167,9 @@ generateRegistrationTransformsIJ
     ijReg.setProcessChannelMode( QProcess::MergedChannels );
     ijReg.setProcessEnvironment( QProcessEnvironment::systemEnvironment() );
 
-    // The installed JRE bin directory must be in the PATH env variable
-    QString ijRegProg ("java");
+    QString ijRegProg (QCoreApplication::applicationDirPath() + "/jre7/java");
+                       //QDir::separator() + "jre7" + QDir::separator() + "java");
+    if (!QFileInfo::exists( ijRegProg )) ijRegProg = "java"; // Fallback to path
     QStringList ijRegArgs;
     ijRegArgs << "-jar" << "ij.jar" << "-macro"
         << QDir::toNativeSeparators(tempFile.fileName());
