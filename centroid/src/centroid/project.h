@@ -17,12 +17,15 @@ public:
    QString getShortTag() const { return shortTag; }
    void setShortTag(const QString& tag) { shortTag = tag; }
 
+   QString getProjectFileName() const { return projectFileName; }
+
    bool save(QString const& fileName);
    bool load(QString const& fileName);
 
 private:
    QDir baseDirectory;
    QString shortTag;
+   QString projectFileName;
 };
 
 #endif // __H_PROJECT__

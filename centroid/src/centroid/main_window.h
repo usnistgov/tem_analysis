@@ -48,6 +48,7 @@ protected:
    virtual void closeEvent(QCloseEvent*);
 
 private:   
+   void openProject(QString fileName);
    void loadProject(Project* project);
    void read_settings();
    void write_settings();
@@ -58,6 +59,7 @@ private:
    QFileDialog *file_dialog;
    QVector<Block*> blocks;
    MainViewerForm *main_viewer_form;
+   Project* current_project;
 };
 
 //////////////////////////////////////////////////////////////////////////

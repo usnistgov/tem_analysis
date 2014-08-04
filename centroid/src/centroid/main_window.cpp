@@ -44,7 +44,7 @@ void MainWindow::addModuleToDock(Block *block)
          line_edit->setToolTip(tooltip); 
 
          //QPushButton *btn_file = new QPushButton("..");
-         DirUpdateButton *btn_file = new DirUpdateButton("..");
+         DirUpdateButton *btn_file = new DirUpdateButton("..", file_dialog);
          btn_file->setToolTip(tooltip); 
 
          btn_file->setBlock(block);
@@ -120,6 +120,7 @@ void MainWindow::addModuleToDock(Block *block)
 //////////////////////////////////////////////////////////////////////////
 
 MainWindow::MainWindow()
+    : current_project(NULL)
 {
    setupUi(this); 
 
@@ -128,8 +129,6 @@ MainWindow::MainWindow()
    action_Quit->setShortcut(QKeySequence::Quit);
    action_NewProject->setShortcut(QKeySequence::New);
    action_OpenProject->setShortcut(QKeySequence::Open);
-
-   read_settings();
 
    ModulesManager::instance()->init(plainLogsTextEdit);
    connect(this, SIGNAL(aboutToLoadProject(Project*)),
@@ -156,6 +155,8 @@ MainWindow::MainWindow()
    action_ScrollHandDrag->setChecked(true);
 
    setUnifiedTitleAndToolBarOnMac(true);
+   read_settings();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -212,6 +213,11 @@ void MainWindow::on_action_OpenProject_triggered()
    if (!file_dialog->exec()) return;
    QString fileName = file_dialog->selectedFiles()[0];
 
+   openProject(fileName);
+}
+
+void MainWindow::openProject(QString fileName)
+{
    Project* project = new Project;
    if (!project->load(fileName))
    {
@@ -230,7 +236,10 @@ void MainWindow::loadProject(Project* project)
    treeWidget->setRootIsDecorated(false);
    treeWidget->setIndentation(0);
 
-   emit aboutToLoadProject(project);
+   if (current_project) delete current_project;
+   current_project = project;
+
+   emit aboutToLoadProject(current_project);
    ModulesManager::instance()->setupAllFilterBlocks(blocks);
 
    QVectorIterator<Block*> i(blocks);
@@ -239,9 +248,8 @@ void MainWindow::loadProject(Project* project)
       addModuleToDock(i.next());
    }
 
-   file_dialog->setDirectory(project->getBaseDirectory());
-   setWindowTitle(project->getShortTag() + " | TEM Analysis");
-
+   file_dialog->setDirectory(current_project->getBaseDirectory());
+   setWindowTitle(current_project->getShortTag() + " | TEM Analysis");
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -279,6 +287,10 @@ void MainWindow::read_settings() {
     restoreState(settings.value("window/state").toByteArray());
     file_dialog->restoreState(settings.value("app/opendialogstate").toByteArray());
     file_dialog->setDirectory(settings.value("app/opendialogdirectory").toString());
+    if (settings.contains("app/currentproject"))
+    {
+        openProject(settings.value("app/currentproject").toString());
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -289,6 +301,10 @@ void MainWindow::write_settings() {
     settings.setValue("window/state", saveState());
     settings.setValue("app/opendialogstate", file_dialog->saveState());
     settings.setValue("app/opendialogdirectory", file_dialog->directory().path());
+    if (current_project)
+    {
+        settings.setValue("app/currentproject", current_project->getProjectFileName());
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////

@@ -106,7 +106,8 @@ class DirUpdateButton : public QPushButton
    Q_OBJECT
 
 public:
-   DirUpdateButton(const QString& text, QWidget *parent = 0) : QPushButton(text, parent)
+   DirUpdateButton(const QString& text, QFileDialog* fd, QWidget *parent = 0)
+       : QPushButton(text, parent), file_dialog(fd)
    {
       block = NULL;
       connect(this, SIGNAL(released()), this, SLOT(emitDirUpdate()));
@@ -136,11 +137,10 @@ public slots:
             }
          }
 
-
-         QString directory = 
-            QFileDialog::getExistingDirectory (this, 
-                                               "Specify Directory", 
-                                               startDir );
+         file_dialog->setWindowTitle("Select directory");
+         file_dialog->setFileMode(QFileDialog::Directory);
+         if (!file_dialog->exec()) return;
+         QString directory = file_dialog->selectedFiles()[0];
          if (directory != "")  // don't do anything if nothing specified
          {
             block->setValueOfParameter(index, directory);
@@ -156,6 +156,7 @@ private:
    Block* block;
    int index;   
    MyLineEdit *lineEdit;
+   QFileDialog* file_dialog;
 };
 
 //////////////////////////////////////////////////////////////////////////
