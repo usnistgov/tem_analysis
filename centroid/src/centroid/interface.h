@@ -41,14 +41,13 @@ public:
       }
    }
 
-   const Project* const getProject() const
-   {
-       return ModulesManager::instance()->getProject();
-   }
+   void setProject(Project* proj) { project = proj; }
+   const Project* const getProject() const { return project; }
 
 private:
    QString name;
    QPlainTextEdit *logs;
+   Project *project;
 };
 
 //////////////////////////////////////////////////////////////////////////

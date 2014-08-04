@@ -117,6 +117,7 @@ void ModulesManager::initProject(Project* proj)
          if (img_function)
          {
             img_function->setLogsWidget(logs);
+            img_function->setProject(proj);
             imaging_instances.insert(module_name, img_function);
             loaders.insert(module_name, loader);
 
