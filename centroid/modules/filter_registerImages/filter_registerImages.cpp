@@ -1167,8 +1167,8 @@ generateRegistrationTransformsIJ
     ijReg.setProcessChannelMode( QProcess::MergedChannels );
     ijReg.setProcessEnvironment( QProcessEnvironment::systemEnvironment() );
 
-    QString ijRegProg (QCoreApplication::applicationDirPath() + "/jre7/java");
-                       //QDir::separator() + "jre7" + QDir::separator() + "java");
+    // Windows only: try and first use the bundled JRE
+    QString ijRegProg (QCoreApplication::applicationDirPath() + "/jre7/bin/java.exe");
     if (!QFileInfo::exists( ijRegProg )) ijRegProg = "java"; // Fallback to path
     QStringList ijRegArgs;
     ijRegArgs << "-jar" << "ij.jar" << "-macro"
