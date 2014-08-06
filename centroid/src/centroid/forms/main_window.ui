@@ -83,6 +83,7 @@
    <addaction name="action_SelectionMode"/>
    <addaction name="action_SelectionModeMinus"/>
    <addaction name="action_SelectParticles"/>
+   <addaction name="action_AddAtom"/>
    <addaction name="action_RemoveParticles"/>
    <addaction name="action_ShowLines"/>
    <addaction name="separator"/>
@@ -435,6 +436,21 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_AddAtom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Atom</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Atom</string>
    </property>
   </action>
  </widget>
