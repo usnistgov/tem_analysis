@@ -152,7 +152,10 @@ MainWindow::MainWindow()
 
    // default mode for interaction with the viewer
    //
-   action_ScrollHandDrag->setChecked(true);
+   // action_ScrollHandDrag->setChecked(true);
+   set_interactionMode (MainViewerForm::HandDrag);
+
+
 
    setUnifiedTitleAndToolBarOnMac(true);
    read_settings();
@@ -331,57 +334,137 @@ void MainWindow::viewer_particle_icons_show(bool is_enabled)
 
 //////////////////////////////////////////////////////////////////////////
 
+void MainWindow::set_interactionMode (MainViewerForm::InteractionMode iMode)
+{
+
+   action_ScrollHandDrag->setChecked(false);
+   action_SelectionMode->setChecked(false);
+   action_SelectionModeMinus->setChecked(false);
+   action_SelectionModePlusGlobal->setChecked(false);   
+   action_SelectionModeMinusGlobal->setChecked(false);   
+   action_AddAtom->setChecked(false);  
+
+    switch (iMode)
+        {
+        case MainViewerForm::HandDrag:
+            action_ScrollHandDrag->setChecked(true);
+            break;
+
+        case MainViewerForm::SelectAtomsCurrFrame:
+            action_SelectionMode->setChecked(true);
+            break;
+
+        case MainViewerForm::DeselectAtomsCurrFrame:
+            action_SelectionModeMinus->setChecked(true);
+            break;
+
+        case MainViewerForm::SelectAtomsAllFrames:
+            action_SelectionModePlusGlobal->setChecked(true);
+            break;
+
+        case MainViewerForm::DeselectAtomsAllFrames:
+            action_SelectionModeMinusGlobal->setChecked(true);
+            break;
+
+        case MainViewerForm::AddAtomCurrFrame:
+            action_AddAtom->setChecked(true);
+            break;
+
+        case MainViewerForm::AddAtomAllFrames:
+            // nothing here yet
+            break;
+
+        }
+
+   main_viewer_form->set_interactionMode (iMode);
+
+}  
+
 void MainWindow::on_action_ScrollHandDrag_triggered()
 {
+   set_interactionMode (MainViewerForm::HandDrag);
+
+#if 0
    main_viewer_form->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag); 
+
    action_ScrollHandDrag->setChecked(true);
    action_SelectionMode->setChecked(false);
    action_SelectionModeMinus->setChecked(false);
-   // action_SelectParticles->setChecked(false);
    action_SelectionModePlusGlobal->setChecked(false);   
+   action_SelectionModeMinusGlobal->setChecked(false);   
+   action_AddAtom->setChecked(false);  
+#endif
+
+   // action_SelectParticles->setChecked(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void MainWindow::on_action_SelectionMode_triggered()
 {
+   set_interactionMode (MainViewerForm::SelectAtomsCurrFrame);
+
+#if 0
    main_viewer_form->set_is_selection_global(false);
    main_viewer_form->set_is_positive_selection_on(true);
    main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
+
    action_ScrollHandDrag->setChecked(false);
    action_SelectionMode->setChecked(true);   
    action_SelectionModeMinus->setChecked(false);
    action_SelectionModePlusGlobal->setChecked(false);
    action_SelectionModeMinusGlobal->setChecked(false);  
+   action_AddAtom->setChecked(false);  
+
    // action_SelectParticles->setChecked(false);
+
    main_viewer_form->draw_current_frame();
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_SelectionModeMinus_triggered()
 {
+   set_interactionMode (MainViewerForm::DeselectAtomsCurrFrame);
+
+#if 0
    main_viewer_form->set_is_selection_global(false);
    main_viewer_form->set_is_positive_selection_on(false);
    main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
+
    action_ScrollHandDrag->setChecked(false);
    action_SelectionMode->setChecked(false);   
    action_SelectionModeMinus->setChecked(true);
    action_SelectionModePlusGlobal->setChecked(false);  
    action_SelectionModeMinusGlobal->setChecked(false);  
+   action_AddAtom->setChecked(false);  
+
    // action_SelectParticles->setChecked(false);
    main_viewer_form->draw_current_frame();
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void MainWindow::on_action_SelectParticles_triggered()
 {
+   // JGH: I don't think that this function is being used
+
+   set_interactionMode (MainViewerForm::SelectAtomsCurrFrame);
+
+#if 0
    main_viewer_form->graphicsView->setDragMode(QGraphicsView::NoDrag);   
    action_ScrollHandDrag->setChecked(false);
    action_SelectionMode->setChecked(false);   
    action_SelectionModeMinus->setChecked(false);
    action_SelectionModeMinusGlobal->setChecked(false);   
+   action_AddAtom->setChecked(false);  
+
    // action_SelectParticles->setChecked(true);
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -476,33 +559,72 @@ void MainWindow::on_action_ImageViewerMulti_triggered()
 
 }
 
+
+void MainWindow::on_action_AddAtom_triggered()
+{
+printf ("add atom called\n");
+
+   set_interactionMode (MainViewerForm::AddAtomCurrFrame);
+
+#if 0
+   main_viewer_form->graphicsView->setDragMode(QGraphicsView::NoDrag); 
+
+   action_ScrollHandDrag->setChecked(false);
+   action_SelectionMode->setChecked(false);   
+   action_SelectionModeMinus->setChecked(false);
+   action_SelectionModePlusGlobal->setChecked(false);
+   action_SelectionModeMinusGlobal->setChecked(false);  
+   action_AddAtom->setChecked(true);  
+#endif
+
+}
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////
 
 void MainWindow::on_action_SelectionModePlusGlobal_triggered()
 {
+   set_interactionMode (MainViewerForm::SelectAtomsAllFrames);
+
+#if 0
    main_viewer_form->set_is_selection_global(true);
    main_viewer_form->set_is_positive_selection_on(true);
    main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
+
    action_ScrollHandDrag->setChecked(false);
    action_SelectionMode->setChecked(false);   
    action_SelectionModeMinus->setChecked(false);
    action_SelectionModePlusGlobal->setChecked(true);
    action_SelectionModeMinusGlobal->setChecked(false);
+   action_AddAtom->setChecked(false);  
+
    main_viewer_form->draw_current_frame();
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void MainWindow::on_action_SelectionModeMinusGlobal_triggered()
 {
+   set_interactionMode (MainViewerForm::DeselectAtomsAllFrames);
+
+#if 0
    main_viewer_form->set_is_selection_global(true);
    main_viewer_form->set_is_positive_selection_on(false);
    main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
+
    action_ScrollHandDrag->setChecked(false);
    action_SelectionMode->setChecked(false);   
    action_SelectionModeMinus->setChecked(false);
    action_SelectionModePlusGlobal->setChecked(false);
    action_SelectionModeMinusGlobal->setChecked(true);
+   action_AddAtom->setChecked(false);  
    main_viewer_form->draw_current_frame();
+#endif
+
 }
 

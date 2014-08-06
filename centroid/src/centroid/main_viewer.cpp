@@ -20,7 +20,8 @@ MainViewerForm::MainViewerForm(QWidget *parent)
      animate_forward(true),
      is_triangulation_on(false),
      is_positive_selection_on(true),
-     is_selection_global(false)
+     is_selection_global(false),
+     interactionMode (HandDrag)
 {
    setupUi(this);
 
@@ -385,7 +386,67 @@ void MainViewerForm::select_all_particles_current_frame (const QPointF& p0, cons
 
 /////////////////////////////////////////////////////////////////////////
 
+void MainViewerForm::set_interactionMode (MainViewerForm::InteractionMode iMode)
+{
+    interactionMode = iMode;
 
+    switch (iMode)
+        {
+        case MainViewerForm::HandDrag:
+            graphicsView->setDragMode(QGraphicsView::ScrollHandDrag);
+            break;
+
+        case MainViewerForm::SelectAtomsCurrFrame:
+            set_is_selection_global(false);
+            set_is_positive_selection_on(true);
+            graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
+            break;
+
+        case MainViewerForm::DeselectAtomsCurrFrame:
+            set_is_selection_global(false);
+            set_is_positive_selection_on(false);
+            graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
+            break;
+
+        case MainViewerForm::SelectAtomsAllFrames:
+            set_is_selection_global(true);
+            set_is_positive_selection_on(true);
+            graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
+            break;
+
+        case MainViewerForm::DeselectAtomsAllFrames:
+            set_is_selection_global(true);
+            set_is_positive_selection_on(false);
+            graphicsView->setDragMode(QGraphicsView::RubberBandDrag);
+            break;
+
+        case MainViewerForm::AddAtomCurrFrame:
+            set_is_selection_global(false);
+            set_is_positive_selection_on(true);
+            graphicsView->setDragMode(QGraphicsView::NoDrag);
+            break;
+
+        case MainViewerForm::AddAtomAllFrames:
+            set_is_selection_global(true);
+            set_is_positive_selection_on(true);
+            graphicsView->setDragMode(QGraphicsView::NoDrag);
+            break;
+
+
+        }
+
+    draw_current_frame();
+
+}
+
+/////////////////////////////////////////////////////////////////////////
+
+MainViewerForm::InteractionMode MainViewerForm::get_interactionMode ()
+{
+    return interactionMode;
+}
+
+/////////////////////////////////////////////////////////////////////////
 
 
 

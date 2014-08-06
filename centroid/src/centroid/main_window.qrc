@@ -1,5 +1,6 @@
 <RCC>
   <qresource>
+    <file>icons/addAtom.png</file>
     <file>icons/pause.png</file>
     <file>icons/jump_beg_vcr.png</file>
     <file>icons/jump_end_vcr.png</file>

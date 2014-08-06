@@ -2,6 +2,7 @@
 #define __H_MAIN_WINDOW__
 
 #include "ui_main_window.h"
+#include "main_viewer.h"
 #include "interface.h"
 #include "block.h"
 
@@ -43,6 +44,7 @@ private slots:
    void on_action_RemoveParticles_triggered();
    void on_action_SelectionModePlusGlobal_triggered();
    void on_action_SelectionModeMinusGlobal_triggered();
+   void on_action_AddAtom_triggered();
 
 protected:
    virtual void closeEvent(QCloseEvent*);
@@ -54,6 +56,7 @@ private:
    void write_settings();
    void viewer_icons_show(bool is_enabled);
    void viewer_particle_icons_show(bool is_enabled);
+   void set_interactionMode (MainViewerForm::InteractionMode iMode);
 
 private:
    QFileDialog *file_dialog;

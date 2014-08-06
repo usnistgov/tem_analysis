@@ -371,12 +371,19 @@ void Particles::set_selected(int frame, int id, bool selected)
 }
 
 
+#define MIN(x,y) (((x)<(y))?(x):(y))
+#define MAX(x,y) (((x)>(y))?(x):(y))
 
 
 void Particles::set_selected (int frame, 
-                                    const QPointF& p0, const QPointF& p1, 
+                                    const QPointF& pp0, const QPointF& pp1, 
                                     bool selected)
 {
+
+
+   QPointF p0 (MIN(pp0.x(), pp1.x()), MIN (pp0.y(), pp1.y()));
+   QPointF p1 (MAX(pp0.x(), pp1.x()), MAX (pp0.y(), pp1.y()));
+
    particles *ps = list_all_particles[frame];
    QMutableVectorIterator<particle> i(*ps);
    while (i.hasNext())
@@ -403,8 +410,12 @@ void Particles::set_selected (int frame,
 
 //////////////////////////////////////////////////////////////////////////
 
-void Particles::set_selected_global(const QPointF& p0, const QPointF& p1, bool selected)
+void Particles::set_selected_global(const QPointF& pp0, const QPointF& pp1, bool selected)
 {
+
+   QPointF p0 (MIN(pp0.x(), pp1.x()), MIN (pp0.y(), pp1.y()));
+   QPointF p1 (MAX(pp0.x(), pp1.x()), MAX (pp0.y(), pp1.y()));
+
    int j, k;
 
    for (k=0; k<list_all_particles.size(); k++)
@@ -465,8 +476,14 @@ void Particles::remove_all_particles_selected()
 // Remove all particles selected from selected region in all frames
 //
 
-void Particles::remove_all_particles_in_rect(const QPointF& p0, const QPointF& p1)
+void Particles::remove_all_particles_in_rect(const QPointF& pp0, const QPointF& pp1)
 {
+
+   // JGH: I believe that this method is not used.
+
+   QPointF p0 (MIN(pp0.x(), pp1.x()), MIN (pp0.y(), pp1.y()));
+   QPointF p1 (MAX(pp0.x(), pp1.x()), MAX (pp0.y(), pp1.y()));
+
    int j, k;
 
    for (k=0; k<list_all_particles.size(); k++)

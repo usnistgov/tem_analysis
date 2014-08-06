@@ -16,7 +16,19 @@ class MainViewerForm : public QWidget, public Ui::MainViewerForm
    Q_OBJECT
 
 public:
+
    MainViewerForm(QWidget *parent = 0);
+
+   enum InteractionMode {
+        HandDrag,
+        SelectAtomsCurrFrame,
+        DeselectAtomsCurrFrame,
+        SelectAtomsAllFrames,
+        DeselectAtomsAllFrames,
+        AddAtomCurrFrame,
+        AddAtomAllFrames
+   };
+        
    void setStatusBar(QStatusBar *statusBar);
 
    void clearScene();
@@ -45,6 +57,9 @@ public:
                                             const QPointF& p1, 
                                             bool state);
 
+   void set_interactionMode (InteractionMode iMode);
+   InteractionMode get_interactionMode ();
+
 private slots:
    void on_action_JumpToFirst_triggered();
    void on_action_PlayBackward_triggered();
@@ -71,6 +86,8 @@ private:
    int current_frame;
    int number_of_frames;
 
+   InteractionMode interactionMode;
+
    // data
    //
    QFileInfoList *file_list_images;
@@ -80,6 +97,7 @@ private:
    QTimer *timer;
 
    QStatusBar *status_bar;
+
 };
 
 //////////////////////////////////////////////////////////////////////////

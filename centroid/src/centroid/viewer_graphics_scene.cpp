@@ -35,6 +35,9 @@ void ViewerGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void ViewerGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+   // Here's where all the action is for interactive mouse manipulations
+   // inside the image/atom viewer.
+
    QGraphicsView *view = views().at(0);
    if (view->dragMode() == QGraphicsView::RubberBandDrag)
    {

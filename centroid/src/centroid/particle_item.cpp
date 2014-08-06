@@ -15,9 +15,22 @@ ParticleItem::ParticleItem(const QPointF& pos, int idid, int frame, Particles *p
    particles_all = particles;
    current_frame = frame;
 
+    // Note that there is some old code below that enabled direct
+    // selection of these ParticleItems and dragging them around.
+    // This has all been disabled, but the code is left for
+    // reference (sometimes commented out).
+    // ignore all mouse button events
+    setAcceptedMouseButtons(0);
+
+#if 0
+   // all flags are disabled by default
+
    setFlag(QGraphicsItem::ItemIsMovable, false);
-   setFlag(QGraphicsItem::ItemIsSelectable, true);
+   // setFlag(QGraphicsItem::ItemIsSelectable, true);
+   setFlag(QGraphicsItem::ItemIsSelectable, false);
    setFlag(QGraphicsItem::ItemSendsGeometryChanges, false);
+   setFlag(QGraphicsItem::ItemIsFocusable, false);
+#endif
 
    // if (id == 297) particles_all->set_selected(frame, id, true);
 }
@@ -101,6 +114,8 @@ QVariant ParticleItem::itemChange(GraphicsItemChange change, const QVariant &val
 
 void ParticleItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+
+#if 0
    // qDebug() << views().size();
    // QGraphicsView *view = views().at(0);
    // if (views().size() > 0)
@@ -118,12 +133,16 @@ void ParticleItem::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
    }
 
 //   QGraphicsItem::mousePressEvent(mouseEvent);
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////////
 
 void ParticleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+
+#if 0
    // QGraphicsView *view = views().at(0);
    // if (view->dragMode() == QGraphicsView::RubberBandDrag)
    {
@@ -134,6 +153,7 @@ void ParticleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
    }
 
 //   QGraphicsItem::mouseReleaseEvent(mouseEvent);
+#endif
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -141,5 +161,8 @@ void ParticleItem::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void ParticleItem::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 
+#if 0
+printf ("item mouse event\n");
    QGraphicsItem::mouseMoveEvent(mouseEvent);
+#endif
 }
