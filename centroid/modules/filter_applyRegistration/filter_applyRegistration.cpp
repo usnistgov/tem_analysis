@@ -1336,6 +1336,7 @@ void FilterApplyRegistration::execute
     }  // end of loop over parameters
 
 
+    writeParameters (parameters, outputImageDir);
 
 
     // qDebug() << "EXECUTE PARAMS >>>";  

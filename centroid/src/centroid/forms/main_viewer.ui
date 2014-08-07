@@ -151,7 +151,7 @@
          </property>
          <property name="icon">
           <iconset resource="../main_window.qrc">
-           <normaloff>:/icons/forward_vcr.png</normaloff>:/icons/forward_vcr.png</iconset>
+           <normaloff>:/icons/jump_end_vcr.png</normaloff>:/icons/jump_end_vcr.png</iconset>
          </property>
          <property name="iconSize">
           <size>
