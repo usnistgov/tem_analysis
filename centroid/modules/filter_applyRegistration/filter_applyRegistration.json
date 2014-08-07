@@ -1,5 +1,6 @@
 {
    "name" : "05_ApplyRegistration",
+   "shortTag" : "reg",
    "version" : "0.0.1",
    "type" : "imaging",
    "parameters" : 

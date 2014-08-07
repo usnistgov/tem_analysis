@@ -1,5 +1,6 @@
 {
    "name" : "03_AtomPositions",
+   "shortTag" : "atomPos",
    "version" : "0.0.1",
    "type" : "imaging",
    "parameters" : 

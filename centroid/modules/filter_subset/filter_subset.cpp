@@ -845,6 +845,11 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
     }  // end of loop over parameters
 
 
+    writeParameters (parameters, outputDir);
+
+
+
+
     for (int i = 0; i < 2; i++)
         {
         if (cropRect[0][i] > cropRect[1][i])
@@ -877,6 +882,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
         writeLog ("Subset: Error accessing or creating output folder: " + outputDir);
         return;
         }
+
 
    QFileInfoList inputFileList;
    getImageFileList (inputDir, inputFileList);

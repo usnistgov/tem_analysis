@@ -123,7 +123,13 @@ void ModulesManager::initProject(Project* proj)
 
             // set the name of the function
             //
-            img_function->setName(module_name);
+
+            // img_function->setMetaData ( loader->metaData().
+                    // value("MetaData").toObject().toVariantMap()  );
+
+            img_function->setMetaData ( loader->metaData() );
+
+            // img_function->setName(module_name);
 
             if (logs)
             {

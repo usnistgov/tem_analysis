@@ -1130,6 +1130,7 @@ void FilterAtomCorrelation::execute
 
     }  // end of loop over parameters
 
+    writeParameters (parameters, outputDir);
 
 
 

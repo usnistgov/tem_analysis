@@ -712,6 +712,8 @@ void FilterAtomPositions::execute
     }  // end of loop over parameters
 
 
+    writeParameters (parameters, outputDir);
+
 
     // threshold = 0.05;
 

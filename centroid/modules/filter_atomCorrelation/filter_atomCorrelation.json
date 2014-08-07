@@ -1,5 +1,6 @@
 {
    "name" : "02_AtomCorrelation",
+   "shortTag" : "atomCorr",
    "version" : "0.0.1",
    "type" : "imaging",
    "parameters" : 
@@ -27,7 +28,7 @@
       {
          "name" : "atomTemplateRadius",
          "type" : "float",
-         "form" : "Atom Template Radius",
+         "form" : "Atom Template Radius (pixels)",
          "value" : "3.0",
          "tooltip" : "Radius (in pixels) of the atom template image that is generated for correlation."
       }
