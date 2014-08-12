@@ -3,12 +3,21 @@
 
 #include <QFileInfo>
 #include <QString>
+#include <QVector>
+#include <QMap>
+#include <QVariant>
 
 #include "interface.h"
+#include "project.h"
 
 class ModulesUtil
 {
 public:
+   static void writeParameters ( const Project * project,
+      const QString & shortTag,
+      const QVector<QMap<QString, QVariant> > & parameters,
+      const QString & dirName );
+
    static bool isFile (const QString & filePath);
    static bool isDirectory (const QString & dirPath);
    static bool mkDirectory (const QString & dirPath);

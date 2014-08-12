@@ -1021,7 +1021,7 @@ void FilterAtomCorrelation::execute
     }  // end of loop over parameters
 
     // write out the parameters to a parameter file in the outputDir.
-    writeParameters (parameters, outputDir);
+    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputDir);
 
 
 

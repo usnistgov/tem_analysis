@@ -13,7 +13,9 @@ class FilterSubset : public QObject, public FilterInterface
    Q_INTERFACES(FilterInterface)
 
 public:
-   void execute(const QVector<QMap<QString, QVariant> >& parameters);
+   virtual void execute(const QVector<QMap<QString, QVariant> >& parameters);
+
+   virtual ~FilterSubset() {}
 };
 
 #endif // __H_FILTER_INVERT__

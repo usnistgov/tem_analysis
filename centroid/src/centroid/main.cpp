@@ -18,22 +18,22 @@ static void messageLogger(QtMsgType type, const QMessageLogContext &context,
 
    switch(type) {
    case QtDebugMsg:
-       LOG_DEBUG((*s_logger), "%s(%s:%u) [%s]", localMsg.constData(),
+       LOG_DEBUG((*s_logger), "%s (%s:%u) [%s]", localMsg.constData(),
                  context.file, context.line, context.function);
        break;
 
    case QtWarningMsg:
-       LOG_WARN((*s_logger), "%s(%s:%u) [%s]", localMsg.constData(),
+       LOG_WARN((*s_logger), "%s (%s:%u) [%s]", localMsg.constData(),
                 context.file, context.line, context.function);
        break;
 
    case QtCriticalMsg:
-       LOG_ERROR((*s_logger), "%s(%s:%u) [%s]", localMsg.constData(),
+       LOG_ERROR((*s_logger), "%s (%s:%u) [%s]", localMsg.constData(),
                  context.file, context.line, context.function);
        break;
 
    case QtFatalMsg:
-       LOG_FATAL((*s_logger), "%s(%s:%u) [%s]", localMsg.constData(),
+       LOG_FATAL((*s_logger), "%s (%s:%u) [%s]", localMsg.constData(),
                  context.file, context.line, context.function);
        abort();
        break;

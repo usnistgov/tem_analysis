@@ -1068,7 +1068,7 @@ void FilterApplyRegistration::execute
     }  // end of loop over parameters
 
 
-    writeParameters (parameters, outputImageDir);
+    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputImageDir);
 
 
     // qDebug() << "EXECUTE PARAMS >>>";  

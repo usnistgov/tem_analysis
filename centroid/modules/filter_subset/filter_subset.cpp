@@ -532,7 +532,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
     }  // end of loop over parameters
 
 
-    writeParameters (parameters, outputDir);
+    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputDir);
 
 
 

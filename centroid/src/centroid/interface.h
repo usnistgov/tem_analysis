@@ -20,7 +20,59 @@ public:
       name = str;
    }
 
-   virtual void setMetaData( const QJsonObject & loaderMetaData );
+   virtual void setMetaData( const QJsonObject & loaderMetaData )
+   {
+       const QVariantMap interfaceMetaData = 
+           loaderMetaData.value("MetaData").toObject().toVariantMap();
+
+           // loaderMetaData.value("MetaData").toObject().toVariantMap()
+       
+
+       // qDebug () << interfaceMetaData;
+
+       // extract various values from the interfaceMetaData map
+
+       if (interfaceMetaData.contains("name"))
+       {
+           name = interfaceMetaData.value("name").toString();
+       }
+
+       if (interfaceMetaData.contains("seq"))
+       {
+           sequenceNumber = interfaceMetaData.value("seq").toInt ();
+       }
+
+       if (interfaceMetaData.contains("version"))
+       {
+           version = interfaceMetaData.value("version").toString ();
+       }
+
+       if (interfaceMetaData.contains("shortTag"))
+       {
+           shortTag = interfaceMetaData.value("shortTag").toString ();
+       }
+
+       if (interfaceMetaData.contains("type"))
+       {
+           moduleType = interfaceMetaData.value("type").toString ();
+       }
+
+       if (shortTag == "")
+       {
+           shortTag = name;
+       }
+
+#if    0
+       qDebug () << "";
+       qDebug () << "setMetaData name " + name;
+       qDebug () << "setMetaData sequenceNumber " + sequenceNumber;
+       qDebug () << "setMetaData version " + version;
+       qDebug () << "setMetaData shortTag " + shortTag;
+       qDebug () << "setMetaData moduleType " + moduleType ;
+       qDebug () << "";
+#endif
+   }
+
 
    QString getName() const
    {
@@ -72,15 +124,13 @@ private:
 class FilterInterface : public ModuleInterface
 {
 public:
-   virtual ~FilterInterface() {};
-   virtual void execute(const QVector<QMap<QString, QVariant> >& parameters) = 0; 
-   virtual void setMetaData( const QJsonObject & loaderMetaData );
+   virtual ~FilterInterface() {}
+   virtual void execute(const QVector<QMap<QString, QVariant> >& parameters) = 0;
 
-
-protected:
-
-    void writeParameters (const QVector<QMap<QString, QVariant> > & parameters, 
-                          const QString & dirName);
+   virtual void setMetaData( const QJsonObject & loaderMetaData )
+   {
+      ModuleInterface::setMetaData (loaderMetaData);
+   }
 
 
 private:

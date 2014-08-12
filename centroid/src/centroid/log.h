@@ -2,6 +2,7 @@
 #define __H_LOG__
 
 #include <QMutex>
+#include <QDateTime>
 
 #include <stdexcept>
 
@@ -38,7 +39,7 @@ namespace logging {
         virtual bool open(char const* name) {
             _fh = fopen(name, "wb");
             if (!_fh) return false;
-            setlinebuf(_fh);
+            setvbuf(_fh, (char*)NULL, _IOLBF, 0);
             return true;
         }
 
@@ -51,10 +52,12 @@ namespace logging {
 
         virtual void write(char const* message) {
             fprintf(_fh, message); // POSIX defines stdio as thread-safe
+            fflush(_fh);
         }
 
         virtual void write(char const* message, va_list ap) {
             vfprintf(_fh, message, ap); // POSIX defines stdio as thread-safe
+            fflush(_fh);
         }
 
         FileLogPolicy() : LogPolicyInterface(), _fh(NULL) {}
@@ -100,22 +103,19 @@ namespace logging {
             if (level < _level) return;
             QMutexLocker lock(&_write_mtx);
 
-            static size_t const NOW_LEN = 24, HEADER_LEN = 32;
-            char now[NOW_LEN], header[HEADER_LEN];
+            static size_t const HEADER_LEN = 64;
+            char header[HEADER_LEN];
 
-            try {
-                snprintf(header, HEADER_LEN, "%s [%-5s] : ",
-                         Logger::now(now, NOW_LEN), Logger::to_string(level));
-            } catch(std::exception& err) {
-                throw std::runtime_error("Logger: cannot format header");
-            }
+            QString now = QDateTime::currentDateTime().toString("yyyy-MM-dd HH:mm:ss-zzz");
+            snprintf(header, HEADER_LEN, "%s [%-5s] : ",
+                     now.toLocal8Bit().constData(), Logger::to_string(level));
 
             va_list ap;
             va_start(ap, message);
 
             _policy->write(header);
             _policy->write(message, ap);
-            _policy->write("\n");
+            _policy->write("\r\n");
 
             va_end(ap);
         }
@@ -124,14 +124,6 @@ namespace logging {
         LogLevel _level;
         QSharedPointer<LogPolicyInterface> _policy;
         QMutex _write_mtx;
-
-        static char* now(char* buf, size_t buf_len) {
-            time_t now = time(NULL);
-            tm now_tm;
-            localtime_r(&now, &now_tm);
-            strftime(buf, buf_len, "%F %T", &now_tm);
-            return buf;
-        }
 
         static char const* to_string(LogLevel level) {
             switch(level) {

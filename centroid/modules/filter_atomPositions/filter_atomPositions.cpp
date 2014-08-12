@@ -493,7 +493,7 @@ void FilterAtomPositions::execute
     }  // end of loop over parameters
 
 
-    writeParameters (parameters, outputDir);
+    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputDir);
 
 
     // threshold = 0.05;
