@@ -26,11 +26,54 @@ Need to parameterize:
 #include "filter_atomCorrelation.h"
 
 /////////////////////////////////////////////////////////////////////
+//
+// This is the source code for a plugin that generates correlation images 
+// based on a set of input images and the specification of a template
+// for an atom image.
+//
+// All plugins are sub-classes of the class FilterInterface. Note that
+// the plugin scheme is based on the Qt library. So there are parts of 
+// the code that make considerable use of Qt classes and functions.
+//
+// The main part of writing a plugin is coding the method called "execute".
+//
+// The code here (and in corresponding .h file) implements a class
+// called "FilterAtomCorrelation".  In this source file, essentially
+// all of the code serves the implementation of 
+// FilterAtomCorrelation::execute.
+//
+// To understand this code, you should probably go to 
+// FilterAtomCorrelation::execute and follow the code from there.
+//
+// Only the method FilterAtomCorrelation::execute is actually part of 
+// the class.  The supporting functions are simply static functions
+// that are accessible only from within this source file.
+//
+// The organization of this code is in a traditional C style in that
+// it has the higher-level functions near the end, with the lower 
+// level funtions near the top.
+//
+// Also, it should be noted that this code was originally developed
+// as a stand-alone program and it was then adapted to be a plugin.
+// This may account for some aspects of the organization.
+//
+// Some of the functions here are probably useful within other plugins
+// and these should be moved to a separate library where they could
+// used without duplicating code. But for now, we are duplicating the
+// code.  It's not ideal, but it's no big deal (yet).
+//
+//
+/////////////////////////////////////////////////////////////////////
 
 
 
+/////////////////////////////////////////////////////////////////////
+// This use of CurrentModuleInstance is a bit of a kludge to 
+// get the writeLog stuff to work from outside of the plugin's methods.
+// We should revise the writeLog to 
 static FilterAtomCorrelation *CurrentModuleInstance = NULL;
 
+// writeLog writes strings to the log window in the GUI.
 static void
 writeLog (const QString & s)
     {
@@ -47,6 +90,11 @@ writeLog (const QString & s)
     }  // end of local writeLog
 
 
+/////////////////////////////////////////////////////////////////////
+
+// General purpose functions
+
+// Some utitilities for working with file names and directories.
 
 static bool
 isFile (const QString & filePath)
@@ -86,11 +134,8 @@ mkDirectory (const QString & dirPath)
 
 
 
-
-
-
-// General purpose functions
-
+// Parse a file name (contained in a QFileInfo) into the components
+// of our file name convention.
 static void
 parseFileName 
   (
@@ -110,6 +155,7 @@ parseFileName
     seqNum = -1;
     seqNumDigits = -1;
 
+    // split into tokens between '.' characters
     QStringList nameParts = baseName.split(".");
 
     if (nameParts.size() > 0)
@@ -140,7 +186,7 @@ parseFileName
 
 
 
-
+// Get a list of the names of the image files in the given directory
 static void
 getImageFileList (const QString dirPath, QFileInfoList & imgFileList)
 {
@@ -150,6 +196,8 @@ getImageFileList (const QString dirPath, QFileInfoList & imgFileList)
     dir.setPath(dirPath);
 
     QStringList nameFilters;
+    // These are image file types that we currently support. 
+    // Could probably add other formats to this list.
     nameFilters << "*.bmp" << "*.png" << "*.tif" << "*.gif";
 
     dir.setNameFilters (nameFilters);
@@ -168,8 +216,8 @@ getImageFileList (const QString dirPath, QFileInfoList & imgFileList)
 
 
 
-
-
+// Create an output file name based on our name convention.
+// This version uses C style character strings.
 static void
 makeOutFN 
   (
@@ -233,6 +281,8 @@ makeOutFN
 
 
 
+// Create an output file name based on our name convention.
+// This version uses QStrings.
 static void
 makeOutFN 
 (  
@@ -292,6 +342,13 @@ QString & outImgFN
 
 
 
+// Essentially all of the ITK classes are based on templates.
+// Typical ITK style makes great use of typedefs.
+//
+// We're assuming that the input files are 8-bit grey-level.
+// Is this a valid assumption?
+//
+// Output is going to be floating point.
 
 typedef    unsigned char    InputPixelType;
 typedef    float FloatPixelType;
@@ -344,7 +401,7 @@ writeFloatImage
     }  // end of writeFloatImage
 
 
-
+// Do a contrast stretch on a floating point correlation image.
 int stretch (   FloatImageType::Pointer & beforeImg,
                 double lowerP,
                 double upperP,
@@ -393,7 +450,7 @@ int stretch (   FloatImageType::Pointer & beforeImg,
 
 
 //.............................
-// several debug output functions
+// several ITK-based debug output functions
 
 void printRegionInfo ( const char *label, 
                        const FloatImageType::RegionType & region )
@@ -479,6 +536,12 @@ void printImageInfo (const char *label, InputImageType::Pointer &img)
 //.....................................
 
 
+// Now we're getting into the code that is specific to the correlation method
+
+
+// This crops the correlation image to account for differences in 
+// sizes between the input and the correlation image.
+// There's something weird going on here.....
 int cropCorrImg (
   InputImageType::Pointer & inImg, 
   InputImageType::Pointer & inTemplateImg, 
@@ -510,8 +573,8 @@ int cropCorrImg (
 
     FloatImageType::SizeType cropSize;
 
-// printf ("corrSize = %d %d\n", corrSize[0], corrSize[1]);
-// printf ("inSize = %d %d\n", inSize[0], inSize[1]);
+    // printf ("corrSize = %d %d\n", corrSize[0], corrSize[1]);
+    // printf ("inSize = %d %d\n", inSize[0], inSize[1]);
 
     cropSize[0] = corrSize[0] - inSize[0];
     cropSize[1] = corrSize[1] - inSize[1];
@@ -558,8 +621,10 @@ int cropCorrImg (
 // ...........
 
 
-// Now we're getting into the code that is specific to the correlation method
 
+// This crops the correlation image to account for differences in 
+// sizes between the input and the correlation image.
+// There's something weird going on here.....
 int cropCorrImg (
   FloatImageType::Pointer & inImg, 
   FloatImageType::Pointer & inTemplateImg, 
@@ -591,8 +656,8 @@ int cropCorrImg (
 
     FloatImageType::SizeType cropSize;
 
-// printf ("corrSize = %d %d\n", corrSize[0], corrSize[1]);
-// printf ("inSize = %d %d\n", inSize[0], inSize[1]);
+    // printf ("corrSize = %d %d\n", corrSize[0], corrSize[1]);
+    // printf ("inSize = %d %d\n", inSize[0], inSize[1]);
 
     cropSize[0] = corrSize[0] - inSize[0];
     cropSize[1] = corrSize[1] - inSize[1];
@@ -638,8 +703,11 @@ int cropCorrImg (
 
 
 
-
-int correlateImg 
+// Do the correlation of the two input images.
+// This version takes two uchar images and produces a float image.
+// See other version of this below.  
+// (Should these be combined? Are both used?)
+static int correlateImg 
   ( 
   InputImageType::Pointer & inImg, 
   InputImageType::Pointer & inTemplateImg, 
@@ -672,6 +740,8 @@ int correlateImg
 }  // end of correlateImg
 
 
+// Force the two images to be in the same coordinate system.
+// ITK is very sensitive about this sort of thing.
 static void
 conformImgSpace (const FloatImageType::Pointer & imgFixed, 
                        FloatImageType::Pointer & imgMoved)
@@ -703,6 +773,7 @@ conformImgSpace (const FloatImageType::Pointer & imgFixed,
     }  // end of conformImgSpace
 
 
+// Modify the correlation image by enhancing regions of high standard deviation.
 static int
 modByStdDev (
   InputImageType::Pointer & inImg, 
@@ -713,7 +784,7 @@ modByStdDev (
     typedef itk::NoiseImageFilter<
                InputImageType, FloatImageType >  NoiseFilterType;
 
-    double radius = 15.0;
+    double radius = 15.0;  // should be parameterized
 
     NoiseFilterType::Pointer sdFilter = NoiseFilterType::New();
 
@@ -726,7 +797,8 @@ modByStdDev (
 
     FloatImageType::Pointer sdStretchImg;
 
-    // eliminate the lower quintile of the sd range
+    // stretch the std dev image.  
+    // (note that this is disabled by the use of (0,1) range.).
     stretch (sdImg, 0.0, 1.0, sdStretchImg);
 
 
@@ -777,6 +849,7 @@ modByStdDev (
     }  // end of modByStdDev
 
 
+// convert from uchar image to float image
 static int
 convertImgType (
   InputImageType::Pointer & inImg, 
@@ -794,6 +867,8 @@ convertImgType (
     return 0;
     }  // end of convertImgType
 
+
+// invert pixel values
 static int
 invertImg (
   FloatImageType::Pointer & inImg,
@@ -826,6 +901,11 @@ invertImg (
     }  // end of invertImg
 
 
+
+// Do the correlation of the two input images.
+// This version takes two float images and produces a float image.
+// See other version of this above.
+// (Should these be combined? Are both used?)
 static int
 correlateImg (
   FloatImageType::Pointer & inImg,
@@ -873,10 +953,7 @@ correlateImg (
 
 
 
-// generate the atom template image on the fly......
-
-
-
+// Generate the atom template image on the fly......
 static void
 makeTemplateImage 
 (
@@ -944,6 +1021,9 @@ InputImageType::Pointer & templateImg
     }  // end of makeTemplateImage
 
 
+// This is the main ITK-based correlation function. This is called by the
+// Qt-based stuff, and it calls the ITK stuff.
+// 
 static void
 atomCorr ( 
   double atomTemplateRadius,
@@ -961,31 +1041,46 @@ atomCorr (
     FloatImageType::Pointer modCorrImg1;
 
 
+
     readImage (inImgFN, inImg);
+
     // makeTemplateImage (3.5, 39.0, 255.0, 2.0, inTemplateImg);
     makeTemplateImage (atomTemplateRadius, 39.0, 255.0, 2.0, inTemplateImg);
 
+    // So we now have the two images for correlation.
+    // There are actually two correlation steps.
+
+    // but first, we confer them both to floating point
     convertImgType (inTemplateImg, fltTemplateImg);
     convertImgType (inImg, fltInImg);
 
     // printImageInfo ("input img", inImg);
     // printImageInfo ("template img", inTemplateImg);
 
+    // generate the correlation between the two inputs
     correlateImg (inImg, inTemplateImg, corrImg1);
 
     // printImageInfo ("correlation img", corrImg1);
 
+    // enhance the intermediate correlation to emphasize regions
+    // of high variance in the original input image
     modByStdDev (inImg, corrImg1, modCorrImg1);
 
+    // do an additional constrast stretch of the image
     FloatImageType::Pointer stretchImg;
     stretch (modCorrImg1, 0.4, 1.0, stretchImg );
 
     // printImageInfo ("mod corr 1 img", stretchImg);
 
+    // invert the pixel values of the correlation image because
+    // we expect the atoms to be dark in the middle, but the correlation
+    // image has bright spots where we think the atoms are.
     invertImg (stretchImg, invertedCorrImg1);
 
+    // do the correlation again with the inverted correlation image
     correlateImg (invertedCorrImg1, fltTemplateImg, corrImg2);
 
+    // Done! Write it out.
     writeFloatImage (outImgFN, corrImg2);
 
     return ;
@@ -993,21 +1088,16 @@ atomCorr (
 
 
 
-
-
-
-
-
-
-
-
-
-
 // ..........................................
+// ..........................................
+//
 //
 // Here are the functions that connect up the plugin Qt framework to
 // the itk-based functions
 
+// Generate a set of correlation images based on a list of input image
+// files and an atom radius.  Write the correlation images to the given
+// output directory using our naming convention.
 static void
 atomCorrelateImages
   (
@@ -1017,6 +1107,7 @@ atomCorrelateImages
   const QString & projectShortTag
   )
     {
+
 
 
     if (inputFileList.size() <= 0)
@@ -1035,6 +1126,7 @@ atomCorrelateImages
     QString extension; 
     QString outExtension; 
 
+
     // we parse the first file name to see if it conforms
     // to our naming scheme.  This is signaled by whether
     // seqNumDigits > 0.
@@ -1042,6 +1134,9 @@ atomCorrelateImages
                     dirName, seqNum, seqNumDigits, 
                     outProjTag, opTag, extension);
 
+    // We use the "project tag" from the incoming files if it is present.
+    // If it isn't, we use the tag the current project.
+    // Maybe we should use the tag from the current project all the time.
     if (outProjTag == "")
         {
         outProjTag = projectShortTag; 
@@ -1053,7 +1148,10 @@ atomCorrelateImages
     bool deriveSeqNumFromInputFN = seqNumDigits > 0;
 
     
+    // Tell the user that we're begining processing.
     writeLog (QString ("\nAtomCorrelation: Begin...\n"));
+
+    // loop through all of the input images
     for (int i=0; i < inputFileList.size(); i++)
         {
         QString outImgFN;
@@ -1064,11 +1162,15 @@ atomCorrelateImages
 
         writeLog ("AtomCorrelation: Processing image " + 
                                     inputFileList[i].filePath() + "\n");
+
+        // Do the correlation, write the output file.
         atomCorr (  atomTemplateRadius,
                     inputFileList[i].filePath().toStdString().c_str(), 
                     outImgFN.toStdString().c_str()     );
+
         qDebug () << "  " << i << "  processing " << 
                                       inputFileList[i].filePath();
+
         }
     writeLog (QString ("AtomCorrelation: Done.\n\n"));
 
@@ -1078,35 +1180,49 @@ atomCorrelateImages
     }  // end of atomCorrelateImages
 
 
+//.......
 
-
+// Here's the method that gets called when the user presses 
+// the "Execute" button.
+//
 void FilterAtomCorrelation::execute
            (const QVector<QMap<QString, QVariant> >& parameters) 
 {
-    CurrentModuleInstance = this;  // this should be first line in execute
 
-    // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+    CurrentModuleInstance = this;  // this is just to get writeLog to work.
+                                   
+
+    qDebug() << "Entering module: " + getName() + "\n";
 
 
    QString projectShortTag = getProject()->getShortTag();
    if (projectShortTag == "")
    {
+        // I hope that this will never happen
         projectShortTag = "p";
    }
    // qDebug() << "Project short tag is |" + projectShortTag + "|";
 
 
 
-    //
+    // Get the parameters values....
+
     QString inputDir;   
     QString outputDir;
     double atomTemplateRadius = 3.0;  // smaller radius seems to work better
    
-    // get the parameters values
-    // I'm going to try an alternative way of checking param names
+    // The parameters are just a list of QMaps where each
+    // map is just a set of (keyword, value) pairs.
+    // The keyword is always a QString.  The value can be of different
+    // types, however I think that it is actually always a QString.
+
+    // Loop through the parameters looking for the parameters that we need.
     for (int i=0; i<parameters.size(); ++i)
     {
         // qDebug() << parameters[i]["name"].toString();
+
+        // For each parameter, we are really only interested in 
+        // the "name" and "value".
 
         QString paramName = parameters[i]["name"].toString();
         if (paramName == "inputDir")
@@ -1124,12 +1240,13 @@ void FilterAtomCorrelation::execute
 
         else
         {
-            // error
+            // error? 
         }
       
 
     }  // end of loop over parameters
 
+    // write out the parameters to a parameter file in the outputDir.
     writeParameters (parameters, outputDir);
 
 
@@ -1143,11 +1260,13 @@ void FilterAtomCorrelation::execute
 
     if ( ! isDirectory (inputDir) )
         {
+        // if input directory doesn't exist, then exit
         writeLog ("AtomCorrelation: Input folder does not exist: " + inputDir);
         return;
         }
     else if ( ! mkDirectory (outputDir) )
         {
+        // if output directory doesn't exist, then make it
         writeLog (
           "AtomCorrelation: Error accessing or creating output folder: " + 
           outputDir);
@@ -1155,6 +1274,7 @@ void FilterAtomCorrelation::execute
         }
 
 
+    // get the list of input files
     QFileInfoList inputFileList;
     getImageFileList (inputDir, inputFileList);
 
@@ -1165,17 +1285,15 @@ void FilterAtomCorrelation::execute
     }
 
 
-
-    
-
     qDebug () << "Begin atom correlation....\n";
 
-    // processing code below
-    //
+    // do the correlations!
     atomCorrelateImages (atomTemplateRadius, inputFileList, 
                                     outputDir, projectShortTag);
 
     qDebug () << "Done with atom correlation.\n";
+
+    qDebug () << "Exiting module: " + getName() + "\n";
 
 }  // end of FilterAtomCorrelation::execute
 

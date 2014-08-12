@@ -5,6 +5,7 @@
 
 #include <interface.h>
 
+// Definition of the class for the atom correlation plugin.
 
 class FilterAtomCorrelation : public QObject, public FilterInterface
 {
@@ -13,7 +14,10 @@ class FilterAtomCorrelation : public QObject, public FilterInterface
    Q_INTERFACES(FilterInterface)
 
 public:
+
+   // This is the method that we are actually providing.
    void execute(const QVector<QMap<QString, QVariant> >& parameters);
+
 };
 
 #endif // __H_FILTER_INVERT__

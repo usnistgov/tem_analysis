@@ -1287,6 +1287,7 @@ void FilterApplyRegistration::execute
     CurrentModuleInstance = this;  // this should be executable line
 
     // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+    qDebug() << "Entering module " + getName();
 
 
    QString projectShortTag = getProject()->getShortTag();
@@ -1389,6 +1390,7 @@ void FilterApplyRegistration::execute
     writeLog ("ApplyRegistration: Done.\n");
     writeLog ("\n");
     
+    qDebug() << "Exiting module " + getName();
 
 }  // end of FilterRegisterImages::execute
 

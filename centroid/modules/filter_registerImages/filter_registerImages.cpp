@@ -1105,7 +1105,8 @@ generateRegistrationTransformsIJ
   (
   const QString inputImageDir, 
   const QString outputTransformDir,
-  const bool allowRotation
+  const bool allowRotation,
+  const QString projectShortTag
   )
     {
 
@@ -1120,9 +1121,13 @@ generateRegistrationTransformsIJ
         }
 
 
+
+//////////////////////////////////////////////////////////////
+
+#if 0
     // construct an ij macro file
-    QTemporaryFile tempFile;
-    if (!tempFile.open())
+    QTemporaryFile ijmacroFile;
+    if (!ijmacroFile.open())
         {
         writeLog ("ERROR (Cannot open temporary file for ImageJ macro.\n");
         return;
@@ -1131,22 +1136,79 @@ generateRegistrationTransformsIJ
     const char * transformType = 
             allowRotation ? "[Rigid Body]" : "Translation" ;
 
-    tempFile.write( "\n" );
-    tempFile.write( "run(\"Image Sequence...\",\n" );
-    tempFile.write( "    \"open=" );
-    tempFile.write(
+    ijmacroFile.write( "\n" );
+    ijmacroFile.write( "run(\"Image Sequence...\",\n" );
+    ijmacroFile.write( "    \"open=" );
+    ijmacroFile.write(
         inputFileList[0].absoluteFilePath().toStdString().c_str() );
-    tempFile.write( "  sort\");\n");
+    ijmacroFile.write( "  sort\");\n");
 
-    tempFile.write( "run(\"VerboseStackReg \", \"transformation=" );
-    tempFile.write( allowRotation ? "[Rigid Body]" : "Translation" ) ;
-    tempFile.write( "\");\n" );
+    ijmacroFile.write( "run(\"VerboseStackReg \", \"transformation=" );
+    ijmacroFile.write( allowRotation ? "[Rigid Body]" : "Translation" ) ;
+    ijmacroFile.write( "\");\n" );
 
         // "run(\"VerboseStackReg \", \"transformation=[Rigid Body]\");\n");
 
-    tempFile.write( "run(\"Quit\");\n" );
-    tempFile.flush();
-    tempFile.close();
+    ijmacroFile.write( "run(\"Quit\");\n" );
+    ijmacroFile.flush();
+    ijmacroFile.close();
+
+
+#else
+
+    QString macroFN = outputTransformDir + "/" + 
+                        projectShortTag + ".register.macro";
+
+    // construct an ij macro file
+    QFile ijmacroFile (macroFN) ;
+    if (!ijmacroFile.open(QIODevice::WriteOnly))
+        {
+        writeLog ("ERROR (Cannot open temporary file for ImageJ macro.\n");
+        return;
+        }
+
+    const char * transformType = 
+            allowRotation ? "[Rigid Body]" : "Translation" ;
+
+    ijmacroFile.write( "\n" );
+    ijmacroFile.write( "run(\"Image Sequence...\",\n" );
+    ijmacroFile.write( "    \"open=" );
+    ijmacroFile.write(
+        inputFileList[0].absoluteFilePath().toStdString().c_str() );
+    ijmacroFile.write( "  sort\");\n");
+
+    ijmacroFile.write( "run(\"VerboseStackReg \", \"transformation=" );
+    ijmacroFile.write( allowRotation ? "[Rigid Body]" : "Translation" ) ;
+    ijmacroFile.write( "\");\n" );
+
+        // "run(\"VerboseStackReg \", \"transformation=[Rigid Body]\");\n");
+
+    ijmacroFile.write( "run(\"Quit\");\n" );
+    ijmacroFile.flush();
+    ijmacroFile.close();
+
+
+    ijmacroFile.open (QIODevice::ReadOnly);
+
+    QTextStream macroStrm (&ijmacroFile);
+    QString line;
+
+    qDebug () << "\n//////";
+    qDebug () << "Contents of imagej macro file " + ijmacroFile.fileName();
+    for (line = macroStrm.readLine(); 
+                            !line.isNull(); line = macroStrm.readLine( ))
+        {
+        qDebug () << line;
+        }
+    qDebug () << "End of imagej macro file " + ijmacroFile.fileName();
+    qDebug () << "//////\n";
+
+
+#endif
+
+
+
+//////////////////////////////////////////////////////////////
 
 
     // hard-code a few locations for ImageJ
@@ -1172,7 +1234,7 @@ generateRegistrationTransformsIJ
     if (!QFileInfo::exists( ijRegProg )) ijRegProg = "java"; // Fallback to path
     QStringList ijRegArgs;
     ijRegArgs << "-jar" << "ij.jar" << "-macro"
-        << QDir::toNativeSeparators(tempFile.fileName());
+        << QDir::toNativeSeparators(ijmacroFile.fileName());
 
 
     ijReg.start(ijRegProg, ijRegArgs);
@@ -1229,7 +1291,7 @@ void FilterRegisterImages::execute
     CurrentModuleInstance = this;  // this should be executable line
 
 
-    // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+    qDebug() << "Entering module " + getName() + "\n";
 
 
     QString projectShortTag = getProject()->getShortTag();
@@ -1322,7 +1384,8 @@ void FilterRegisterImages::execute
 
     generateRegistrationTransformsIJ (inputImageDir, 
                                       outputTransformDir, 
-                                      allowRotation);
+                                      allowRotation,
+                                      projectShortTag);
 
     if (transformImages)    
         {
@@ -1330,6 +1393,7 @@ void FilterRegisterImages::execute
                                             outputImageDir, projectShortTag);
         }
     
+    qDebug() << "Exiting module " + getName() + "\n";
 
 }  // end of FilterRegisterImages::execute
 

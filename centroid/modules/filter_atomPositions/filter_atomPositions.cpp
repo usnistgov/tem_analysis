@@ -437,7 +437,8 @@ writeConnectedComponentCentroids (
     FILE *fp = fopen (centroidListFN, "w");
     if (fp == NULL)
         {
-        fprintf (stderr, "Unable to open file %s.\n", centroidListFN);
+        // fprintf (stderr, "Unable to open file %s.\n", centroidListFN);
+        qWarning () << "Unable to open file " + QString(centroidListFN) + ".";
         exit (-1);
         }
 
@@ -657,6 +658,8 @@ void FilterAtomPositions::execute
 {
     CurrentModuleInstance = this;  // this should be first line in execute
 
+    qDebug () << "/nEntering module " + getName();
+
     // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
 
 
@@ -718,9 +721,9 @@ void FilterAtomPositions::execute
     // threshold = 0.05;
 
 
-    // qDebug() << "EXECUTE PARAMS >>>";  
-    // qDebug() << inputDir;
-    // qDebug() << outputDir;
+    qDebug() << "EXECUTE PARAMS >>>";  
+    qDebug() << "    input folder  " + inputDir;
+    qDebug() << "    output folder " + outputDir;
 
 
 
@@ -755,6 +758,7 @@ void FilterAtomPositions::execute
                         inputFileList, outputDir, projectShortTag);
 
     qDebug () << "Done with atom position calculation.\n";
+    qDebug () << "Exiting module " + getName() + "\n";
 
 }  // end of FilterAtomPositions::execute
 

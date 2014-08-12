@@ -283,11 +283,19 @@ filesAreSame (const char *fnA, const char *fnB)
     fpA = fopen (fnA, "rb");
     fpB = fopen (fnB, "rb");
 
-    if ((fpA == NULL) || (fpB == NULL))
+    if (fpA == NULL)
         {
-        fprintf (stderr, "Can't open file %s or %s\n", fnA, fnB);
+        // fprintf (stderr, "Can't open file %s or %s\n", fnA, fnB);
+        qWarning() << "Can't open file " + QString(fnA);
         exit (-1);
         }
+
+    if (fpB == NULL)
+        {
+        qWarning() << "Can't open file " + QString(fnB);
+        exit (-1);
+        }
+
 
     fseek (fpA, 0, SEEK_END);
     lenA = ftell (fpA);
@@ -310,13 +318,13 @@ filesAreSame (const char *fnA, const char *fnB)
 
     if (fread (a, sizeof(unsigned char), lenA, fpA) != lenA)
         {
-        fprintf (stderr, "bad read of A %s\n", fnA);
+        qWarning () << "Bad read of A " + QString(fnA);
         exit (-1);
         }
 
     if (fread (b, sizeof(unsigned char), lenB, fpB) != lenB)
         {
-        fprintf (stderr, "bad read of B %s\n", fnB);
+        qWarning () << "Bad read of B " + QString(fnB);
         exit (-1);
         }
 
@@ -773,6 +781,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
 {
    CurrentModuleInstance = this;  // this should be first line in execute
 
+   qDebug() << "Entering module " + getName();
 
    QString projectShortTag = getProject()->getShortTag();
    if (projectShortTag == "")
@@ -782,7 +791,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
    // qDebug() << "Project short tag is |" + projectShortTag + "|";
 
 
-   // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+
 
 
    //
@@ -907,6 +916,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
                             rmDups, rmSingles, rmNonBWs, cropRect);
 
 
+   qDebug() << "Exiting module " + getName();
 }
 
 

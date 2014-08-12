@@ -442,6 +442,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../main_window.qrc">
      <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
@@ -450,7 +453,7 @@
     <string>Add Atom</string>
    </property>
    <property name="toolTip">
-    <string>Add Atom</string>
+    <string>Not Implemented</string>
    </property>
   </action>
  </widget>
