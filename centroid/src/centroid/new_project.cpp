@@ -12,11 +12,18 @@ NewProjectDialog::NewProjectDialog(QWidget *parent)
     setWindowTitle("New Project");
 }
 
-Project* NewProjectDialog::getProject()
+Project* NewProjectDialog::saveProject()
 {
     Project* project = new Project;
-    project->setBaseDirectory(baseDirectoryLineEdit->text());
     project->setShortTag(shortTagLineEdit->text());
+
+    QFileInfo projectFileName(baseDirectoryLineEdit->text(),
+                              shortTagLineEdit->text() + ".proj");
+    if (!project->save(projectFileName.absoluteFilePath())) {
+        qCritical() << "Cannot save project to" << projectFileName.absoluteFilePath();
+        return NULL;
+    }
+
     return project;
 }
 
@@ -36,6 +43,5 @@ void NewProjectDialog::chooseBaseDirectory()
         "Select project base directory", directory.path(), 0);
     if (dir.length() == 0) return;
     baseDirectoryLineEdit->setText(dir);
-
 }
 

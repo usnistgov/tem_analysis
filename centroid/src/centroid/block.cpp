@@ -70,6 +70,7 @@ void Block::execute()
    switch(type)
    {
       case BLOCK_TYPE_IMAGING:
+         qDebug() << "Executing " << getBlockName();
          statusBar->showMessage("Executing " + getBlockName() + "...");
          QApplication::setOverrideCursor(Qt::WaitCursor);
 

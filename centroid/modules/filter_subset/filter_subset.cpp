@@ -14,7 +14,7 @@
 #endif
 
 #include "filter_subset.h"
-
+#include "modules_util.h"
 
 // 
 // When we define metadata for a plugin, we know upfront the name of
@@ -91,268 +91,6 @@ writeLog (const QString & s)
     }  // end of local writeLog
 
 
-static bool
-isFile (const QString & filePath)
-    {
-    QFileInfo info = QFileInfo (filePath);
-    return info.isFile ();
-    } // end of isFile
-
-static bool
-isDirectory (const QString & dirPath)
-    {
-    QFileInfo info = QFileInfo (dirPath);
-    return info.isDir ();
-    }  // end of isDirectory
-
-static bool
-mkDirectory (const QString & dirPath)
-    {
-    if (isFile (dirPath))
-        {
-        // error: it exists and it's a regular file
-        return false;
-        }
-    else if (isDirectory (dirPath))
-        {
-        // it already exists so we don't have to create
-        return true;
-        }
-
-    QDir qdir = QDir (dirPath);
-
-    return qdir.mkpath (".");
-    // return qdir.mkpath (dirPath);
-
-    } // end of mkDirectory
-
-
-
-
-static void
-parseFileName 
-  (
-  QString fileName, 
-  QString & dirName, 
-  int & seqNum, 
-  int & seqNumDigits, 
-  QString &projTag, 
-  QString &opTag, 
-  QString &extension
-  )
-    {
-
-    // not very efficient, but easy to code
-    QFileInfo fileInfo = QFileInfo (fileName);
-
-    dirName = fileInfo.filePath();
-    QString baseName = fileInfo.fileName();
-
-    seqNum = -1;
-    seqNumDigits = -1;
-
-    QStringList nameParts = baseName.split(".");
-
-    if (nameParts.size() > 0)
-        {
-        QString seqNumStr = nameParts[0];
-        bool isInt;
-        seqNum = seqNumStr.toInt (&isInt);
-        seqNumDigits = isInt ? seqNumStr.length() : -1;
-        }
-
-
-    extension = (nameParts.size() > 1) ?  nameParts[nameParts.size()-1] : "";
-
-    projTag = (nameParts.size() > 2) ?  nameParts[1] : "";
-
-    opTag = "";
-
-    for (int i = 2; i < nameParts.size()-1; i++)
-        {
-        opTag += nameParts[i];
-        if (i != nameParts.size()-2)
-            {
-            opTag += ".";
-            }
-        }
-
-    } // end of parseFileName
-
-
-
-
-static void
-getImageFileList (const QString dirPath, QFileInfoList & imgFileList)
-{
-    QDir dir;
-    dir.setFilter (QDir::Files);
-    dir.setSorting(QDir::Name);
-    dir.setPath(dirPath);
-
-    QStringList nameFilters;
-    nameFilters << "*.bmp" << "*.png" << "*.tif" << "*.gif";
-
-    dir.setNameFilters (nameFilters);
-
-   imgFileList = dir.entryInfoList();
-   // qDebug() << "Number of files in " << dirPath << ": " << imgFileList.size() ;
-
-    for (int i=0; i < imgFileList.size(); ++i)
-    {
-        QFileInfo fileInfo = imgFileList.at(i);
-        // qDebug() << "file name " << fileInfo.fileName();
-    }
-
-
-}  // end of getImageFileList
-
-
-
-#if 0
-
-static bool
-imgIsGray (const char *imgFN)
-    {
-    printf ("imgIsGray ( %s )\n", imgFN);
-    return true;
-    } // end of imgIsGray
-
-#else
-
-static bool
-imgIsGray (const char *imgFN)
-    {
-    // printf ("imgIsGray ( %s )\n", imgFN);
-
-    typedef itk::RGBPixel <float>         RGBPixelType;
-    typedef itk::Image <RGBPixelType, 2>  RGBImageType;
-    typedef itk::ImageFileReader < RGBImageType >  RGBReaderType;
-
-    RGBReaderType::Pointer reader = RGBReaderType::New ();
-    reader->SetFileName (imgFN);
-    reader->Update ();
-
-    RGBImageType::Pointer img = reader->GetOutput ();
-
-    const RGBImageType::SizeType & sz =
-                        img->GetLargestPossibleRegion().GetSize ();
-
-    for (int i = 0; i < sz[0]; i++)
-        {
-        for (int j = 0; j < sz[1]; j++)
-            {
-            RGBImageType::IndexType pixelIndex;
-            pixelIndex[0] = i;
-            pixelIndex[1] = j;
-
-            RGBPixelType pix = img->GetPixel (pixelIndex);
-
-            if ( (pix[0] != pix[1]) ||
-                 (pix[0] != pix[2]) ||
-                 (pix[1] != pix[2])       )
-                {
-                return false;
-                }
-            }
-        }
-
-
-    return true;
-
-    }  // end of imgIsGray
-#endif
-
-
-
-
-
-
-
-static bool
-filesAreSame (const char *fnA, const char *fnB)
-    {
-    // printf ("filesAreSame ( %s , %s )\n", fnA, fnB );
-
-    unsigned char *a, *aa, *b, *bb;
-    unsigned long lenA, lenB;
-    FILE *fpA, *fpB;
-    bool rtn;
-
-
-    fpA = fopen (fnA, "rb");
-    fpB = fopen (fnB, "rb");
-
-    if (fpA == NULL)
-        {
-        // fprintf (stderr, "Can't open file %s or %s\n", fnA, fnB);
-        qWarning() << "Can't open file " + QString(fnA);
-        exit (-1);
-        }
-
-    if (fpB == NULL)
-        {
-        qWarning() << "Can't open file " + QString(fnB);
-        exit (-1);
-        }
-
-
-    fseek (fpA, 0, SEEK_END);
-    lenA = ftell (fpA);
-    fseek (fpA, 0, SEEK_SET);
-
-    fseek (fpB, 0, SEEK_END);
-    lenB = ftell (fpB);
-    fseek (fpB, 0, SEEK_SET);
-
-
-    if (lenA != lenB)
-        {
-        fclose (fpA);
-        fclose (fpB);
-        return 0;
-        }
-
-    aa = a = (unsigned char *) malloc (lenA*sizeof(unsigned char));
-    bb = b = (unsigned char *) malloc (lenB*sizeof(unsigned char));
-
-    if (fread (a, sizeof(unsigned char), lenA, fpA) != lenA)
-        {
-        qWarning () << "Bad read of A " + QString(fnA);
-        exit (-1);
-        }
-
-    if (fread (b, sizeof(unsigned char), lenB, fpB) != lenB)
-        {
-        qWarning () << "Bad read of B " + QString(fnB);
-        exit (-1);
-        }
-
-
-    fclose (fpA);
-    fclose (fpB);
-
-    rtn = true;
-
-    for (unsigned int i = 0; i < lenA; i++)
-        {
-        if ((*(a++)) != (*(b++)))
-            {
-            // printf ("mismatch at %d\n", i);
-            rtn = false;
-            break;
-            }
-        }
-
-    free (aa);
-    free (bb);
-
-    return rtn;
-
-    } // end of filesAreSame
-
-
-
 
 
 
@@ -385,7 +123,7 @@ removeImgs
         {
         for (int i = 1; i < fileList.size(); i++)
             {
-            isUnique[i] = ! filesAreSame (
+            isUnique[i] = ! ModulesUtil::filesAreSame (
                                           fileList[i-1].filePath().toStdString().c_str(), 
                                           fileList[i].filePath().toStdString().c_str() 
                                          );
@@ -427,7 +165,7 @@ removeImgs
         // for other reasons.
         if ( ( ! removeMe ) && rmNonBWs )
             {
-            if ( ! imgIsGray ( fileList[i].filePath().toStdString().c_str() ) )
+            if ( ! ModulesUtil::imgIsGray ( fileList[i].filePath().toStdString().c_str() ) )
                 {
                 removeMe = true;
                 }
@@ -475,67 +213,6 @@ cropImgs
 
 
 #else
-
-
-static void
-makeOutFN 
-  (
-  const char *inImgFN, 
-  const char *outDir, 
-  const bool deriveSeqNumFromInputFN,
-  const int altSeqNum,
-  const char *outImgFNTag, 
-  char *outImgFN
-  )
-    {
-    static int lastSeqNum = 1;
-    int seqNum;
-    // char inName[1000];
-    char *inImgFNdup, *inName;
-
-    inImgFNdup = strdup (inImgFN);
-
-    inName = basename (inImgFNdup);
-    // strcpy (inName, basename (inImgFN));
-
-
-    for (char * c = inName; *c != 0; c++)
-        {
-        if (*c == '.')
-            {
-            *c = 0;
-            break;
-            }
-        }
-
-    int seqNumLen;
-
-    if (sscanf (inName, "%d", &seqNum) != 1)
-        {
-        seqNum = altSeqNum;
-        seqNumLen = 6;
-        }
-    else
-        {
-        seqNumLen = strlen (inName);
-        }
-
-
-    char outFNFmt[100];
-    sprintf (outFNFmt, "%%s/%%0%dd.%%s.png", seqNumLen);
-
-    // printf ("seqNum = %d\n", seqNum);
-    // printf ("seqNumLen = %d\n", seqNumLen);
-    // printf ("out fmt= <%s>\n", outFNFmt);
-
-    const char * outDirectory =  (outDir[0] == 0) ? "." : outDir;
-        
-    sprintf (outImgFN, outFNFmt, outDirectory, seqNum, outImgFNTag);
-
-    // qDebug () << "outImgFN = " << outImgFN;
-
-    }  // makeOutFN
-
 
 
 #if 1
@@ -649,7 +326,8 @@ cropImg
 
     // qDebug () << "NEW CROP: inImgFN = " << inImgFN;
 
-    makeOutFN (inImgFN, outDir, deriveSeqNumFromInputFN, altSeqNum, outImgFNTag, outImgFN);
+    ModulesUtil::makeOutFN (inImgFN, outDir, deriveSeqNumFromInputFN,
+                            altSeqNum, outImgFNTag, "png", outImgFN);
 
     // qDebug () << "In cropImg: outImgFN = " << outImgFN;
 
@@ -750,9 +428,9 @@ subsetImages
         // we parse the first file name to see if it conforms
         // to our naming scheme.  This is signaled by whether
         // seqNumDigits > 0.
-        parseFileName (cropFileList[0].filePath(), 
-                        dirName, seqNum, seqNumDigits, 
-                        outProjTag, opTag, extension);
+        ModulesUtil::parseFileName (cropFileList[0].filePath(),
+                                      dirName, seqNum, seqNumDigits,
+                                      outProjTag, opTag, extension);
 
         outProjTag = projTag;
         if (projTag == "")
@@ -881,12 +559,12 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
    // qDebug() << rmNonBWs;
 
 
-    if ( ! isDirectory (inputDir) )
+    if ( ! ModulesUtil::isDirectory (inputDir) )
         {
         writeLog ("Subset: Input folder does not exist: " + inputDir);
         return;
         }
-    else if ( ! mkDirectory (outputDir) )
+    else if ( ! ModulesUtil::mkDirectory (outputDir) )
         {
         writeLog ("Subset: Error accessing or creating output folder: " + outputDir);
         return;
@@ -894,7 +572,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
 
 
    QFileInfoList inputFileList;
-   getImageFileList (inputDir, inputFileList);
+   ModulesUtil::getImageFileList (inputDir, inputFileList);
     for (int i=0; i < inputFileList.size(); ++i)
     {
         QFileInfo fileInfo = inputFileList.at(i);

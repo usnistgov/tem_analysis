@@ -12,6 +12,7 @@
 #include <QProcess>
 
 #include "filter_registerImages.h"
+#include "modules_util.h"
 
 #define MAX(x,y)  (((x)>(y))?(x):(y))
 
@@ -35,276 +36,7 @@ writeLog (const QString & s)
 
 
 
-static bool
-isFile (const QString & filePath)
-    {
-    QFileInfo info = QFileInfo (filePath);
-    return info.isFile ();
-    } // end of isFile
-
-static bool
-isDirectory (const QString & dirPath)
-    {
-    QFileInfo info = QFileInfo (dirPath);
-    return info.isDir ();
-    }  // end of isDirectory
-
-static bool
-mkDirectory (const QString & dirPath)
-    {
-    // qDebug () << "mkDir " + dirPath;
-
-    if (isFile (dirPath))
-        {
-        // error: it exists and it's a regular file
-        return false;
-        }
-    else if (isDirectory (dirPath))
-        {
-        // it already exists so we don't have to create
-        return true;
-        }
-
-    // qDebug () << "about to mkDir " + dirPath;
-    QDir qdir = QDir (dirPath);
-
-
-    return qdir.mkpath (".");
-
-    } // end of mkDirectory
-
-
-
-
-
 /////////////////////////////////////////////////////////////////////
-
-// General purpose functions
-
-static void
-parseFileName 
-  (
-  const QFileInfo fileInfo, 
-  QString & dirName, 
-  int & seqNum, 
-  int & seqNumDigits, 
-  QString &projTag, 
-  QString &opTag, 
-  QString &extension
-  )
-    {
-
-    dirName = fileInfo.filePath();
-    QString baseName = fileInfo.fileName();
-
-    seqNum = -1;
-    seqNumDigits = -1;
-
-    QStringList nameParts = baseName.split(".");
-
-    if (nameParts.size() > 0)
-        {
-        QString seqNumStr = nameParts[0];
-        bool isInt;
-        seqNum = seqNumStr.toInt (&isInt);
-        seqNumDigits = isInt ? seqNumStr.length() : -1;
-        }
-
-
-    extension = (nameParts.size() > 1) ?  nameParts[nameParts.size()-1] : "";
-
-    projTag = (nameParts.size() > 2) ?  nameParts[1] : "";
-
-    opTag = "";
-
-    for (int i = 2; i < nameParts.size()-1; i++)
-        {
-        opTag += nameParts[i];
-        if (i != nameParts.size()-2)
-            {
-            opTag += ".";
-            }
-        }
-
-    } // end of parseFileName
-
-
-
-
-
-
-static void
-getFilteredFileList
-  (
-  const QString & dirPath,
-  const QStringList & fnFilters,
-  QFileInfoList & imgFileList
-  )
-    {
-    QDir dir;
-    dir.setFilter (QDir::Files);
-    dir.setSorting(QDir::Name);
-    dir.setPath(dirPath);
-
-    QStringList nameFilters;
-    nameFilters << "*.bmp" << "*.png" << "*.tif" << "*.gif";
-
-    dir.setNameFilters (fnFilters);
-
-   imgFileList = dir.entryInfoList();
-
-   // qDebug() << "Number of files in " << dirPath << ": " << imgFileList.size() ;
-
-#if 0
-
-    for (int i=0; i < imgFileList.size(); ++i)
-        {
-        QFileInfo fileInfo = imgFileList.at(i);
-        qDebug() << "file name " << fileInfo.fileName();
-        }
-#endif
-
-    }  // end of getFilteredImageFileList
-
-
-
-static void
-getImageFileList
-  (
-  const QString dirPath,
-  QFileInfoList & fileList
-  )
-    {
-    QStringList filters;
-    filters << "*.bmp" << "*.png" << "*.tif" << "*.gif" <<
-                        "*.BMP" << "*.PNG" << "*.TIF" << "*.GIF"  ;
-
-    getFilteredFileList (dirPath, filters, fileList);
-    } // end of getImageFileList
-
-
-
-static void
-getXformFileList
-  (
-  const QString dirPath,
-  QFileInfoList & fileList
-  )
-    {
-    QStringList filters;
-    filters << "*.xform" << "*.XFORM";
-
-    getFilteredFileList (dirPath, filters, fileList);
-    } // end of getXformFileList
-
-
-
-
-
-
-
-static void
-makeOutFN 
-  (
-  const char *inImgFN, 
-  const char *outDir, 
-  const bool deriveSeqNumFromInputFN,
-  const int altSeqNum,
-  const char *outImgFNTag, 
-  const char *outExt,
-  char *outImgFN
-  )
-    {
-    static int lastSeqNum = 1;
-    int seqNum;
-    // char inName[1000];
-    char *inImgFNdup, *inName;
-
-    inImgFNdup = strdup (inImgFN);
-
-    inName = basename (inImgFNdup);
-    // strcpy (inName, basename (inImgFN));
-
-
-    for (char * c = inName; *c != 0; c++)
-        {
-        if (*c == '.')
-            {
-            *c = 0;
-            break;
-            }
-        }
-
-    int seqNumLen;
-
-    if (sscanf (inName, "%d", &seqNum) != 1)
-        {
-        seqNum = altSeqNum;
-        seqNumLen = 6;
-        }
-    else
-        {
-        seqNumLen = strlen (inName);
-        }
-
-
-    char outFNFmt[100];
-    sprintf (outFNFmt, "%%s/%%0%dd.%%s.%%s", seqNumLen);
-
-    // printf ("seqNum = %d\n", seqNum);
-    // printf ("seqNumLen = %d\n", seqNumLen);
-    // printf ("out fmt= <%s>\n", outFNFmt);
-
-    const char * outDirectory =  (outDir[0] == 0) ? "." : outDir;
-        
-    sprintf (outImgFN, outFNFmt, outDirectory, seqNum, outImgFNTag, outExt);
-
-    // qDebug () << "outImgFN = " << outImgFN;
-
-    }  // end of makeOutFN with C style args
-
-
-
-
-static void
-makeOutFN 
-(  
-const QString & fileName, 
-const QString & outputDir,
-const bool deriveSeqNumFromInputFN,
-const int altSeqNum,
-const QString & outImgFNTag, 
-const QString & outExt, 
-QString & outImgFN
-)
-{
-    char outImgFN_c[10000];
-
-    makeOutFN   (
-                fileName.toStdString().c_str(),
-                outputDir.toStdString().c_str(),
-                deriveSeqNumFromInputFN,
-                altSeqNum,
-                outImgFNTag.toStdString().c_str(),
-                outExt.toStdString().c_str(),
-                outImgFN_c
-                );
-
-    outImgFN = outImgFN_c;
-                
-} // end of makeOutFN (with Qt object args)
-
-
-// end of general purpose functions
-
-/////////////////////////////////////////////////////////////////////
-
-
-
-
-// functions specific to this plugin
-
-
 
 
 
@@ -961,11 +693,11 @@ applyImageRegistration (
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-        parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits,
-                                    inImgProjTag, inImgOpTag, inImgExt);
+            ModulesUtil::parseFileName (inputImgs[i], inImgDir, inImgN,
+                inImgNDigits, inImgProjTag, inImgOpTag, inImgExt);
 
-        parseFileName (inputXforms[i], inXDir, inXN, inXNDigits,
-                                    inXProjTag, inXOpTag, inXExt);
+            ModulesUtil::parseFileName (inputXforms[i], inXDir, inXN,
+                inXNDigits, inXProjTag, inXOpTag, inXExt);
 
         if (inImgN != inXN)
             {
@@ -987,10 +719,10 @@ applyImageRegistration (
             inImgProjTag = projectShortTag;
             }
 
-        makeOutFN (inputImgs[i].filePath(), outputDir,
-                    deriveSeq, i, 
-                    inImgProjTag+"."+inImgOpTag+".registered", 
-                    inImgExt, outImgFN);
+        ModulesUtil::makeOutFN (inputImgs[i].filePath(), outputDir,
+                                  deriveSeq, i, 
+                                  inImgProjTag+"."+inImgOpTag+".registered", 
+                                  inImgExt, outImgFN);
 
 
         xformImage (inputImgs[i].filePath(),
@@ -1025,8 +757,8 @@ applyRegistration (
     QFileInfoList xformFileList;
 
 
-    getImageFileList (inputDir, imgFileList);
-    getXformFileList (inputTransformDir, xformFileList);
+    ModulesUtil::getImageFileList (inputDir, imgFileList);
+    ModulesUtil::getXformFileList (inputTransformDir, xformFileList);
 
     bool regDone = false;
 
@@ -1074,11 +806,12 @@ writeRegistration
     QString inDir, inProjTag, inOpTag, inExt, outXformFN;
     int inSeqNum, inDigits;
 
-    parseFileName (inFN, inDir, inSeqNum, inDigits, inProjTag, inOpTag, inExt);
+    ModulesUtil::parseFileName (inFN, inDir, inSeqNum, inDigits, inProjTag,
+                                  inOpTag, inExt);
 
     int seqNum =  (inDigits < 0) ? altSeqNum : inSeqNum;
 
-    makeOutFN (inFN, outXformDir, false, seqNum, 
+    ModulesUtil::makeOutFN (inFN, outXformDir, false, seqNum, 
           inProjTag + "." + inOpTag + ".registration", "xform", outXformFN);
 
     FILE *outFP = fopen (outXformFN.toStdString().c_str(), "w");
@@ -1111,7 +844,7 @@ generateRegistrationTransformsIJ
     {
 
     QFileInfoList inputFileList;
-    getImageFileList (inputImageDir, inputFileList);
+    ModulesUtil::getImageFileList (inputImageDir, inputFileList);
 
     if ( inputFileList.size() <= 0 )
         {
@@ -1193,7 +926,6 @@ generateRegistrationTransformsIJ
     QTextStream macroStrm (&ijmacroFile);
     QString line;
 
-    qDebug () << "\n//////";
     qDebug () << "Contents of imagej macro file " + ijmacroFile.fileName();
     for (line = macroStrm.readLine(); 
                             !line.isNull(); line = macroStrm.readLine( ))
@@ -1201,7 +933,6 @@ generateRegistrationTransformsIJ
         qDebug () << line;
         }
     qDebug () << "End of imagej macro file " + ijmacroFile.fileName();
-    qDebug () << "//////\n";
 
 
 #endif
@@ -1356,7 +1087,7 @@ void FilterRegisterImages::execute
 
     bool transformImages = ( outputImageDir != "");
 
-    if ( ! isDirectory (inputImageDir) )
+    if ( ! ModulesUtil::isDirectory (inputImageDir) )
         {
         writeLog ("RegisterImages: Input image folder does not exist: " + inputImageDir);
         return;
@@ -1364,14 +1095,14 @@ void FilterRegisterImages::execute
 
     if (transformImages)
         {
-        if ( ! mkDirectory (outputImageDir) )
+        if ( ! ModulesUtil::mkDirectory (outputImageDir) )
             {
             writeLog ("RegisterImages: Error accessing or creating output image folder: " + outputImageDir);
             return;
             }
         }
 
-    if ( ! mkDirectory (outputTransformDir) )
+    if ( ! ModulesUtil::mkDirectory (outputTransformDir) )
         {
         writeLog ("RegisterImages: Error accessing or creating output transform folder: " + outputTransformDir);
         return;

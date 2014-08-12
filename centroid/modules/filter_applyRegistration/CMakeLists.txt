@@ -23,4 +23,4 @@ if(ITK_FOUND)
   include( ${ITK_USE_FILE} ) 
 endif(ITK_FOUND)
 
-target_link_libraries(${PROJECT_NAME} ${ITK_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} modules_util ${ITK_LIBRARIES})

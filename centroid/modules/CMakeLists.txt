@@ -1,3 +1,6 @@
+add_subdirectory(modules_util)
+include_directories(modules_util)
+
 # add_subdirectory(filter_median)
 add_subdirectory(filter_subset)
 add_subdirectory(filter_atomCorrelation)

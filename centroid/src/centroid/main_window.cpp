@@ -18,6 +18,7 @@
 
 void MainWindow::addModuleToDock(Block *block)
 {
+   qDebug() << "Adding block" << block->getBlockName() << "to dock";
    QTreeWidgetItem *category = new QTreeWidgetItem();
 
    treeWidget->addTopLevelItem(category);
@@ -43,7 +44,6 @@ void MainWindow::addModuleToDock(Block *block)
          line_edit->setID(i);
          line_edit->setToolTip(tooltip); 
 
-         //QPushButton *btn_file = new QPushButton("..");
          DirUpdateButton *btn_file = new DirUpdateButton("..", file_dialog);
          btn_file->setToolTip(tooltip); 
 
@@ -179,6 +179,7 @@ void MainWindow::on_action_Quit_triggered()
 
 void MainWindow::on_action_NewProject_triggered()
 {
+    int result;
     Project* project = NULL;
     QSettings settingsFile;
 
@@ -186,24 +187,14 @@ void MainWindow::on_action_NewProject_triggered()
     newProjectDialog.setDirectory(file_dialog->directory());
     newProjectDialog.setModal(true);
 
-    int result = newProjectDialog.exec();
-    switch(result)
-    {
-    case QDialog::Accepted:
-        file_dialog->setDirectory(newProjectDialog.getDirectory());
-        project = newProjectDialog.getProject();
-
-        file_dialog->setWindowTitle("Select new project file");
-        file_dialog->setFileMode(QFileDialog::AnyFile);
-        if (!file_dialog->exec()) break;
-
-        if (!project->save(file_dialog->selectedFiles()[0])) break;
-        loadProject(project);
-        break;
-
-    case QDialog::Rejected:
-        break;
-    }
+    do {
+        result = newProjectDialog.exec();
+        if (result == QDialog::Accepted) {
+            file_dialog->setDirectory(newProjectDialog.getDirectory());
+            project = newProjectDialog.saveProject();
+            loadProject(project);
+        }
+    } while (result != QDialog::Rejected && project == NULL);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -213,17 +204,22 @@ void MainWindow::on_action_OpenProject_triggered()
    file_dialog->setWindowTitle("Select project file");
    file_dialog->setFileMode(QFileDialog::ExistingFile);
 
-   if (!file_dialog->exec()) return;
-   QString fileName = file_dialog->selectedFiles()[0];
+   if (!file_dialog->exec()) {
+       qDebug() << "OpenProject dialog cancelled";
+       return;
+   }
 
+   QString fileName = file_dialog->selectedFiles()[0];
    openProject(fileName);
 }
 
 void MainWindow::openProject(QString fileName)
 {
+   qDebug() << "Opening project from" << fileName;
    Project* project = new Project;
    if (!project->load(fileName))
    {
+       qWarning() << "Could not load" << fileName;
        QMessageBox::critical(this, "Error", "Could not load " + fileName);
        return;
    }
@@ -233,6 +229,7 @@ void MainWindow::openProject(QString fileName)
 
 void MainWindow::loadProject(Project* project)
 {
+   qDebug() << "Loading project:" << project;
    treeWidget->clear();
    blocks.clear();
 
@@ -278,6 +275,7 @@ void MainWindow::on_action_ZoomOut_triggered()
 //////////////////////////////////////////////////////////////////////////
 
 void MainWindow::closeEvent(QCloseEvent* event) {
+    qDebug() << "Received closeEvent";
     write_settings();
     event->accept();
 }
@@ -336,7 +334,7 @@ void MainWindow::viewer_particle_icons_show(bool is_enabled)
 
 void MainWindow::set_interactionMode (MainViewerForm::InteractionMode iMode)
 {
-
+   qDebug() << "Set interactionMode to" << iMode;
    action_ScrollHandDrag->setChecked(false);
    action_SelectionMode->setChecked(false);
    action_SelectionModeMinus->setChecked(false);
@@ -383,19 +381,6 @@ void MainWindow::set_interactionMode (MainViewerForm::InteractionMode iMode)
 void MainWindow::on_action_ScrollHandDrag_triggered()
 {
    set_interactionMode (MainViewerForm::HandDrag);
-
-#if 0
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::ScrollHandDrag); 
-
-   action_ScrollHandDrag->setChecked(true);
-   action_SelectionMode->setChecked(false);
-   action_SelectionModeMinus->setChecked(false);
-   action_SelectionModePlusGlobal->setChecked(false);   
-   action_SelectionModeMinusGlobal->setChecked(false);   
-   action_AddAtom->setChecked(false);  
-#endif
-
-   // action_SelectParticles->setChecked(false);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -403,47 +388,12 @@ void MainWindow::on_action_ScrollHandDrag_triggered()
 void MainWindow::on_action_SelectionMode_triggered()
 {
    set_interactionMode (MainViewerForm::SelectAtomsCurrFrame);
-
-#if 0
-   main_viewer_form->set_is_selection_global(false);
-   main_viewer_form->set_is_positive_selection_on(true);
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
-
-   action_ScrollHandDrag->setChecked(false);
-   action_SelectionMode->setChecked(true);   
-   action_SelectionModeMinus->setChecked(false);
-   action_SelectionModePlusGlobal->setChecked(false);
-   action_SelectionModeMinusGlobal->setChecked(false);  
-   action_AddAtom->setChecked(false);  
-
-   // action_SelectParticles->setChecked(false);
-
-   main_viewer_form->draw_current_frame();
-#endif
-
 }
 
 //////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_SelectionModeMinus_triggered()
 {
    set_interactionMode (MainViewerForm::DeselectAtomsCurrFrame);
-
-#if 0
-   main_viewer_form->set_is_selection_global(false);
-   main_viewer_form->set_is_positive_selection_on(false);
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
-
-   action_ScrollHandDrag->setChecked(false);
-   action_SelectionMode->setChecked(false);   
-   action_SelectionModeMinus->setChecked(true);
-   action_SelectionModePlusGlobal->setChecked(false);  
-   action_SelectionModeMinusGlobal->setChecked(false);  
-   action_AddAtom->setChecked(false);  
-
-   // action_SelectParticles->setChecked(false);
-   main_viewer_form->draw_current_frame();
-#endif
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -453,18 +403,6 @@ void MainWindow::on_action_SelectParticles_triggered()
    // JGH: I don't think that this function is being used
 
    set_interactionMode (MainViewerForm::SelectAtomsCurrFrame);
-
-#if 0
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::NoDrag);   
-   action_ScrollHandDrag->setChecked(false);
-   action_SelectionMode->setChecked(false);   
-   action_SelectionModeMinus->setChecked(false);
-   action_SelectionModeMinusGlobal->setChecked(false);   
-   action_AddAtom->setChecked(false);  
-
-   // action_SelectParticles->setChecked(true);
-#endif
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -474,16 +412,15 @@ void MainWindow::on_action_ParticlesViewer_triggered()
    file_dialog->setWindowTitle("Select particles directory");
    file_dialog->setFileMode(QFileDialog::Directory);
 
-   if (!file_dialog->exec()) return;
-   QStringList directories = file_dialog->selectedFiles();
+   if (!file_dialog->exec()) {
+       qDebug() << "ParticlesViewer dialog cancelled";
+       return;
+   }
 
-    // JGH: Note that we are getting different behavior of this dialog
-    // compared to the way it's handled in module_button.h. In the
-    // latter case it always uses the static function
-    //    QFileDialog::getExistingDirectory
-    // Is this better ?  What is the behavior on windows?
- 
-   main_viewer_form->particles_from_dir(directories[0]);
+   QString directory = file_dialog->selectedFiles()[0];
+   qDebug() << "Loading particles from" << directory;
+   main_viewer_form->particles_from_dir(directory);
+
    if (main_viewer_form->get_number_of_frames() > 0)
    {
       viewer_icons_show(true);
@@ -498,10 +435,15 @@ void MainWindow::on_action_ImageViewer_triggered()
    file_dialog->setWindowTitle("Select images directory");
    file_dialog->setFileMode(QFileDialog::Directory);
 
-   if (!file_dialog->exec()) return;
-   QStringList directories = file_dialog->selectedFiles();
+   if (!file_dialog->exec()) {
+       qDebug() << "ImageViewer dialog cancelled";
+       return;
+   }
 
-   main_viewer_form->images_from_dir(directories[0]);
+   QString directory = file_dialog->selectedFiles()[0];
+   qDebug() << "Loading images from" << directory;
+   main_viewer_form->images_from_dir(directory);
+
    if (main_viewer_form->get_number_of_frames() > 0)
    {
       viewer_icons_show(true);
@@ -515,8 +457,13 @@ void MainWindow::on_action_Photo_triggered()
    file_dialog->setWindowTitle("Select screenshot filename");
    file_dialog->setFileMode(QFileDialog::AnyFile);
 
-   if (!file_dialog->exec()) return;
-   QString fileName = file_dialog->selectedFiles()[0]; //"snapshot_centroid.png";
+   if (!file_dialog->exec()) {
+       qDebug() << "Photo dialog cancelled";
+       return;
+   }
+
+   QString fileName = file_dialog->selectedFiles()[0];
+   qDebug() << "Saving screenshot to" << fileName;
 
    QPixmap pm = main_viewer_form->graphicsView->grab(main_viewer_form->graphicsView->rect()); 
    pm.save(fileName);  
@@ -556,54 +503,19 @@ void MainWindow::on_action_RemoveParticles_triggered()
 
 void MainWindow::on_action_ImageViewerMulti_triggered()
 {
-
 }
 
 
 void MainWindow::on_action_AddAtom_triggered()
 {
-printf ("add atom called\n");
-
    set_interactionMode (MainViewerForm::AddAtomCurrFrame);
-
-#if 0
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::NoDrag); 
-
-   action_ScrollHandDrag->setChecked(false);
-   action_SelectionMode->setChecked(false);   
-   action_SelectionModeMinus->setChecked(false);
-   action_SelectionModePlusGlobal->setChecked(false);
-   action_SelectionModeMinusGlobal->setChecked(false);  
-   action_AddAtom->setChecked(true);  
-#endif
-
 }
-
-
-
-
 
 //////////////////////////////////////////////////////////////////////////
 
 void MainWindow::on_action_SelectionModePlusGlobal_triggered()
 {
    set_interactionMode (MainViewerForm::SelectAtomsAllFrames);
-
-#if 0
-   main_viewer_form->set_is_selection_global(true);
-   main_viewer_form->set_is_positive_selection_on(true);
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
-
-   action_ScrollHandDrag->setChecked(false);
-   action_SelectionMode->setChecked(false);   
-   action_SelectionModeMinus->setChecked(false);
-   action_SelectionModePlusGlobal->setChecked(true);
-   action_SelectionModeMinusGlobal->setChecked(false);
-   action_AddAtom->setChecked(false);  
-
-   main_viewer_form->draw_current_frame();
-#endif
-
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -611,20 +523,5 @@ void MainWindow::on_action_SelectionModePlusGlobal_triggered()
 void MainWindow::on_action_SelectionModeMinusGlobal_triggered()
 {
    set_interactionMode (MainViewerForm::DeselectAtomsAllFrames);
-
-#if 0
-   main_viewer_form->set_is_selection_global(true);
-   main_viewer_form->set_is_positive_selection_on(false);
-   main_viewer_form->graphicsView->setDragMode(QGraphicsView::RubberBandDrag); 
-
-   action_ScrollHandDrag->setChecked(false);
-   action_SelectionMode->setChecked(false);   
-   action_SelectionModeMinus->setChecked(false);
-   action_SelectionModePlusGlobal->setChecked(false);
-   action_SelectionModeMinusGlobal->setChecked(true);
-   action_AddAtom->setChecked(false);  
-   main_viewer_form->draw_current_frame();
-#endif
-
 }
 

@@ -12,7 +12,7 @@ class NewProjectDialog : public QDialog, public Ui::NewProjectDialog
 public:
    NewProjectDialog(QWidget *parent = 0);
 
-   Project* getProject();
+   Project* saveProject();
 
    void setDirectory(QDir dir);
    QDir getDirectory();

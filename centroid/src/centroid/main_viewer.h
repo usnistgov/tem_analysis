@@ -6,6 +6,8 @@
 #include "particles.h"
 #include "viewer_graphics_scene.h"
 
+#include <QtGlobal>
+#include <QDebug>
 
 class QStatusBar;
 
@@ -101,5 +103,33 @@ private:
 };
 
 //////////////////////////////////////////////////////////////////////////
+
+inline QDebug operator<<(QDebug dbg, MainViewerForm::InteractionMode const& iMode) {
+    switch(iMode) {
+    case MainViewerForm::HandDrag:
+        dbg.nospace() << "HandDrag";
+        break;
+    case MainViewerForm::SelectAtomsCurrFrame:
+        dbg.nospace() << "SelectAtomsCurrFrame";
+        break;
+    case MainViewerForm::DeselectAtomsCurrFrame:
+        dbg.nospace() << "DeselectAtomsCurrFrame";
+        break;
+    case MainViewerForm::SelectAtomsAllFrames:
+        dbg.nospace() << "SelectAtomsAllFrames";
+        break;
+    case MainViewerForm::DeselectAtomsAllFrames:
+        dbg.nospace() << "DeselectAtomsAllFrames";
+        break;
+    case MainViewerForm::AddAtomCurrFrame:
+        dbg.nospace() << "AddAtomCurrFrame";
+        break;
+    case MainViewerForm::AddAtomAllFrames:
+        dbg.nospace() << "AddAtomAllFrames";
+        break;
+    }
+
+    return dbg.space();
+}
 
 #endif // __H_MAIN_VIEWER__

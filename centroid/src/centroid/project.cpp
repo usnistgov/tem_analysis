@@ -12,19 +12,19 @@ bool Project::save(QString const& fileName)
 {
     projectFileName = fileName;
     QSettings file(fileName, QSettings::IniFormat, this);
-    file.setValue("baseDirectory", baseDirectory.absolutePath());
     file.setValue("shortTag", shortTag);
+    _baseDirectory = QFileInfo(projectFileName).absoluteDir();
     return true;
 }
 
 bool Project::load(QString const& fileName)
 {
     QSettings file(fileName, QSettings::IniFormat, this);
-    if (!file.contains("baseDirectory") || !file.contains("shortTag")) return false;
+    if (!file.contains("shortTag")) return false;
 
-    baseDirectory = QDir(file.value("baseDirectory").toString());
     shortTag = file.value("shortTag").toString();
     projectFileName = fileName;
+    _baseDirectory = QFileInfo(projectFileName).absoluteDir();
     return true;
 }
 

@@ -24,6 +24,7 @@ Need to parameterize:
 #endif
 
 #include "filter_atomCorrelation.h"
+#include "modules_util.h"
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -88,233 +89,6 @@ writeLog (const QString & s)
         }
 
     }  // end of local writeLog
-
-
-/////////////////////////////////////////////////////////////////////
-
-// General purpose functions
-
-// Some utitilities for working with file names and directories.
-
-static bool
-isFile (const QString & filePath)
-    {
-    QFileInfo info = QFileInfo (filePath);
-    return info.isFile ();
-    } // end of isFile
-
-static bool
-isDirectory (const QString & dirPath)
-    {
-    QFileInfo info = QFileInfo (dirPath);
-    return info.isDir ();
-    }  // end of isDirectory
-
-static bool
-mkDirectory (const QString & dirPath)
-    {
-    if (isFile (dirPath))
-        {
-        // error: it exists and it's a regular file
-        return false;
-        }
-    else if (isDirectory (dirPath))
-        {
-        // it already exists so we don't have to create
-        return true;
-        }
-
-    QDir qdir = QDir (dirPath);
-
-    return qdir.mkpath (".");
-    // return qdir.mkpath (dirPath);
-
-    } // end of mkDirectory
-
-
-
-
-// Parse a file name (contained in a QFileInfo) into the components
-// of our file name convention.
-static void
-parseFileName 
-  (
-  const QFileInfo fileInfo, 
-  QString & dirName, 
-  int & seqNum, 
-  int & seqNumDigits, 
-  QString &projTag, 
-  QString &opTag, 
-  QString &extension
-  )
-    {
-
-    dirName = fileInfo.filePath();
-    QString baseName = fileInfo.fileName();
-
-    seqNum = -1;
-    seqNumDigits = -1;
-
-    // split into tokens between '.' characters
-    QStringList nameParts = baseName.split(".");
-
-    if (nameParts.size() > 0)
-        {
-        QString seqNumStr = nameParts[0];
-        bool isInt;
-        seqNum = seqNumStr.toInt (&isInt);
-        seqNumDigits = isInt ? seqNumStr.length() : -1;
-        }
-
-
-    extension = (nameParts.size() > 1) ?  nameParts[nameParts.size()-1] : "";
-
-    projTag = (nameParts.size() > 2) ?  nameParts[1] : "";
-
-    opTag = "";
-
-    for (int i = 2; i < nameParts.size()-1; i++)
-        {
-        opTag += nameParts[i];
-        if (i != nameParts.size()-2)
-            {
-            opTag += ".";
-            }
-        }
-
-    } // end of parseFileName
-
-
-
-// Get a list of the names of the image files in the given directory
-static void
-getImageFileList (const QString dirPath, QFileInfoList & imgFileList)
-{
-    QDir dir;
-    dir.setFilter (QDir::Files);
-    dir.setSorting(QDir::Name);
-    dir.setPath(dirPath);
-
-    QStringList nameFilters;
-    // These are image file types that we currently support. 
-    // Could probably add other formats to this list.
-    nameFilters << "*.bmp" << "*.png" << "*.tif" << "*.gif";
-
-    dir.setNameFilters (nameFilters);
-
-   imgFileList = dir.entryInfoList();
-   qDebug() << "Number of files in " << dirPath << ": " << imgFileList.size() ;
-
-    for (int i=0; i < imgFileList.size(); ++i)
-    {
-        QFileInfo fileInfo = imgFileList.at(i);
-        // qDebug() << "file name " << fileInfo.fileName();
-    }
-
-
-}  // end of getImageFileList
-
-
-
-// Create an output file name based on our name convention.
-// This version uses C style character strings.
-static void
-makeOutFN 
-  (
-  const char *inImgFN, 
-  const char *outDir, 
-  const bool deriveSeqNumFromInputFN,
-  const int altSeqNum,
-  const char *outImgFNTag, 
-  const char *outExt,
-  char *outImgFN
-  )
-    {
-    static int lastSeqNum = 1;
-    int seqNum;
-    // char inName[1000];
-    char *inImgFNdup, *inName;
-
-    inImgFNdup = strdup (inImgFN);
-
-    inName = basename (inImgFNdup);
-    // strcpy (inName, basename (inImgFN));
-
-
-    for (char * c = inName; *c != 0; c++)
-        {
-        if (*c == '.')
-            {
-            *c = 0;
-            break;
-            }
-        }
-
-    int seqNumLen;
-
-    if (sscanf (inName, "%d", &seqNum) != 1)
-        {
-        seqNum = altSeqNum;
-        seqNumLen = 6;
-        }
-    else
-        {
-        seqNumLen = strlen (inName);
-        }
-
-
-    char outFNFmt[100];
-    sprintf (outFNFmt, "%%s/%%0%dd.%%s.%%s", seqNumLen);
-
-    // printf ("seqNum = %d\n", seqNum);
-    // printf ("seqNumLen = %d\n", seqNumLen);
-    // printf ("out fmt= <%s>\n", outFNFmt);
-
-    const char * outDirectory =  (outDir[0] == 0) ? "." : outDir;
-        
-    sprintf (outImgFN, outFNFmt, outDirectory, seqNum, outImgFNTag, outExt);
-
-    // qDebug () << "outImgFN = " << outImgFN;
-
-    }  // end of makeOutFN with C style args
-
-
-
-
-// Create an output file name based on our name convention.
-// This version uses QStrings.
-static void
-makeOutFN 
-(  
-const QString & fileName, 
-const QString & outputDir,
-const bool deriveSeqNumFromInputFN,
-const int altSeqNum,
-const QString & outImgFNTag, 
-const QString & outExt, 
-QString & outImgFN
-)
-{
-    char outImgFN_c[10000];
-
-    makeOutFN   (
-                fileName.toStdString().c_str(),
-                outputDir.toStdString().c_str(),
-                deriveSeqNumFromInputFN,
-                altSeqNum,
-                outImgFNTag.toStdString().c_str(),
-                outExt.toStdString().c_str(),
-                outImgFN_c
-                );
-
-    outImgFN = outImgFN_c;
-                
-} // end of makeOutFN (with Qt object args)
-
-
-// end of general purpose functions
-
-/////////////////////////////////////////////////////////////////////
 
 
 // functions specific to this plugin
@@ -1130,9 +904,9 @@ atomCorrelateImages
     // we parse the first file name to see if it conforms
     // to our naming scheme.  This is signaled by whether
     // seqNumDigits > 0.
-    parseFileName ( inputFileList[0], 
-                    dirName, seqNum, seqNumDigits, 
-                    outProjTag, opTag, extension);
+    ModulesUtil::parseFileName ( inputFileList[0],
+                                   dirName, seqNum, seqNumDigits,
+                                   outProjTag, opTag, extension);
 
     // We use the "project tag" from the incoming files if it is present.
     // If it isn't, we use the tag the current project.
@@ -1156,9 +930,9 @@ atomCorrelateImages
         {
         QString outImgFN;
 
-        makeOutFN ( inputFileList[i].filePath(), outputDir,
-                    deriveSeqNumFromInputFN, i,
-                    outProjTag, outExtension, outImgFN );
+        ModulesUtil::makeOutFN ( inputFileList[i].filePath(), outputDir,
+                                   deriveSeqNumFromInputFN, i,
+                                   outProjTag, outExtension, outImgFN );
 
         writeLog ("AtomCorrelation: Processing image " + 
                                     inputFileList[i].filePath() + "\n");
@@ -1258,13 +1032,13 @@ void FilterAtomCorrelation::execute
 
 
 
-    if ( ! isDirectory (inputDir) )
+    if ( ! ModulesUtil::isDirectory (inputDir) )
         {
         // if input directory doesn't exist, then exit
         writeLog ("AtomCorrelation: Input folder does not exist: " + inputDir);
         return;
         }
-    else if ( ! mkDirectory (outputDir) )
+    else if ( ! ModulesUtil::mkDirectory (outputDir) )
         {
         // if output directory doesn't exist, then make it
         writeLog (
@@ -1276,7 +1050,7 @@ void FilterAtomCorrelation::execute
 
     // get the list of input files
     QFileInfoList inputFileList;
-    getImageFileList (inputDir, inputFileList);
+    ModulesUtil::getImageFileList (inputDir, inputFileList);
 
     for (int i=0; i < inputFileList.size(); ++i)
     {

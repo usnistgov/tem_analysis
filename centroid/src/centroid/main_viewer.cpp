@@ -279,7 +279,7 @@ void MainViewerForm::images_from_dir(const QString& str)
    //
    current_frame = 0;
 
-   // prepare list with of files
+   // prepare list of files
    //
    QDir dir;
    dir.setFilter(QDir::Files | QDir::Hidden | QDir::NoSymLinks);
@@ -388,6 +388,7 @@ void MainViewerForm::select_all_particles_current_frame (const QPointF& p0, cons
 
 void MainViewerForm::set_interactionMode (MainViewerForm::InteractionMode iMode)
 {
+    qDebug() << "Set interactionMode to" << iMode;
     interactionMode = iMode;
 
     switch (iMode)
