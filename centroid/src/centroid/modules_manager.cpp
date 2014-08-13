@@ -116,20 +116,17 @@ void ModulesManager::initProject(Project* proj)
 
          if (img_function)
          {
-            img_function->setLogsWidget(logs);
+            MetaData* data = new MetaData;
+            if (!data->load( loader->metaData() ))
+            {
+                qWarning() << "Unable to load metadata from" << module_name;
+            }
+
+            //img_function->setLogsWidget(logs);
             img_function->setProject(proj);
+            img_function->setMetaData (data);
             imaging_instances.insert(module_name, img_function);
             loaders.insert(module_name, loader);
-
-            // set the name of the function
-            //
-
-            // img_function->setMetaData ( loader->metaData().
-                    // value("MetaData").toObject().toVariantMap()  );
-
-            img_function->setMetaData ( loader->metaData() );
-
-            // img_function->setName(module_name);
 
             if (logs)
             {

@@ -11,9 +11,11 @@ Project::Project()
 bool Project::save(QString const& fileName)
 {
     projectFileName = fileName;
+    baseDirectory = QFileInfo(projectFileName).absoluteDir();
+
     QSettings file(fileName, QSettings::IniFormat, this);
     file.setValue("shortTag", shortTag);
-    _baseDirectory = QFileInfo(projectFileName).absoluteDir();
+
     return true;
 }
 
@@ -24,7 +26,25 @@ bool Project::load(QString const& fileName)
 
     shortTag = file.value("shortTag").toString();
     projectFileName = fileName;
-    _baseDirectory = QFileInfo(projectFileName).absoluteDir();
+    baseDirectory = QFileInfo(projectFileName).absoluteDir();
+
     return true;
 }
 
+QDebug operator<<(QDebug dbg, Project const& p)
+{
+    dbg.nospace() << "("
+        << p.getShortTag() << ","
+        << p.getProjectFileName() << ","
+        << p.getBaseDirectory() << ")";
+    return dbg.space();
+}
+
+QDebug operator<<(QDebug dbg, Project const* p)
+{
+    dbg.nospace() << "("
+        << p->getShortTag() << ","
+        << p->getProjectFileName() << ","
+        << p->getBaseDirectory() << ")";
+    return dbg.space();
+}

@@ -14,11 +14,11 @@ class Project : public QObject
 public:
    Project();
 
-   QString getShortTag() const { return shortTag; }
-   void setShortTag(const QString& tag) { shortTag = tag; }
+   QString getShortTag() const;
+   void setShortTag(const QString& tag);
 
-   QString getProjectFileName() const { return projectFileName; }
-   QDir getBaseDirectory() const { return _baseDirectory; }
+   QString getProjectFileName() const;
+   QDir getBaseDirectory() const;
 
    bool save(QString const& fileName);
    bool load(QString const& fileName);
@@ -26,25 +26,30 @@ public:
 private:
    QString shortTag;
    QString projectFileName;
-   QDir _baseDirectory;
+   QDir baseDirectory;
 };
 
-inline QDebug operator<<(QDebug dbg, Project const& p) {
-    dbg.nospace() << "(" << p.getBaseDirectory() << "," << p.getShortTag()
-        << "," << p.getProjectFileName() << ")";
-    return dbg.space();
+inline QString Project::getShortTag() const
+{
+    return shortTag;
 }
 
-inline QDebug operator<<(QDebug dbg, Project const* p) {
-    dbg.nospace()
-        << "("
-        << p->getShortTag()
-        << ","
-        << p->getProjectFileName()
-        << ","
-        << p->getBaseDirectory()
-        << ")";
-    return dbg.space();
+inline void Project::setShortTag(const QString& tag)
+{
+    shortTag = tag;
 }
+
+inline QString Project::getProjectFileName() const
+{
+    return projectFileName;
+}
+
+inline QDir Project::getBaseDirectory() const
+{
+    return baseDirectory;
+}
+
+QDebug operator<<(QDebug dbg, Project const& p);
+QDebug operator<<(QDebug dbg, Project const* p);
 
 #endif // __H_PROJECT__

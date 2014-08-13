@@ -3,10 +3,10 @@
 
 #include <QObject>
 
-#include <interface.h>
+#include <implementatino.h>
 
 
-class FilterSubset : public QObject, public FilterInterface
+class FilterSubset : public QObject, public FilterImplementation
 {
    Q_OBJECT
    Q_PLUGIN_METADATA(IID "hpcvg.plugin.filterinterface/1.0" FILE "filter_subset.json")

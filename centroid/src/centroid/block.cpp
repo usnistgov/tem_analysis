@@ -90,7 +90,7 @@ QString Block::getBlockName()
    if (type == BLOCK_TYPE_IMAGING)
    {
       FilterInterface *fi = (FilterInterface*)instance;                 
-      return fi->getName();
+      return fi->getMetaData()->getName();
    }
    return "";
 }
