@@ -4,8 +4,13 @@
 #include "project.h"
 #include "metadata.h"
 
+class QPlainTextEdit;
+
 //////////////////////////////////////////////////////////////////////////
 
+/**
+ * FilterInterface must be a pure-virtual completely-abstract interface class.
+ */
 class FilterInterface
 {
 public:
@@ -17,9 +22,11 @@ public:
 
    virtual void setMetaData(MetaData*) = 0;
    virtual MetaData* getMetaData() = 0;
+
+   virtual void setLogsWidget(QPlainTextEdit* logs) = 0;
 };
 
-Q_DECLARE_INTERFACE(FilterInterface, "hpcvg.plugin.filterinterface/1.0");
+Q_DECLARE_INTERFACE(FilterInterface, "hpcvg.plugin.filterinterface/1.1");
 
 //////////////////////////////////////////////////////////////////////////
 

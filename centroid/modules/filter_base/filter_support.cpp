@@ -1,4 +1,4 @@
-#include "modules_util.h"
+#include "filter_support.h"
 
 #include "itkImage.h"
 #include "itkImageFileReader.h"
@@ -9,115 +9,22 @@
 
 #include <libgen.h>
 
-void
-ModulesUtil::writeParameters (const Project * project,
-   const QString & shortTag,
-   const QVector<QMap<QString, QVariant> > & parameters,
-   const QString & dirName )
-{
-
-    // qDebug () << "Entered FilterInterface::writeParameters \n";
-
-    QString projTag = project->getShortTag();
-
-    QString outDir = (dirName == "") ?  
-               project->getBaseDirectory().absolutePath() : dirName;
-
-    // we'll use the interfaces shortTag and 
-
-    QString startFilter = shortTag + "." + projTag + ".";
-    QString wildCard = "????";
-    QString endFilter = ".params";
-    int startLen = startFilter.size();
-    int endLen = endFilter.size();
-    int minFNLen = startLen + 1 + endLen;
-    QStringList nameFilter ( startFilter + wildCard + endFilter );
-
-#if 0
-    QDir qdir;
-    dir.setFilter (QDir::Files);
-    dir.setSorting (QDir::Name);
-    dir.setPath (outDir);
-    dir.setNameFilters (nameFilter);
-    QFileInfoList fileList = dir.entryInfoList ();
-    for (int i = 0; i < fileList.size(); i++)
-        {
-        QFileInfo fileInfo = fileList.at(i);
-
-        figure out max seq num
-        }
-
-#else
-
-#define MAX(x,y) (((x)>(y))?(x):(y))
-
-    QDir qdir = QDir (outDir) ;
-    QStringList fnList = qdir.entryList (nameFilter, QDir::Files, QDir::Name);
-    int maxSeqNum = -1;
-    for (int i = 0; i < fnList.size(); i++)
-        {
-        // qDebug () << "param file " + fnList.at(i);
-        QString fn = fnList.at(i);
-        if ( fn.size() > (startLen+endLen) )
-            {
-            
-            QString seqStr = fn.mid (startLen, fn.size() - (startLen+endLen) );
-            
-            bool isInt;
-            int seqNum = seqStr.toInt (&isInt);
-            if (isInt)
-                {
-                maxSeqNum = MAX (maxSeqNum, seqNum);
-                }
-            }
-        }
-
-
-    char seqNumStr[10];
-    sprintf (seqNumStr, "%04d", maxSeqNum+1);
-    QString outFN = startFilter + seqNumStr + endFilter;
-    // qDebug () << "output params file = " + outFN;
-
-    QString fullFN = qdir.absolutePath() + "/" + outFN;
-
-
-    QSettings settings (fullFN, QSettings::IniFormat);
-
-    settings.setValue ("__DATE__", 
-              QDateTime::currentDateTime().toString("dd.MM.yyyy_hh:mm:ss"));
-
-    // loop through the parameters and set all the parameter values
-    for (int i=0; i<parameters.size(); ++i)
-        {
-        settings.setValue ( parameters[i]["name"].toString(),
-                            parameters[i]["value"].toString() );
-        }
-   
-
-    // it syncs the settings to disk in the QSettings destructor
-
-
-
-#endif
-
-} // end of writeParameters
-
 bool
-ModulesUtil::isFile (const QString & filePath)
+FilterSupport::isFile (const QString & filePath)
     {
     QFileInfo info = QFileInfo (filePath);
     return info.isFile ();
     } // end of isFile
 
 bool
-ModulesUtil::isDirectory (const QString & dirPath)
+FilterSupport::isDirectory (const QString & dirPath)
     {
     QFileInfo info = QFileInfo (dirPath);
     return info.isDir ();
     }  // end of isDirectory
 
 bool
-ModulesUtil::mkDirectory (const QString & dirPath)
+FilterSupport::mkDirectory (const QString & dirPath)
     {
     // qDebug () << "mkDir " + dirPath;
 
@@ -141,7 +48,7 @@ ModulesUtil::mkDirectory (const QString & dirPath)
     } // end of mkDirectory
 
 void
-ModulesUtil::parseFileName 
+FilterSupport::parseFileName 
   (
   const QFileInfo fileInfo, 
   QString & dirName, 
@@ -188,7 +95,7 @@ ModulesUtil::parseFileName
     } // end of parseFileName
 
 void
-ModulesUtil::getFilteredFileList
+FilterSupport::getFilteredFileList
   (
   const QString & dirPath,
   const QStringList & fnFilters,
@@ -221,7 +128,7 @@ ModulesUtil::getFilteredFileList
     }  // end of getFilteredImageFileList
 
 void
-ModulesUtil::getImageFileList
+FilterSupport::getImageFileList
   (
   const QString dirPath,
   QFileInfoList & fileList
@@ -237,7 +144,7 @@ ModulesUtil::getImageFileList
 
 
 void
-ModulesUtil::getXformFileList
+FilterSupport::getXformFileList
   (
   const QString dirPath,
   QFileInfoList & fileList
@@ -251,7 +158,7 @@ ModulesUtil::getXformFileList
 
 
 void
-ModulesUtil::getAtomPosFileList
+FilterSupport::getAtomPosFileList
   (
   const QString dirPath, 
   QFileInfoList & fileList
@@ -269,7 +176,7 @@ ModulesUtil::getAtomPosFileList
 
 #if 0
 void
-ModulesUtil::makeOutFN 
+FilterSupport::makeOutFN 
   (
   const char *inImgFN, 
   const char *outDir, 
@@ -330,7 +237,7 @@ ModulesUtil::makeOutFN
 
 
 void
-ModulesUtil::makeOutFN 
+FilterSupport::makeOutFN 
   (
   const char *inImgFN, 
   const char *outDir, 
@@ -393,7 +300,7 @@ ModulesUtil::makeOutFN
 
 
 void
-ModulesUtil::makeOutFN 
+FilterSupport::makeOutFN 
 (  
 const QString & fileName, 
 const QString & outputDir,
@@ -421,7 +328,7 @@ QString & outImgFN
 } // end of makeOutFN (with Qt object args)
 
 bool
-ModulesUtil::imgIsGray (const char *imgFN)
+FilterSupport::imgIsGray (const char *imgFN)
     {
     typedef itk::RGBPixel <float>         RGBPixelType;
     typedef itk::Image <RGBPixelType, 2>  RGBImageType;
@@ -461,7 +368,7 @@ ModulesUtil::imgIsGray (const char *imgFN)
     }  // end of imgIsGray
 
 bool
-ModulesUtil::filesAreSame (const char *fnA, const char *fnB)
+FilterSupport::filesAreSame (const char *fnA, const char *fnB)
     {
     // printf ("filesAreSame ( %s , %s )\n", fnA, fnB );
 

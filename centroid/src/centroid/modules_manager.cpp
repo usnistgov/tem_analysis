@@ -5,7 +5,7 @@
 #include <QDir>
 #include <QtWidgets>
 
-#include "interface.h"
+#include "filter_interface.h"
 
 #include "block.h"
 
@@ -122,7 +122,7 @@ void ModulesManager::initProject(Project* proj)
                 qWarning() << "Unable to load metadata from" << module_name;
             }
 
-            //img_function->setLogsWidget(logs);
+            img_function->setLogsWidget(logs);
             img_function->setProject(proj);
             img_function->setMetaData (data);
             imaging_instances.insert(module_name, img_function);

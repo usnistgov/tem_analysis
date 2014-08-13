@@ -2,7 +2,7 @@
 #include <QApplication>
 #include <QStatusBar>
 #include <QDebug>
-#include "interface.h"
+#include "filter_interface.h"
 
 
 //////////////////////////////////////////////////////////////////////////

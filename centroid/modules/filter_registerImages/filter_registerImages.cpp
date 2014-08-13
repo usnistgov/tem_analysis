@@ -12,10 +12,13 @@
 #include <QProcess>
 
 #include "filter_registerImages.h"
-#include "modules_util.h"
+#include "filter_support.h"
 
-#define MAX(x,y)  (((x)>(y))?(x):(y))
 
+//
+// The CurrentModuleInstance and static writeLog function
+// allow static methods in this file to write log messages
+//
 static FilterRegisterImages *CurrentModuleInstance = NULL;
 
 static void
@@ -693,10 +696,10 @@ applyImageRegistration (
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-            ModulesUtil::parseFileName (inputImgs[i], inImgDir, inImgN,
+            FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN,
                 inImgNDigits, inImgProjTag, inImgOpTag, inImgExt);
 
-            ModulesUtil::parseFileName (inputXforms[i], inXDir, inXN,
+            FilterSupport::parseFileName (inputXforms[i], inXDir, inXN,
                 inXNDigits, inXProjTag, inXOpTag, inXExt);
 
         if (inImgN != inXN)
@@ -719,7 +722,7 @@ applyImageRegistration (
             inImgProjTag = projectShortTag;
             }
 
-        ModulesUtil::makeOutFN (inputImgs[i].filePath(), outputDir,
+        FilterSupport::makeOutFN (inputImgs[i].filePath(), outputDir,
                                   deriveSeq, i, 
                                   inImgProjTag+"."+inImgOpTag+".registered", 
                                   inImgExt, outImgFN);
@@ -757,8 +760,8 @@ applyRegistration (
     QFileInfoList xformFileList;
 
 
-    ModulesUtil::getImageFileList (inputDir, imgFileList);
-    ModulesUtil::getXformFileList (inputTransformDir, xformFileList);
+    FilterSupport::getImageFileList (inputDir, imgFileList);
+    FilterSupport::getXformFileList (inputTransformDir, xformFileList);
 
     bool regDone = false;
 
@@ -806,12 +809,12 @@ writeRegistration
     QString inDir, inProjTag, inOpTag, inExt, outXformFN;
     int inSeqNum, inDigits;
 
-    ModulesUtil::parseFileName (inFN, inDir, inSeqNum, inDigits, inProjTag,
+    FilterSupport::parseFileName (inFN, inDir, inSeqNum, inDigits, inProjTag,
                                   inOpTag, inExt);
 
     int seqNum =  (inDigits < 0) ? altSeqNum : inSeqNum;
 
-    ModulesUtil::makeOutFN (inFN, outXformDir, false, seqNum, 
+    FilterSupport::makeOutFN (inFN, outXformDir, false, seqNum, 
           inProjTag + "." + inOpTag + ".registration", "xform", outXformFN);
 
     FILE *outFP = fopen (outXformFN.toStdString().c_str(), "w");
@@ -844,7 +847,7 @@ generateRegistrationTransformsIJ
     {
 
     QFileInfoList inputFileList;
-    ModulesUtil::getImageFileList (inputImageDir, inputFileList);
+    FilterSupport::getImageFileList (inputImageDir, inputFileList);
 
     if ( inputFileList.size() <= 0 )
         {
@@ -1022,7 +1025,7 @@ void FilterRegisterImages::execute
     CurrentModuleInstance = this;  // this should be executable line
 
 
-    qDebug() << "Entering module " + getName() + "\n";
+    qDebug() << "Entering module " + getMetaData()->getName() + "\n";
 
 
     QString projectShortTag = getProject()->getShortTag();
@@ -1076,7 +1079,7 @@ void FilterRegisterImages::execute
 
     }  // end of loop over parameters
 
-    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputTransformDir);
+    writeParameters (parameters, outputTransformDir);
 
 
     // qDebug() << "EXECUTE PARAMS >>>";  
@@ -1087,7 +1090,7 @@ void FilterRegisterImages::execute
 
     bool transformImages = ( outputImageDir != "");
 
-    if ( ! ModulesUtil::isDirectory (inputImageDir) )
+    if ( ! FilterSupport::isDirectory (inputImageDir) )
         {
         writeLog ("RegisterImages: Input image folder does not exist: " + inputImageDir);
         return;
@@ -1095,14 +1098,14 @@ void FilterRegisterImages::execute
 
     if (transformImages)
         {
-        if ( ! ModulesUtil::mkDirectory (outputImageDir) )
+        if ( ! FilterSupport::mkDirectory (outputImageDir) )
             {
             writeLog ("RegisterImages: Error accessing or creating output image folder: " + outputImageDir);
             return;
             }
         }
 
-    if ( ! ModulesUtil::mkDirectory (outputTransformDir) )
+    if ( ! FilterSupport::mkDirectory (outputTransformDir) )
         {
         writeLog ("RegisterImages: Error accessing or creating output transform folder: " + outputTransformDir);
         return;
@@ -1124,7 +1127,7 @@ void FilterRegisterImages::execute
                                             outputImageDir, projectShortTag);
         }
     
-    qDebug() << "Exiting module " + getName() + "\n";
+    qDebug() << "Exiting module " + getMetaData()->getName() + "\n";
 
 }  // end of FilterRegisterImages::execute
 

@@ -18,9 +18,7 @@ Need to parameterize:
 #include <QDir>
 
 #include "filter_applyRegistration.h"
-#include "modules_util.h"
-
-#define MAX(x,y)  (((x)>(y))?(x):(y))
+#include "filter_support.h"
 
 static FilterApplyRegistration *CurrentModuleInstance = NULL;
 
@@ -798,10 +796,10 @@ applyImageRegistration (
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-            ModulesUtil::parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
+            FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
                                           inImgProjTag, inImgOpTag, inImgExt);
 
-            ModulesUtil::parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
+            FilterSupport::parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
                                           inXProgTag, inXOpTag, inXExt);
 
         if (inImgN != inXN)
@@ -822,7 +820,7 @@ applyImageRegistration (
             inImgProjTag = projectShortTag;
         }
 
-        ModulesUtil::makeOutFN (inputImgs[i].filePath(), outputDir,
+        FilterSupport::makeOutFN (inputImgs[i].filePath(), outputDir,
                                   deriveSeq, i,
                                   inImgProjTag+"."+inImgOpTag+".registered",
                                   inImgExt, outImgFN);
@@ -885,10 +883,10 @@ applyAtomPosRegistration (
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-            ModulesUtil::parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
+            FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
                                           inImgProjTag, inImgOpTag, inImgExt);
 
-            ModulesUtil::parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
+            FilterSupport::parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
                                           inXProgTag, inXOpTag, inXExt);
 
         if (inImgN != inXN)
@@ -910,7 +908,7 @@ applyAtomPosRegistration (
             inImgProjTag = projectShortTag;
         }
 
-        ModulesUtil::makeOutFN (inputImgs[i].filePath(), outputDir,
+        FilterSupport::makeOutFN (inputImgs[i].filePath(), outputDir,
                                   deriveSeq, i,
                                   inImgProjTag+"."+inImgOpTag+".registered",
                                   inImgExt, outImgFN);
@@ -978,10 +976,10 @@ applyRegistration (
     QFileInfoList xformFileList;
 
 
-    ModulesUtil::getImageFileList (inputDir, imgFileList);
-    ModulesUtil::getAtomPosFileList (inputDir, aposFileList);
+    FilterSupport::getImageFileList (inputDir, imgFileList);
+    FilterSupport::getAtomPosFileList (inputDir, aposFileList);
 
-    ModulesUtil::getXformFileList (inputTransformDir, xformFileList);
+    FilterSupport::getXformFileList (inputTransformDir, xformFileList);
 
     bool regDone = false;
 
@@ -1017,8 +1015,8 @@ void FilterApplyRegistration::execute
 {
     CurrentModuleInstance = this;  // this should be executable line
 
-    // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
-    qDebug() << "Entering module " + getName();
+    // std::cout << "\n>>> BLOCK " << getMetaData()->getName().toStdString() << std::endl;
+    qDebug() << "Entering module " + getMetaData()->getName();
 
 
    QString projectShortTag = getProject()->getShortTag();
@@ -1068,7 +1066,7 @@ void FilterApplyRegistration::execute
     }  // end of loop over parameters
 
 
-    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputImageDir);
+    writeParameters (parameters, outputImageDir);
 
 
     // qDebug() << "EXECUTE PARAMS >>>";  
@@ -1078,17 +1076,17 @@ void FilterApplyRegistration::execute
 
 
 
-    if ( ! ModulesUtil::isDirectory (inputImageDir) )
+    if ( ! FilterSupport::isDirectory (inputImageDir) )
         {
         writeLog ("ApplyRegistration: Input folder does not exist: " + inputImageDir);
         return;
         }
-    else if ( ! ModulesUtil::isDirectory (inputTransformDir) )
+    else if ( ! FilterSupport::isDirectory (inputTransformDir) )
         {
         writeLog ("ApplyRegistration: Input folder does not exist: " + inputTransformDir);
         return;
         }
-    else if ( ! ModulesUtil::mkDirectory (outputImageDir) )
+    else if ( ! FilterSupport::mkDirectory (outputImageDir) )
         {
         writeLog ("ApplyRegistration: Error accessing or creating output folder: " + 
                     outputImageDir);
@@ -1121,7 +1119,7 @@ void FilterApplyRegistration::execute
     writeLog ("ApplyRegistration: Done.\n");
     writeLog ("\n");
     
-    qDebug() << "Exiting module " + getName();
+    qDebug() << "Exiting module " + getMetaData()->getName();
 
 }  // end of FilterRegisterImages::execute
 

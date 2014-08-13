@@ -2,7 +2,7 @@
    "name"       : "04_RegisterImages",
    "shortTag"   : "reg",
    "seq"        : "400",
-   "version"    : "0.0.1",
+   "version"    : "0.1.0",
    "type"       : "imaging",
    "parameters" : 
    [ 
