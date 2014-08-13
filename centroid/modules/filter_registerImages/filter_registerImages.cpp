@@ -871,10 +871,10 @@ generateRegistrationTransformsIJ
 
     ijmacroFile.write( "\n" );
     ijmacroFile.write( "run(\"Image Sequence...\",\n" );
-    ijmacroFile.write( "    \"open=" );
+    ijmacroFile.write( "    \"open=[" );
     ijmacroFile.write(
         inputFileList[0].absoluteFilePath().toStdString().c_str() );
-    ijmacroFile.write( "  sort\");\n");
+    ijmacroFile.write( "]  sort\");\n");
 
     ijmacroFile.write( "run(\"VerboseStackReg \", \"transformation=" );
     ijmacroFile.write( allowRotation ? "[Rigid Body]" : "Translation" ) ;
@@ -905,10 +905,10 @@ generateRegistrationTransformsIJ
 
     ijmacroFile.write( "\n" );
     ijmacroFile.write( "run(\"Image Sequence...\",\n" );
-    ijmacroFile.write( "    \"open=" );
+    ijmacroFile.write( "    \"open=[" );
     ijmacroFile.write(
         inputFileList[0].absoluteFilePath().toStdString().c_str() );
-    ijmacroFile.write( "  sort\");\n");
+    ijmacroFile.write( "]  sort\");\n");
 
     ijmacroFile.write( "run(\"VerboseStackReg \", \"transformation=" );
     ijmacroFile.write( allowRotation ? "[Rigid Body]" : "Translation" ) ;
@@ -934,6 +934,9 @@ generateRegistrationTransformsIJ
         }
     qDebug () << "End of imagej macro file " + ijmacroFile.fileName();
 
+    ijmacroFile.close ();
+
+    
 
 #endif
 
