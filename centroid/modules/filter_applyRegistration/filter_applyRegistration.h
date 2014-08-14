@@ -3,13 +3,13 @@
 
 #include <QObject>
 
-#include <interface.h>
+#include <filter_implementation.h>
 
 
-class FilterApplyRegistration : public QObject, public FilterInterface
+class FilterApplyRegistration : public QObject, public FilterImplementation
 {
    Q_OBJECT
-   Q_PLUGIN_METADATA(IID "hpcvg.plugin.filterinterface/1.0" FILE "filter_applyRegistration.json")
+   Q_PLUGIN_METADATA(IID "hpcvg.plugin.filterinterface/1.1" FILE "filter_applyRegistration.json")
    Q_INTERFACES(FilterInterface)
 
 public:

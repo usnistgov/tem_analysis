@@ -24,7 +24,7 @@ Need to parameterize:
 #endif
 
 #include "filter_atomCorrelation.h"
-#include "modules_util.h"
+#include "filter_support.h"
 
 /////////////////////////////////////////////////////////////////////
 //
@@ -67,31 +67,24 @@ Need to parameterize:
 /////////////////////////////////////////////////////////////////////
 
 
+//
+// The CurrentModuleInstance and static writeLog function
+// allow static methods in this file to write log messages
+//
+FilterAtomCorrelation* CurrentModuleInstance = NULL;
 
-/////////////////////////////////////////////////////////////////////
-// This use of CurrentModuleInstance is a bit of a kludge to 
-// get the writeLog stuff to work from outside of the plugin's methods.
-// We should revise the writeLog to 
-static FilterAtomCorrelation *CurrentModuleInstance = NULL;
-
-// writeLog writes strings to the log window in the GUI.
-static void
-writeLog (const QString & s)
-    {
-
+static void writeLog ( const QString & message )
+{
     if (CurrentModuleInstance != NULL)
-        {
-        CurrentModuleInstance->writeLog (s);
-        }
+    {
+        CurrentModuleInstance->writeLog(message);
+    }
     else
-        {
-        qDebug () << s;
-        }
+    {
+        qDebug() << message;
+    }
+}
 
-    }  // end of local writeLog
-
-
-// functions specific to this plugin
 
 
 // ..........................................
@@ -904,7 +897,7 @@ atomCorrelateImages
     // we parse the first file name to see if it conforms
     // to our naming scheme.  This is signaled by whether
     // seqNumDigits > 0.
-    ModulesUtil::parseFileName ( inputFileList[0],
+    FilterSupport::parseFileName ( inputFileList[0],
                                    dirName, seqNum, seqNumDigits,
                                    outProjTag, opTag, extension);
 
@@ -930,7 +923,7 @@ atomCorrelateImages
         {
         QString outImgFN;
 
-        ModulesUtil::makeOutFN ( inputFileList[i].filePath(), outputDir,
+        FilterSupport::makeOutFN ( inputFileList[i].filePath(), outputDir,
                                    deriveSeqNumFromInputFN, i,
                                    outProjTag, outExtension, outImgFN );
 
@@ -966,7 +959,7 @@ void FilterAtomCorrelation::execute
     CurrentModuleInstance = this;  // this is just to get writeLog to work.
                                    
 
-    qDebug() << "Entering module: " + getName() + "\n";
+    qDebug() << "Entering module: " + getMetaData()->getName() + "\n";
 
 
    QString projectShortTag = getProject()->getShortTag();
@@ -1021,7 +1014,7 @@ void FilterAtomCorrelation::execute
     }  // end of loop over parameters
 
     // write out the parameters to a parameter file in the outputDir.
-    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputDir);
+    writeParameters (parameters, outputDir);
 
 
 
@@ -1032,13 +1025,13 @@ void FilterAtomCorrelation::execute
 
 
 
-    if ( ! ModulesUtil::isDirectory (inputDir) )
+    if ( ! FilterSupport::isDirectory (inputDir) )
         {
         // if input directory doesn't exist, then exit
         writeLog ("AtomCorrelation: Input folder does not exist: " + inputDir);
         return;
         }
-    else if ( ! ModulesUtil::mkDirectory (outputDir) )
+    else if ( ! FilterSupport::mkDirectory (outputDir) )
         {
         // if output directory doesn't exist, then make it
         writeLog (
@@ -1050,7 +1043,7 @@ void FilterAtomCorrelation::execute
 
     // get the list of input files
     QFileInfoList inputFileList;
-    ModulesUtil::getImageFileList (inputDir, inputFileList);
+    FilterSupport::getImageFileList (inputDir, inputFileList);
 
     for (int i=0; i < inputFileList.size(); ++i)
     {
@@ -1067,7 +1060,7 @@ void FilterAtomCorrelation::execute
 
     qDebug () << "Done with atom correlation.\n";
 
-    qDebug () << "Exiting module: " + getName() + "\n";
+    qDebug () << "Exiting module: " + getMetaData()->getName() + "\n";
 
 }  // end of FilterAtomCorrelation::execute
 

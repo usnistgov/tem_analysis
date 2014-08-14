@@ -1,5 +1,5 @@
-add_subdirectory(modules_util)
-include_directories(modules_util)
+add_subdirectory(filter_base)
+include_directories(filter_base)
 
 # add_subdirectory(filter_median)
 add_subdirectory(filter_subset)

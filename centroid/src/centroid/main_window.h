@@ -3,7 +3,7 @@
 
 #include "ui_main_window.h"
 #include "main_viewer.h"
-#include "interface.h"
+#include "filter_interface.h"
 #include "block.h"
 
 class MainViewerForm;

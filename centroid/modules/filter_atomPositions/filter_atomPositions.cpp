@@ -13,19 +13,23 @@ Need to parameterize:
 #include <stdio.h>
 #include <libgen.h>
 
+#include <QtCore>
+#include <QtGlobal>
 #include <QDebug>
 #include <QDir>
 
 #include "filter_atomPositions.h"
-#include "modules_util.h"
-
-#define MAX(x,y)  (((x)>(y))?(x):(y))
+#include "filter_support.h"
 
 /////////////////////////////////////////////////////////////////////
 
 
 
 
+//
+// The CurrentModuleInstance and static writeLog function
+// allow static methods in this file to write log messages
+//
 static FilterAtomPositions *CurrentModuleInstance = NULL;
 
 static void
@@ -192,13 +196,13 @@ writeConnectedComponentCentroids (
             unsigned short ccIndex = connCompImg->GetPixel (pixelIndex);
             if (ccIndex > 0)
                 {
-                float weight = inImg->GetPixel (pixelIndex);
+                double weight = inImg->GetPixel (pixelIndex);
                 ccInfo[ccIndex].x += weight * i;
                 ccInfo[ccIndex].y += weight * j;
                 ccInfo[ccIndex].nPix++;
                 ccInfo[ccIndex].totWeight += weight;
                 ccInfo[ccIndex].maxWeight = 
-                                 MAX (ccInfo[ccIndex].maxWeight, weight);
+                                 qMax (ccInfo[ccIndex].maxWeight, weight);
                 }
             } // end of loop over j
         } // end of loop over i
@@ -355,7 +359,7 @@ atomPositions
     // we parse the first file name to see if it conforms
     // to our naming scheme.  This is signaled by whether
     // seqNumDigits > 0.
-    ModulesUtil::parseFileName ( inputFileList[0],
+    FilterSupport::parseFileName ( inputFileList[0],
                                    dirName, seqNum, seqNumDigits,
                                    outProjTag, opTag, extension);
 
@@ -385,7 +389,7 @@ atomPositions
         {
         QString outFN;
 
-        ModulesUtil::makeOutFN ( inputFileList[i].filePath(), outputDir,
+        FilterSupport::makeOutFN ( inputFileList[i].filePath(), outputDir,
                                    deriveSeqNumFromInputFN, i,
                                    outProjTag, outExtension, outFN );
 
@@ -436,9 +440,9 @@ void FilterAtomPositions::execute
 {
     CurrentModuleInstance = this;  // this should be first line in execute
 
-    qDebug () << "/nEntering module " + getName();
+    qDebug () << "/nEntering module " + getMetaData()->getName();
 
-    // std::cout << "\n>>> BLOCK " << getName().toStdString() << std::endl;
+    // std::cout << "\n>>> BLOCK " << getMetaData()->getName().toStdString() << std::endl;
 
 
     
@@ -493,7 +497,7 @@ void FilterAtomPositions::execute
     }  // end of loop over parameters
 
 
-    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputDir);
+    writeParameters (parameters, outputDir);
 
 
     // threshold = 0.05;
@@ -505,12 +509,12 @@ void FilterAtomPositions::execute
 
 
 
-    if ( ! ModulesUtil::isDirectory (inputDir) )
+    if ( ! FilterSupport::isDirectory (inputDir) )
         {
         writeLog ("AtomPositions: Input folder does not exist: " + inputDir);
         return;
         }
-    else if ( ! ModulesUtil::mkDirectory (outputDir) )
+    else if ( ! FilterSupport::mkDirectory (outputDir) )
         {
         writeLog (
             "AtomPositions: Error accessing or creating output folder: " + 
@@ -520,7 +524,7 @@ void FilterAtomPositions::execute
 
 
     QFileInfoList inputFileList;
-    ModulesUtil::getImageFileList (inputDir, inputFileList);
+    FilterSupport::getImageFileList (inputDir, inputFileList);
 
     for (int i=0; i < inputFileList.size(); ++i)
     {
@@ -536,7 +540,7 @@ void FilterAtomPositions::execute
                         inputFileList, outputDir, projectShortTag);
 
     qDebug () << "Done with atom position calculation.\n";
-    qDebug () << "Exiting module " + getName() + "\n";
+    qDebug () << "Exiting module " + getMetaData()->getName() + "\n";
 
 }  // end of FilterAtomPositions::execute
 

@@ -14,7 +14,7 @@
 #endif
 
 #include "filter_subset.h"
-#include "modules_util.h"
+#include "filter_support.h"
 
 // 
 // When we define metadata for a plugin, we know upfront the name of
@@ -71,28 +71,23 @@
 //
 
 
+//
+// The CurrentModuleInstance and static writeLog function
+// allow static methods in this file to write log messages
+//
+FilterSubset* CurrentModuleInstance = NULL;
 
-
-static FilterSubset *CurrentModuleInstance = NULL;
-
-static void
-writeLog (const QString & s)
-    {
-
+static void writeLog ( const QString & message )
+{
     if (CurrentModuleInstance != NULL)
-        {
-        CurrentModuleInstance->writeLog (s);
-        }
+    {
+        CurrentModuleInstance->writeLog(message);
+    }
     else
-        {
-        qDebug () << s;
-        }
-
-    }  // end of local writeLog
-
-
-
-
+    {
+        qDebug() << message;
+    }
+}
 
 
 
@@ -123,7 +118,7 @@ removeImgs
         {
         for (int i = 1; i < fileList.size(); i++)
             {
-            isUnique[i] = ! ModulesUtil::filesAreSame (
+            isUnique[i] = ! FilterSupport::filesAreSame (
                                           fileList[i-1].filePath().toStdString().c_str(), 
                                           fileList[i].filePath().toStdString().c_str() 
                                          );
@@ -165,7 +160,7 @@ removeImgs
         // for other reasons.
         if ( ( ! removeMe ) && rmNonBWs )
             {
-            if ( ! ModulesUtil::imgIsGray ( fileList[i].filePath().toStdString().c_str() ) )
+            if ( ! FilterSupport::imgIsGray ( fileList[i].filePath().toStdString().c_str() ) )
                 {
                 removeMe = true;
                 }
@@ -326,7 +321,7 @@ cropImg
 
     // qDebug () << "NEW CROP: inImgFN = " << inImgFN;
 
-    ModulesUtil::makeOutFN (inImgFN, outDir, deriveSeqNumFromInputFN,
+    FilterSupport::makeOutFN (inImgFN, outDir, deriveSeqNumFromInputFN,
                             altSeqNum, outImgFNTag, "png", outImgFN);
 
     // qDebug () << "In cropImg: outImgFN = " << outImgFN;
@@ -428,7 +423,7 @@ subsetImages
         // we parse the first file name to see if it conforms
         // to our naming scheme.  This is signaled by whether
         // seqNumDigits > 0.
-        ModulesUtil::parseFileName (cropFileList[0].filePath(),
+        FilterSupport::parseFileName (cropFileList[0].filePath(),
                                       dirName, seqNum, seqNumDigits,
                                       outProjTag, opTag, extension);
 
@@ -459,7 +454,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
 {
    CurrentModuleInstance = this;  // this should be first line in execute
 
-   qDebug() << "Entering module " + getName();
+   qDebug() << "Entering module " + getMetaData()->getName();
 
    QString projectShortTag = getProject()->getShortTag();
    if (projectShortTag == "")
@@ -532,7 +527,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
     }  // end of loop over parameters
 
 
-    ModulesUtil::writeParameters (getProject(), shortTag, parameters, outputDir);
+    writeParameters (parameters, outputDir);
 
 
 
@@ -559,12 +554,12 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
    // qDebug() << rmNonBWs;
 
 
-    if ( ! ModulesUtil::isDirectory (inputDir) )
+    if ( ! FilterSupport::isDirectory (inputDir) )
         {
         writeLog ("Subset: Input folder does not exist: " + inputDir);
         return;
         }
-    else if ( ! ModulesUtil::mkDirectory (outputDir) )
+    else if ( ! FilterSupport::mkDirectory (outputDir) )
         {
         writeLog ("Subset: Error accessing or creating output folder: " + outputDir);
         return;
@@ -572,7 +567,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
 
 
    QFileInfoList inputFileList;
-   ModulesUtil::getImageFileList (inputDir, inputFileList);
+   FilterSupport::getImageFileList (inputDir, inputFileList);
     for (int i=0; i < inputFileList.size(); ++i)
     {
         QFileInfo fileInfo = inputFileList.at(i);
@@ -594,7 +589,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
                             rmDups, rmSingles, rmNonBWs, cropRect);
 
 
-   qDebug() << "Exiting module " + getName();
+   qDebug() << "Exiting module " + getMetaData()->getName();
 }
 
 

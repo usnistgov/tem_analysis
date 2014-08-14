@@ -1,4 +1,4 @@
-project(modules_util)
+project(filter_base)
 
 #set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
 #set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/plugins)
@@ -9,8 +9,8 @@ cmake_policy(SET CMP0020 NEW) # automatically link to qtmain.lib on Windows
 add_compiler_export_flags()
 
 add_library(${PROJECT_NAME} STATIC
-  modules_util.h
-  modules_util.cpp
+  filter_implementation.cpp
+  filter_support.cpp
 )
 
 qt5_use_modules(${PROJECT_NAME} Core)
