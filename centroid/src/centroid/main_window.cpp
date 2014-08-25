@@ -465,7 +465,10 @@ void MainWindow::on_action_Photo_triggered()
    QString fileName = file_dialog->selectedFiles()[0];
    qDebug() << "Saving screenshot to" << fileName;
 
-   QPixmap pm = main_viewer_form->graphicsView->grab(main_viewer_form->graphicsView->rect()); 
+   // revised to grab only the viewport; omit scrollbars
+   // QPixmap pm = main_viewer_form->graphicsView->grab(main_viewer_form->graphicsView->rect()); 
+   QWidget * viewport = main_viewer_form->graphicsView->viewport();
+   QPixmap pm = viewport->grab(viewport->rect()); 
    pm.save(fileName);  
 }
 
