@@ -38,6 +38,7 @@ private slots:
    void on_action_ParticlesViewer_triggered();
    void on_action_SelectParticles_triggered();
    void on_action_Photo_triggered();
+   void on_action_PhotoAll_triggered();
    void on_action_LineSelection_triggered();
    void on_action_ShowLines_triggered();
    void on_action_SelectionModeMinus_triggered();

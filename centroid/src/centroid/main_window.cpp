@@ -454,7 +454,7 @@ void MainWindow::on_action_ImageViewer_triggered()
 
 void MainWindow::on_action_Photo_triggered()
 {
-   file_dialog->setWindowTitle("Select screenshot filename");
+   file_dialog->setWindowTitle("Select screenshot file name");
    file_dialog->setFileMode(QFileDialog::AnyFile);
 
    if (!file_dialog->exec()) {
@@ -470,7 +470,78 @@ void MainWindow::on_action_Photo_triggered()
    QWidget * viewport = main_viewer_form->graphicsView->viewport();
    QPixmap pm = viewport->grab(viewport->rect()); 
    pm.save(fileName);  
+
+
+   // test 
+   // on_action_PhotoAll_triggered();
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+// This seems to work
+void MainWindow::on_action_PhotoAll_triggered()
+{
+
+    // Loop through frames; grab and write image file for each
+
+    int nFrames = main_viewer_form->get_number_of_frames ();
+    int currFrame = main_viewer_form->get_current_frame ();
+
+    QString outFN;  // to be constructed in the loop
+
+    // Get directory where we'll write the output images
+    file_dialog->setWindowTitle("Select output folder for screenshots");
+    file_dialog->setFileMode(QFileDialog::Directory);
+
+    if (!file_dialog->exec()) {
+       qDebug() << "Output folder dialog cancelled.";
+       return;
+    }
+
+
+    QString outDir = file_dialog->selectedFiles()[0];
+
+
+
+    QWidget * viewport = main_viewer_form->graphicsView->viewport();
+
+    QString projTag = current_project->getShortTag ();
+
+    QString outTag = projTag + ".grab";
+
+
+    // loop through all frames
+    for (int i = 0; i < nFrames; i++)
+        {
+        // start at curr frame and wrap around
+        int f = (i + currFrame) % nFrames;
+
+
+        // draw it and grab the pixmap
+        main_viewer_form->draw_frame (f);
+        QPixmap pm = viewport->grab(viewport->rect()); 
+
+        // construct file name based on f and outDir
+        char cSeqStr[1000];
+        sprintf (cSeqStr, "%06d", f);
+        // QString qSeqStr (cSeqStr);
+        outFN = outDir + "/" + QString (cSeqStr) + "." + outTag + ".png";
+    
+
+        //FilterSupport::makeOutFN ( "00000."+projTag+".grab.png", // not used
+            // outDir, false, f, outTag, "png", outFN);
+
+        qDebug () << "writing file " + outFN;
+        // write it out
+        pm.save (outFN);
+        }
+
+    // return to what was the current frame
+    main_viewer_form->draw_frame (currFrame);
+
+    return;
+} // end of void MainWindow::on_action_PhotoAll_triggered()
+
 
 //////////////////////////////////////////////////////////////////////////
 //

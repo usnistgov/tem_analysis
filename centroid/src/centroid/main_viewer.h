@@ -36,14 +36,14 @@ public:
    void clearScene();
    void draw_frame(int frame);
    void draw_current_frame();
+   int get_current_frame();
+   int get_number_of_frames();
 
    void images_from_dir(const QString& dir);
    void particles_from_dir(const QString& dir);
 
    void zoom_in();
    void zoom_out();
-
-   int get_number_of_frames();
 
    bool get_is_triangulation_on();
    void set_is_triangulation_on(bool state);

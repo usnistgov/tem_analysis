@@ -96,6 +96,14 @@ readAndRescaleTo8Bit(const char *inFN, UCharImageType::Pointer & img)
 
 //////////////////////////////////////////////////////////////////////////
 
+int MainViewerForm::get_current_frame ()
+{
+    return current_frame;
+} 
+
+
+//////////////////////////////////////////////////////////////////////////
+
 void MainViewerForm::draw_frame(int frame)
 {
    if (frame > get_number_of_frames() || frame < 0) return;
