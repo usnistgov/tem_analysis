@@ -66,6 +66,7 @@ void Particles::read_data_from_dir(const QString& str)
 
    if (list.size() == 0) return;
 
+   // One entry in list for each frame; each entry is a list of particles
    list_all_particles.resize(list.size());
 
    // if (list.size()>0)
@@ -73,7 +74,8 @@ void Particles::read_data_from_dir(const QString& str)
    //    timeScrollBar->setRange(0, list.size()-1);
    // }
 
-   std::cout << "Reading data:" << std::endl;
+   std::cout << "Reading particle data:" << std::endl;
+   qDebug() << "Reading particle data:" ;
 
    for (int i=0; i<list.size(); ++i) 
    {
@@ -89,8 +91,11 @@ void Particles::read_data_from_dir(const QString& str)
 
       QTextStream in(&file);
 
+      // loop over lines in apos file
       while (!in.atEnd()) 
       {
+         // for each line, create a particle and add it to the 
+         // particle list at the current entry in list_all_particles
          QString line = in.readLine();    
          QStringList fields = line.split(QRegExp("\\s+")); 
          particle p;
@@ -281,16 +286,24 @@ void Particles::draw_particles(ViewerGraphicsScene *scene, int frame)
 {
    if (get_number_of_frames() == 0) return;
 
-   // draw particles
+   // draw particles in this frame
    // 
+   // check if frame is in range
    if (frame < list_all_particles.size())
    {
       particles *ps = list_all_particles[frame];
 
+       // loop through each particle in this frame
       for (int i=0; i<ps->size(); i++)
       {
-         ParticleItem *pi = new ParticleItem(QPointF(ps->at(i).x, ps->at(i).y), i, frame, this);
+         
+         // create a ParticleItem; this is a QGraphicsItem subclass
+         ParticleItem *pi = 
+            new ParticleItem(QPointF(ps->at(i).x, ps->at(i).y), i, frame, this);
+
          pi->set_is_positive_selection_on(is_positive_selection_on);
+
+         // add the graphics item to the scene
          scene->addItem(pi);
       }
    }
@@ -300,6 +313,9 @@ void Particles::draw_particles(ViewerGraphicsScene *scene, int frame)
 
 void Particles::draw_triangles(ViewerGraphicsScene *scene, int frame)
 {
+
+   // Use VTK to derive triangles for the current frame
+
    if (get_number_of_frames() == 0) return;
 
    particles *ps0 = list_all_particles[frame];
@@ -308,6 +324,7 @@ void Particles::draw_triangles(ViewerGraphicsScene *scene, int frame)
    //
    vtkSmartPointer<vtkPoints> points = vtkSmartPointer<vtkPoints>::New();
 
+   // for each particle, add a point to the vtkPoints object
    double xx, yy, zz;
    for (int i=0; i<ps0->size(); i++)
    {
@@ -331,6 +348,7 @@ void Particles::draw_triangles(ViewerGraphicsScene *scene, int frame)
    #endif
    delaunay->Update();
 
+   // the output is the triangulation
    vtkPolyData* outputPolyData = delaunay->GetOutput();
 
    // std::cout << "Number of polys: " << outputPolyData->GetNumberOfPolys() << std::endl;
@@ -338,10 +356,14 @@ void Particles::draw_triangles(ViewerGraphicsScene *scene, int frame)
    vtkIdType npts, *pts;
    outputPolyData->GetPolys()->InitTraversal();
    
+   // Loop through each cell (triangle) in the triangulation and draw edges
+   // (Note that this scheme draws almost all edges twice because
+   //  almost all triangle edges are shared by two triangles.....)
    while (outputPolyData->GetPolys()->GetNextCell(npts, pts))
    {
       // std::cout << "triangle [" << pts[0] << " " << pts[1] << " " << pts[2] << "]" << std::endl;
 
+      // get the three vertices of the triangle
       double p0[3];
       outputPolyData->GetPoint(pts[0], p0);
 
@@ -351,6 +373,8 @@ void Particles::draw_triangles(ViewerGraphicsScene *scene, int frame)
       double p2[3];
       outputPolyData->GetPoint(pts[2], p2);
       
+      // add a line segment for each edge of the triangle
+
       QPen redOutlinePen(Qt::darkRed);
       redOutlinePen.setWidth(0.1);
 
@@ -376,10 +400,13 @@ void Particles::set_selected(int frame, int id, bool selected)
 
 
 void Particles::set_selected (int frame, 
-                                    const QPointF& pp0, const QPointF& pp1, 
-                                    bool selected)
+                              const QPointF& pp0, const QPointF& pp1, 
+                              bool selected)
 {
 
+
+   // Set the is_selected flag for all particles in the indicated
+   // frame that are inside the box specified by pp0 and pp1.
 
    QPointF p0 (MIN(pp0.x(), pp1.x()), MIN (pp0.y(), pp1.y()));
    QPointF p1 (MAX(pp0.x(), pp1.x()), MAX (pp0.y(), pp1.y()));
@@ -412,6 +439,9 @@ void Particles::set_selected (int frame,
 
 void Particles::set_selected_global(const QPointF& pp0, const QPointF& pp1, bool selected)
 {
+
+   // Set the is_selected flag for all particles in all
+   // frames that are inside the box specified by pp0 and pp1.
 
    QPointF p0 (MIN(pp0.x(), pp1.x()), MIN (pp0.y(), pp1.y()));
    QPointF p1 (MAX(pp0.x(), pp1.x()), MAX (pp0.y(), pp1.y()));
