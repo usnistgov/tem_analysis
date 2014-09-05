@@ -22,7 +22,11 @@ void MainWindow::addModuleToDock(Block *block)
    QTreeWidgetItem *category = new QTreeWidgetItem();
 
    treeWidget->addTopLevelItem(category);
-   treeWidget->setItemWidget(category, 0, new ModuleButton(block->getBlockName(), treeWidget, category)); 
+   treeWidget->
+    setItemWidget( category, 0, 
+                   new ModuleButton(block->getBlockName(), 
+                                    treeWidget, category) ); 
+
    category->setExpanded(false);
 
    QFrame* frame = new QFrame(treeWidget);
@@ -136,7 +140,9 @@ MainWindow::MainWindow()
 
    // add action allowsing to close/view docking widgets
    // 
-   menuView->addAction(dockModulesWidget->toggleViewAction());
+   //menuView->addAction(dockModulesWidget->toggleViewAction());
+   // menuView->addAction(dockModulesWidget_2->toggleViewAction());
+   menuView->addAction(toolsDockWidget->toggleViewAction());
    menuView->addAction(dockLogsWidget->toggleViewAction());
 
    // set central widget  
@@ -554,6 +560,101 @@ void MainWindow::on_action_LineSelection_triggered()
 
 //////////////////////////////////////////////////////////////////////////
 
+void MainWindow::on_action_Test1_triggered()
+{
+    printf ("Test1 triggered\n");
+}
+
+
+void MainWindow::on_action_Test2_triggered()
+{
+    printf ("Test2 triggered\n");
+}
+
+
+
+void MainWindow::on_actionShowHideImages_toggled (bool o)
+{
+    printf ("show / hide Images: %s\n", o ? "ON" : "OFF");
+}
+
+
+void MainWindow::on_actionShowHideAtoms_toggled (bool o)
+{
+    printf ("show / hide Atoms: %s\n", o ? "ON" : "OFF");
+}
+
+
+void MainWindow::on_actionShowHideTriangulation_toggled (bool o)
+{
+    printf ("show / hide Tri : %s\n", o ? "ON" : "OFF");
+}
+
+
+
+void MainWindow::on_actionSelectInAllFrames_toggled(bool o)
+{
+    printf ("select in all : %s\n", o ? "ON" : "OFF");
+}
+
+void MainWindow::on_actionAddInAllFrames_toggled(bool o)
+{
+    printf ("add in all : %s\n", o ? "ON" : "OFF");
+}
+
+
+void MainWindow::on_actionSaveSnaps_triggered()
+{
+    printf ("save snaps triggered\n");
+}
+
+void MainWindow::on_actionSaveAtoms_triggered()
+{
+    printf ("save atoms triggered\n");
+}
+
+void MainWindow::on_actionSaveTri_triggered()
+{
+    printf ("save tri triggered\n");
+}
+
+void MainWindow::on_actionDeleteSelected_triggered()
+{
+    printf ("save delete selected triggered\n");
+}
+
+void MainWindow::on_actionDeleteUnSelected_triggered()
+{
+    printf ("save delete unselected triggered\n");
+}
+
+void MainWindow::on_actionInvertSelection_triggered()
+{
+    printf ("save invert selection triggered\n");
+}
+
+void MainWindow::on_actionBoxSelection_triggered()
+{
+    printf ("save box sel mode triggered\n");
+}
+
+void MainWindow::on_actionAddAtom_triggered()
+{
+    printf ("save add atom mode triggered\n");
+}
+
+void MainWindow::on_actionHandDragMode_triggered()
+{
+    printf ("save hand drag mode triggered\n");
+}
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_ShowLines_triggered()
 {
    bool tri = main_viewer_form->get_is_triangulation_on();
@@ -584,6 +685,9 @@ void MainWindow::on_action_AddAtom_triggered()
 {
    set_interactionMode (MainViewerForm::AddAtomCurrFrame);
 }
+
+
+
 
 //////////////////////////////////////////////////////////////////////////
 

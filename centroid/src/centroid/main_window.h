@@ -47,6 +47,29 @@ private slots:
    void on_action_SelectionModeMinusGlobal_triggered();
    void on_action_AddAtom_triggered();
 
+   void on_action_Test1_triggered();
+   void on_action_Test2_triggered();
+   
+   void on_actionShowHideImages_toggled(bool);
+   void on_actionShowHideAtoms_toggled(bool);
+   void on_actionShowHideTriangulation_toggled(bool);
+
+   void on_actionSelectInAllFrames_toggled(bool);
+   void on_actionAddInAllFrames_toggled(bool);
+
+   void on_actionSaveSnaps_triggered();
+   void on_actionSaveAtoms_triggered();
+   void on_actionSaveTri_triggered();
+   void on_actionDeleteSelected_triggered();
+   void on_actionDeleteUnSelected_triggered();
+   void on_actionInvertSelection_triggered();
+   void on_actionBoxSelection_triggered();
+   void on_actionAddAtom_triggered();
+   void on_actionHandDragMode_triggered();
+
+
+
+
 protected:
    virtual void closeEvent(QCloseEvent*);
 

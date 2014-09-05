@@ -19,7 +19,9 @@
   <property name="statusTip">
    <string/>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <zorder>verticalFrame_2</zorder>
+  </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -73,106 +75,11 @@
    <addaction name="separator"/>
    <addaction name="action_ImageViewer"/>
    <addaction name="action_ParticlesViewer"/>
-   <addaction name="separator"/>
-   <addaction name="action_ReadData"/>
-   <addaction name="action_ZoomOut"/>
-   <addaction name="action_ZoomIn"/>
-   <addaction name="action_ScrollHandDrag"/>
-   <addaction name="action_SelectionModePlusGlobal"/>
-   <addaction name="action_SelectionModeMinusGlobal"/>
-   <addaction name="action_SelectionMode"/>
-   <addaction name="action_SelectionModeMinus"/>
-   <addaction name="action_SelectParticles"/>
-   <addaction name="action_AddAtom"/>
-   <addaction name="action_RemoveParticles"/>
    <addaction name="action_ShowLines"/>
    <addaction name="separator"/>
-   <addaction name="action_Photo"/>
-  </widget>
-  <widget class="QDockWidget" name="dockModulesWidget">
-   <property name="minimumSize">
-    <size>
-     <width>160</width>
-     <height>160</height>
-    </size>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QFrame { border: 1px solid gray; border-radius: 0px; padding: 0px; }</string>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
-   </property>
-   <property name="windowTitle">
-    <string>Data Processing Modules</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>2</number>
-   </attribute>
-   <widget class="QWidget" name="dockModulesWidgetContents">
-    <layout class="QGridLayout" name="gridLayout">
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <property name="bottomMargin">
-      <number>8</number>
-     </property>
-     <item row="0" column="0">
-      <layout class="QVBoxLayout" name="verticalLayoutModulesDockWidget">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QTreeWidget" name="treeWidget">
-         <property name="enabled">
-          <bool>true</bool>
-         </property>
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::NoFrame</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
-         </property>
-         <property name="lineWidth">
-          <number>0</number>
-         </property>
-         <property name="indentation">
-          <number>0</number>
-         </property>
-         <property name="rootIsDecorated">
-          <bool>false</bool>
-         </property>
-         <property name="columnCount">
-          <number>1</number>
-         </property>
-         <attribute name="headerVisible">
-          <bool>false</bool>
-         </attribute>
-         <column>
-          <property name="text">
-           <string notr="true">1</string>
-          </property>
-         </column>
-        </widget>
-       </item>
-      </layout>
-     </item>
-    </layout>
-   </widget>
+   <addaction name="action_ZoomOut"/>
+   <addaction name="action_ZoomIn"/>
+   <addaction name="separator"/>
   </widget>
   <widget class="QDockWidget" name="dockLogsWidget">
    <property name="minimumSize">
@@ -182,7 +89,7 @@
     </size>
    </property>
    <property name="windowTitle">
-    <string>Centroid Logs</string>
+    <string>Processing Log</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
@@ -224,6 +131,478 @@
     </layout>
    </widget>
   </widget>
+  <widget class="QDockWidget" name="toolsDockWidget">
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QTabWidget" name="tabWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>240</width>
+       <height>551</height>
+      </rect>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="processingTab">
+      <attribute name="title">
+       <string>Processing</string>
+      </attribute>
+      <widget class="QTreeWidget" name="treeWidget">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>240</width>
+         <height>521</height>
+        </rect>
+       </property>
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QAbstractScrollArea::AdjustToContents</enum>
+       </property>
+       <property name="headerHidden">
+        <bool>false</bool>
+       </property>
+       <attribute name="headerVisible">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="headerMinimumSectionSize">
+        <number>1</number>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>Data Processing Modules</string>
+        </property>
+        <property name="font">
+         <font>
+          <italic>true</italic>
+          <underline>false</underline>
+          <kerning>true</kerning>
+         </font>
+        </property>
+        <property name="textAlignment">
+         <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+        </property>
+       </column>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="toolsTab">
+      <attribute name="title">
+       <string>Tools</string>
+      </attribute>
+      <widget class="QFrame" name="verticalFrame_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>240</width>
+         <height>521</height>
+        </rect>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QToolButton" name="addAtomButton">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>70</x>
+          <y>10</y>
+          <width>24</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="cursor">
+         <cursorShape>ArrowCursor</cursorShape>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Atom&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../main_window.qrc">
+          <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QToolButton" name="boxSelectButton">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>10</y>
+          <width>24</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select Box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>abcd</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../main_window.qrc">
+          <normaloff>:/icons/select.png</normaloff>:/icons/select.png</iconset>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QFrame" name="selectionOptions">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>40</y>
+          <width>161</width>
+          <height>82</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <property name="lineWidth">
+         <number>2</number>
+        </property>
+        <widget class="QCheckBox" name="selectInAllCB">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Select in all frames</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="deleteSelectedBut">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>20</y>
+           <width>121</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Delete Selected</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="delUnSelBut">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>121</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Delete Unselected</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="invertSelBut">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>121</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Invert Selection</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QFrame" name="addAtomOptions">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>40</y>
+          <width>161</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <property name="lineWidth">
+         <number>2</number>
+        </property>
+        <widget class="QCheckBox" name="addAtomAllFrCB">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>0</y>
+           <width>141</width>
+           <height>21</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Add in all frames</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="Line" name="line">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>140</y>
+          <width>181</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QFrame" name="saveToolsFrame">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>290</y>
+          <width>181</width>
+          <height>102</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QPushButton" name="saveSnapshots">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>161</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>  Save Snapshots       </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/photo.png</normaloff>:/icons/photo.png</iconset>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="saveAtoms">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>161</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>  Save Atom Positions  </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/particles.png</normaloff>:/icons/particles.png</iconset>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="saveTriangulation">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>161</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>  Save Triangulation    </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/triangles.png</normaloff>:/icons/triangles.png</iconset>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QToolButton" name="handDragButton">
+        <property name="geometry">
+         <rect>
+          <x>100</x>
+          <y>10</y>
+          <width>25</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Scroll View&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../main_window.qrc">
+          <normaloff>:/icons/hand.png</normaloff>:/icons/hand.png</iconset>
+        </property>
+        <property name="checkable">
+         <bool>true</bool>
+        </property>
+        <property name="autoExclusive">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QFrame" name="showHideFrame">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>160</y>
+          <width>181</width>
+          <height>102</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QCheckBox" name="showImages">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>161</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>  Show Images       </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/view.png</normaloff>:/icons/view.png</iconset>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="showAtoms">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>40</y>
+           <width>161</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>  Show Atoms    </string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/particles.png</normaloff>:/icons/particles.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="showTriangulation">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>70</y>
+           <width>161</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>  Show Triangulation</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/triangles.png</normaloff>:/icons/triangles.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="Line" name="line_2">
+        <property name="geometry">
+         <rect>
+          <x>30</x>
+          <y>270</y>
+          <width>181</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <zorder>boxSelectButton</zorder>
+       <zorder>addAtomButton</zorder>
+       <zorder>addAtomOptions</zorder>
+       <zorder>line</zorder>
+       <zorder>saveToolsFrame</zorder>
+       <zorder>selectionOptions</zorder>
+       <zorder>handDragButton</zorder>
+       <zorder>showHideFrame</zorder>
+       <zorder>line_2</zorder>
+      </widget>
+     </widget>
+    </widget>
+   </widget>
+  </widget>
   <action name="action_ReadData">
    <property name="icon">
     <iconset resource="../main_window.qrc">
@@ -236,7 +615,7 @@
     <string>Read Data</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="action_ImageViewer">
@@ -248,7 +627,7 @@
     <string>&amp;Image Viewer</string>
    </property>
    <property name="toolTip">
-    <string>Image Viewer</string>
+    <string>Read Images For Viewing</string>
    </property>
   </action>
   <action name="action_ZoomIn">
@@ -301,6 +680,9 @@
    <property name="text">
     <string>Particles Viewer</string>
    </property>
+   <property name="toolTip">
+    <string>Read Atom Positions For Viewing</string>
+   </property>
   </action>
   <action name="action_SelectParticles">
    <property name="checkable">
@@ -317,7 +699,7 @@
     <string>Select Particle</string>
    </property>
    <property name="visible">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
   </action>
   <action name="action_Photo">
@@ -348,6 +730,9 @@
    </property>
    <property name="text">
     <string>Show Lines</string>
+   </property>
+   <property name="toolTip">
+    <string>Generate Triangulation of Atom Positions</string>
    </property>
   </action>
   <action name="action_ImageViewerMulti">
@@ -456,9 +841,635 @@
     <string>Not Implemented</string>
    </property>
   </action>
+  <action name="actionBox_Select">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset>
+     <normaloff>../icons/select.png</normaloff>../icons/select.png</iconset>
+   </property>
+   <property name="text">
+    <string>Box Select</string>
+   </property>
+   <property name="toolTip">
+    <string>Box Select</string>
+   </property>
+  </action>
+  <action name="action_Test1">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
+   </property>
+   <property name="text">
+    <string>TEST_1</string>
+   </property>
+   <property name="toolTip">
+    <string>Not Implemented</string>
+   </property>
+  </action>
+  <action name="action_Test2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
+   </property>
+   <property name="text">
+    <string>TEST_2</string>
+   </property>
+   <property name="toolTip">
+    <string>Not Implemented</string>
+   </property>
+  </action>
+  <action name="actionShowHideImages">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>showHideImages</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Images</string>
+   </property>
+  </action>
+  <action name="actionShowHideAtoms">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>showHideAtoms</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Atoms</string>
+   </property>
+  </action>
+  <action name="actionShowHideTriangulation">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>showHideTriangulation</string>
+   </property>
+   <property name="toolTip">
+    <string>Show Triangulation</string>
+   </property>
+  </action>
+  <action name="actionSaveSnaps">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>saveSnaps</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Snapshots</string>
+   </property>
+  </action>
+  <action name="actionSaveAtoms">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>saveAtoms</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Atom Positions</string>
+   </property>
+  </action>
+  <action name="actionSaveTri">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>saveTri</string>
+   </property>
+   <property name="toolTip">
+    <string>Save Triangulation</string>
+   </property>
+  </action>
+  <action name="actionDeleteSelected">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>deleteSelected</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete Selected Atoms</string>
+   </property>
+  </action>
+  <action name="actionDeleteUnSelected">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>deleteUnSelected</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete atoms that are not selected</string>
+   </property>
+  </action>
+  <action name="actionInvertSelection">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>invertSelection</string>
+   </property>
+   <property name="toolTip">
+    <string>Invert Atom Selection</string>
+   </property>
+  </action>
+  <action name="actionSelectInAllFrames">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>selectInAllFrames</string>
+   </property>
+   <property name="toolTip">
+    <string>Select atoms in all frames</string>
+   </property>
+  </action>
+  <action name="actionAddInAllFrames">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>addInAllFrames</string>
+   </property>
+   <property name="toolTip">
+    <string>Add atoms in all frames</string>
+   </property>
+  </action>
+  <action name="actionBoxSelection">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>BoxSelection</string>
+   </property>
+   <property name="toolTip">
+    <string>Box Selection Mode</string>
+   </property>
+  </action>
+  <action name="actionAddAtom">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>AddAtom</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Atom Mode</string>
+   </property>
+  </action>
+  <action name="actionHandDragMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>HandDrag</string>
+   </property>
+   <property name="toolTip">
+    <string>Drag Mode</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../main_window.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>addAtomButton</sender>
+   <signal>released()</signal>
+   <receiver>actionAddAtom</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxSelectButton</sender>
+   <signal>released()</signal>
+   <receiver>actionBoxSelection</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>122</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxSelectButton</sender>
+   <signal>released()</signal>
+   <receiver>selectionOptions</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addAtomButton</sender>
+   <signal>released()</signal>
+   <receiver>selectionOptions</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>183</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>boxSelectButton</sender>
+   <signal>released()</signal>
+   <receiver>addAtomOptions</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>53</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addAtomButton</sender>
+   <signal>released()</signal>
+   <receiver>addAtomOptions</receiver>
+   <slot>show()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addAtomButton</sender>
+   <signal>released()</signal>
+   <receiver>addAtomOptions</receiver>
+   <slot>raise()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>83</x>
+     <y>125</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>handDragButton</sender>
+   <signal>released()</signal>
+   <receiver>addAtomOptions</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>122</x>
+     <y>154</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>handDragButton</sender>
+   <signal>released()</signal>
+   <receiver>selectionOptions</receiver>
+   <slot>hide()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>122</x>
+     <y>184</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showAtoms</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionShowHideAtoms</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>314</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showImages</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionShowHideImages</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>284</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>showTriangulation</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionShowHideTriangulation</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>344</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>handDragButton</sender>
+   <signal>released()</signal>
+   <receiver>actionHandDragMode</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>114</x>
+     <y>124</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>selectInAllCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionSelectInAllFrames</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>addAtomAllFrCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionAddInAllFrames</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>154</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deleteSelectedBut</sender>
+   <signal>released()</signal>
+   <receiver>actionDeleteSelected</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>173</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>delUnSelBut</sender>
+   <signal>released()</signal>
+   <receiver>actionDeleteUnSelected</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>193</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>invertSelBut</sender>
+   <signal>released()</signal>
+   <receiver>actionInvertSelection</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>112</x>
+     <y>213</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveSnapshots</sender>
+   <signal>released()</signal>
+   <receiver>actionSaveSnaps</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>414</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveAtoms</sender>
+   <signal>released()</signal>
+   <receiver>actionSaveAtoms</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>444</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveTriangulation</sender>
+   <signal>released()</signal>
+   <receiver>actionSaveTri</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>122</x>
+     <y>474</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>
