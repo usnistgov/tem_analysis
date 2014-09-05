@@ -591,7 +591,6 @@ void MainWindow::on_actionShowHideTriangulation_toggled (bool o)
 }
 
 
-
 void MainWindow::on_actionSelectInAllFrames_toggled(bool o)
 {
     printf ("select in all : %s\n", o ? "ON" : "OFF");
@@ -603,17 +602,17 @@ void MainWindow::on_actionAddInAllFrames_toggled(bool o)
 }
 
 
-void MainWindow::on_actionSaveSnaps_triggered()
+void MainWindow::on_actionSave_Snapshots_triggered()
 {
     printf ("save snaps triggered\n");
 }
 
-void MainWindow::on_actionSaveAtoms_triggered()
+void MainWindow::on_actionSave_Atom_Positions_triggered()
 {
     printf ("save atoms triggered\n");
 }
 
-void MainWindow::on_actionSaveTri_triggered()
+void MainWindow::on_actionSave_Triangulation_triggered()
 {
     printf ("save tri triggered\n");
 }
@@ -633,21 +632,40 @@ void MainWindow::on_actionInvertSelection_triggered()
     printf ("save invert selection triggered\n");
 }
 
+
+
+void MainWindow::on_actionHandDragMode_triggered()
+{
+    printf ("hand drag mode triggered\n");
+    viewerToolOptStack->setCurrentIndex(0);
+}
+
 void MainWindow::on_actionBoxSelection_triggered()
 {
-    printf ("save box sel mode triggered\n");
+    printf ("box sel mode triggered\n");
+    viewerToolOptStack->setCurrentIndex(1);
 }
 
 void MainWindow::on_actionAddAtom_triggered()
 {
-    printf ("save add atom mode triggered\n");
+    printf ("add atom mode triggered\n");
+    viewerToolOptStack->setCurrentIndex(2);
 }
 
-void MainWindow::on_actionHandDragMode_triggered()
+
+
+void MainWindow::on_actionDelAtomMode_triggered()
 {
-    printf ("save hand drag mode triggered\n");
+    printf ("del atom mode triggered\n");
+    viewerToolOptStack->setCurrentIndex(3);
 }
 
+
+void MainWindow::on_actionTriMode_triggered()
+{
+    printf ("triangulation mode triggered\n");
+    viewerToolOptStack->setCurrentIndex(4);
+}
 
 
 

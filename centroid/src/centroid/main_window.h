@@ -57,15 +57,23 @@ private slots:
    void on_actionSelectInAllFrames_toggled(bool);
    void on_actionAddInAllFrames_toggled(bool);
 
-   void on_actionSaveSnaps_triggered();
-   void on_actionSaveAtoms_triggered();
-   void on_actionSaveTri_triggered();
+   void on_actionSave_Snapshots_triggered();
+   void on_actionSave_Atom_Positions_triggered();
+   void on_actionSave_Triangulation_triggered();
    void on_actionDeleteSelected_triggered();
    void on_actionDeleteUnSelected_triggered();
    void on_actionInvertSelection_triggered();
    void on_actionBoxSelection_triggered();
    void on_actionAddAtom_triggered();
    void on_actionHandDragMode_triggered();
+
+
+
+    void on_actionDelAtomMode_triggered();
+    void on_actionTriMode_triggered();
+
+
+
 
 
 

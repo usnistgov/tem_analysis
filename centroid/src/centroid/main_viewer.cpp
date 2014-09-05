@@ -196,6 +196,20 @@ void MainViewerForm::zoom_out()
 
 //////////////////////////////////////////////////////////////////////////
 
+void MainViewerForm::on_action_ZoomIn_triggered()
+{
+    printf ("Zoom In triggered\n");
+    zoom_in ();
+}
+
+
+void MainViewerForm::on_action_ZoomOut_triggered()
+{
+    printf ("Zoom Out triggered\n");
+    zoom_out ();
+}
+
+
 void MainViewerForm::on_action_JumpToFirst_triggered()
 {
    draw_frame(0);
@@ -289,6 +303,9 @@ void MainViewerForm::viewer_icons_show(bool is_enabled)
    jumpToLastButton->setEnabled(is_enabled);
    frameSlider->setEnabled(is_enabled);
    frameSpinBox->setEnabled(is_enabled);
+
+   zoomOutBut->setEnabled (is_enabled);
+   zoomInBut->setEnabled (is_enabled);
 }
 
 //////////////////////////////////////////////////////////////////////////

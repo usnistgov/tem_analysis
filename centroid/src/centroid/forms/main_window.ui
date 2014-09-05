@@ -13,6 +13,12 @@
     <height>866</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>TEM Analysis</string>
   </property>
@@ -40,6 +46,13 @@
     <addaction name="action_NewProject"/>
     <addaction name="action_OpenProject"/>
     <addaction name="separator"/>
+    <addaction name="action_ImageViewer"/>
+    <addaction name="action_ParticlesViewer"/>
+    <addaction name="separator"/>
+    <addaction name="actionSave_Snapshots"/>
+    <addaction name="actionSave_Atom_Positions"/>
+    <addaction name="actionSave_Triangulation"/>
+    <addaction name="separator"/>
     <addaction name="action_Quit"/>
    </widget>
    <widget class="QMenu" name="menuView">
@@ -56,30 +69,6 @@
    <addaction name="menu_File"/>
    <addaction name="menuView"/>
    <addaction name="menu_Help"/>
-  </widget>
-  <widget class="QToolBar" name="toolBar">
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="windowTitle">
-    <string>toolBar</string>
-   </property>
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-   <addaction name="action_NewProject"/>
-   <addaction name="action_OpenProject"/>
-   <addaction name="separator"/>
-   <addaction name="action_ImageViewer"/>
-   <addaction name="action_ParticlesViewer"/>
-   <addaction name="action_ShowLines"/>
-   <addaction name="separator"/>
-   <addaction name="action_ZoomOut"/>
-   <addaction name="action_ZoomIn"/>
-   <addaction name="separator"/>
   </widget>
   <widget class="QDockWidget" name="dockLogsWidget">
    <property name="minimumSize">
@@ -142,13 +131,19 @@
        <x>0</x>
        <y>0</y>
        <width>240</width>
-       <height>551</height>
+       <height>590</height>
       </rect>
      </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
      <widget class="QWidget" name="processingTab">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <attribute name="title">
        <string>Processing</string>
       </attribute>
@@ -158,7 +153,7 @@
          <x>0</x>
          <y>0</y>
          <width>240</width>
-         <height>521</height>
+         <height>610</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -206,292 +201,23 @@
          <x>0</x>
          <y>0</y>
          <width>240</width>
-         <height>521</height>
+         <height>560</height>
         </rect>
        </property>
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QToolButton" name="addAtomButton">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>70</x>
-          <y>10</y>
-          <width>24</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="cursor">
-         <cursorShape>ArrowCursor</cursorShape>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Atom&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../main_window.qrc">
-          <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QToolButton" name="boxSelectButton">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>10</y>
-          <width>24</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select Box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>abcd</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../main_window.qrc">
-          <normaloff>:/icons/select.png</normaloff>:/icons/select.png</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
-        </property>
-       </widget>
-       <widget class="QFrame" name="selectionOptions">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>40</y>
-          <width>161</width>
-          <height>82</height>
-         </rect>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <property name="lineWidth">
-         <number>2</number>
-        </property>
-        <widget class="QCheckBox" name="selectInAllCB">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>0</y>
-           <width>141</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Select in all frames</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="deleteSelectedBut">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>20</y>
-           <width>121</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Delete Selected</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="delUnSelBut">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>40</y>
-           <width>121</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Delete Unselected</string>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="invertSelBut">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>60</y>
-           <width>121</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Invert Selection</string>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QFrame" name="addAtomOptions">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>40</y>
-          <width>161</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="autoFillBackground">
-         <bool>true</bool>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <property name="lineWidth">
-         <number>2</number>
-        </property>
-        <widget class="QCheckBox" name="addAtomAllFrCB">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>0</y>
-           <width>141</width>
-           <height>21</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Add in all frames</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </widget>
        <widget class="Line" name="line">
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>140</y>
+          <y>150</y>
           <width>181</width>
           <height>16</height>
          </rect>
         </property>
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-       <widget class="QFrame" name="saveToolsFrame">
-        <property name="geometry">
-         <rect>
-          <x>30</x>
-          <y>290</y>
-          <width>181</width>
-          <height>102</height>
-         </rect>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <widget class="QPushButton" name="saveSnapshots">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>161</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>  Save Snapshots       </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../main_window.qrc">
-           <normaloff>:/icons/photo.png</normaloff>:/icons/photo.png</iconset>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="saveAtoms">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>40</y>
-           <width>161</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>  Save Atom Positions  </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../main_window.qrc">
-           <normaloff>:/icons/particles.png</normaloff>:/icons/particles.png</iconset>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="saveTriangulation">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>70</y>
-           <width>161</width>
-           <height>22</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>  Save Triangulation    </string>
-         </property>
-         <property name="icon">
-          <iconset resource="../main_window.qrc">
-           <normaloff>:/icons/triangles.png</normaloff>:/icons/triangles.png</iconset>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QToolButton" name="handDragButton">
-        <property name="geometry">
-         <rect>
-          <x>100</x>
-          <y>10</y>
-          <width>25</width>
-          <height>22</height>
-         </rect>
-        </property>
-        <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Scroll View&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-        <property name="icon">
-         <iconset resource="../main_window.qrc">
-          <normaloff>:/icons/hand.png</normaloff>:/icons/hand.png</iconset>
-        </property>
-        <property name="checkable">
-         <bool>true</bool>
-        </property>
-        <property name="autoExclusive">
-         <bool>true</bool>
         </property>
        </widget>
        <widget class="QFrame" name="showHideFrame">
@@ -576,11 +302,419 @@
          </property>
         </widget>
        </widget>
+       <widget class="QFrame" name="frame">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>0</y>
+          <width>200</width>
+          <height>35</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <widget class="QToolButton" name="boxSelectButton">
+         <property name="geometry">
+          <rect>
+           <x>40</x>
+           <y>10</y>
+           <width>24</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select Box&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>abcd</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/select.png</normaloff>:/icons/select.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="addAtomButton">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
+         <property name="geometry">
+          <rect>
+           <x>70</x>
+           <y>10</y>
+           <width>24</width>
+           <height>23</height>
+          </rect>
+         </property>
+         <property name="cursor">
+          <cursorShape>ArrowCursor</cursorShape>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Add Atom&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/addAtom.png</normaloff>:/icons/addAtom.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="deleteAtomsBut">
+         <property name="geometry">
+          <rect>
+           <x>100</x>
+           <y>10</y>
+           <width>25</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>Delete Atoms</string>
+         </property>
+         <property name="toolTipDuration">
+          <number>-1</number>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/remove.png</normaloff>:/icons/remove.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="triangulateBut">
+         <property name="geometry">
+          <rect>
+           <x>130</x>
+           <y>10</y>
+           <width>25</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>Triangulate Atom Positions</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/triangles.png</normaloff>:/icons/triangles.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QToolButton" name="handDragButton">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>10</y>
+           <width>25</width>
+           <height>22</height>
+          </rect>
+         </property>
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Scroll View&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+         <property name="text">
+          <string>...</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/hand.png</normaloff>:/icons/hand.png</iconset>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+         <property name="autoExclusive">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QStackedWidget" name="viewerToolOptStack">
+        <property name="geometry">
+         <rect>
+          <x>20</x>
+          <y>35</y>
+          <width>180</width>
+          <height>100</height>
+         </rect>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="currentIndex">
+         <number>3</number>
+        </property>
+        <widget class="QWidget" name="handDragPage">
+         <widget class="QLabel" name="label">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>180</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="font">
+           <font>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="text">
+           <string>Drag Image In Viewer</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="selOptPage">
+         <widget class="QLabel" name="selOptLabel">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>180</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="text">
+           <string>Select Atoms</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="invertSelBut_5">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>70</y>
+            <width>121</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Deselect All</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="invertSelBut">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>50</y>
+            <width>121</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Invert Selection</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="selectInAllCB">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>20</y>
+            <width>141</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select in all frames</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="addAtomPage">
+         <widget class="QLabel" name="addAtomLabel">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>181</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="text">
+           <string>Add Atoms</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="addAtomAllFrCB">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>20</y>
+            <width>141</width>
+            <height>21</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Add in all frames</string>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="delAtomPage">
+         <widget class="QLabel" name="delAtomLabel">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>181</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="text">
+           <string>Delete Atoms</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="deleteSelectedBut">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>30</y>
+            <width>121</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Delete Selected</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="delUnSelBut">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>60</y>
+            <width>121</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Delete Unselected</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QWidget" name="triOptPage">
+         <widget class="QPushButton" name="delUnSelBut_6">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>30</y>
+            <width>161</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Triangulate All</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="delUnSelBut_7">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>161</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Triangulate Selected</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="triOptLabel">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>181</width>
+            <height>16</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <italic>true</italic>
+           </font>
+          </property>
+          <property name="text">
+           <string>Triangulate Atom Positions</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </widget>
+       </widget>
        <widget class="Line" name="line_2">
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>270</y>
+          <y>260</y>
           <width>181</width>
           <height>16</height>
          </rect>
@@ -589,15 +723,6 @@
          <enum>Qt::Horizontal</enum>
         </property>
        </widget>
-       <zorder>boxSelectButton</zorder>
-       <zorder>addAtomButton</zorder>
-       <zorder>addAtomOptions</zorder>
-       <zorder>line</zorder>
-       <zorder>saveToolsFrame</zorder>
-       <zorder>selectionOptions</zorder>
-       <zorder>handDragButton</zorder>
-       <zorder>showHideFrame</zorder>
-       <zorder>line_2</zorder>
       </widget>
      </widget>
     </widget>
@@ -624,10 +749,13 @@
      <normaloff>:/icons/view.png</normaloff>:/icons/view.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Image Viewer</string>
+    <string>Read Images for Viewing</string>
+   </property>
+   <property name="iconText">
+    <string>Read Images for Viewing</string>
    </property>
    <property name="toolTip">
-    <string>Read Images For Viewing</string>
+    <string>Read Images for Viewing</string>
    </property>
   </action>
   <action name="action_ZoomIn">
@@ -678,7 +806,10 @@
      <normaloff>:/icons/particles.png</normaloff>:/icons/particles.png</iconset>
    </property>
    <property name="text">
-    <string>Particles Viewer</string>
+    <string>Read Atom Positions for Viewing</string>
+   </property>
+   <property name="iconText">
+    <string>Read Atom Positions for Viewing</string>
    </property>
    <property name="toolTip">
     <string>Read Atom Positions For Viewing</string>
@@ -943,52 +1074,64 @@
     <string>Show Triangulation</string>
    </property>
   </action>
-  <action name="actionSaveSnaps">
+  <action name="actionSave_Snapshots">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/photo.png</normaloff>:/icons/photo.png</iconset>
+   </property>
    <property name="text">
-    <string>saveSnaps</string>
+    <string>Save Snapshots</string>
    </property>
    <property name="toolTip">
     <string>Save Snapshots</string>
    </property>
   </action>
-  <action name="actionSaveAtoms">
+  <action name="actionSave_Atom_Positions">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/particles.png</normaloff>:/icons/particles.png</iconset>
+   </property>
    <property name="text">
-    <string>saveAtoms</string>
+    <string>Save Atom Positions</string>
    </property>
    <property name="toolTip">
     <string>Save Atom Positions</string>
    </property>
   </action>
-  <action name="actionSaveTri">
+  <action name="actionSave_Triangulation">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="checked">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="enabled">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/triangles.png</normaloff>:/icons/triangles.png</iconset>
+   </property>
    <property name="text">
-    <string>saveTri</string>
+    <string>Save Triangulation</string>
    </property>
    <property name="toolTip">
     <string>Save Triangulation</string>
@@ -1130,6 +1273,57 @@
     <string>Drag Mode</string>
    </property>
   </action>
+  <action name="actionTabPageChange">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>tabPageChange</string>
+   </property>
+   <property name="toolTip">
+    <string>Add atoms in all frames</string>
+   </property>
+  </action>
+  <action name="actionDelAtomMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>DelAtomMode</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Atom Mode</string>
+   </property>
+  </action>
+  <action name="actionTriMode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TriMode</string>
+   </property>
+   <property name="toolTip">
+    <string>Add Atom Mode</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../main_window.qrc"/>
@@ -1164,118 +1358,6 @@
     <hint type="destinationlabel">
      <x>122</x>
      <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>boxSelectButton</sender>
-   <signal>released()</signal>
-   <receiver>selectionOptions</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>53</x>
-     <y>125</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>183</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>addAtomButton</sender>
-   <signal>released()</signal>
-   <receiver>selectionOptions</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>125</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>183</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>boxSelectButton</sender>
-   <signal>released()</signal>
-   <receiver>addAtomOptions</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>53</x>
-     <y>125</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>addAtomButton</sender>
-   <signal>released()</signal>
-   <receiver>addAtomOptions</receiver>
-   <slot>show()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>125</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>addAtomButton</sender>
-   <signal>released()</signal>
-   <receiver>addAtomOptions</receiver>
-   <slot>raise()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>83</x>
-     <y>125</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>handDragButton</sender>
-   <signal>released()</signal>
-   <receiver>addAtomOptions</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>114</x>
-     <y>124</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>122</x>
-     <y>154</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>handDragButton</sender>
-   <signal>released()</signal>
-   <receiver>selectionOptions</receiver>
-   <slot>hide()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>114</x>
-     <y>124</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>122</x>
-     <y>184</y>
     </hint>
    </hints>
   </connection>
@@ -1424,14 +1506,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>saveSnapshots</sender>
+   <sender>triangulateBut</sender>
    <signal>released()</signal>
-   <receiver>actionSaveSnaps</receiver>
+   <receiver>action_ShowLines</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>122</x>
-     <y>414</y>
+     <x>154</x>
+     <y>124</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -1440,14 +1522,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>saveAtoms</sender>
+   <sender>deleteAtomsBut</sender>
    <signal>released()</signal>
-   <receiver>actionSaveAtoms</receiver>
+   <receiver>actionDelAtomMode</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>122</x>
-     <y>444</y>
+     <x>124</x>
+     <y>86</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -1456,14 +1538,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>saveTriangulation</sender>
+   <sender>triangulateBut</sender>
    <signal>released()</signal>
-   <receiver>actionSaveTri</receiver>
+   <receiver>actionTriMode</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>122</x>
-     <y>474</y>
+     <x>154</x>
+     <y>86</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

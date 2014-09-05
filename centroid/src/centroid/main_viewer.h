@@ -63,6 +63,7 @@ public:
    InteractionMode get_interactionMode ();
 
 private slots:
+
    void on_action_JumpToFirst_triggered();
    void on_action_PlayBackward_triggered();
    void on_action_StepBackward_triggered();
@@ -70,6 +71,9 @@ private slots:
    void on_action_StepForward_triggered();
    void on_action_PlayForward_triggered();
    void on_action_JumpToLast_triggered();
+   void on_action_ZoomIn_triggered();
+   void on_action_ZoomOut_triggered();
+
    void set_frame(int);
    void animate_loop();
 
