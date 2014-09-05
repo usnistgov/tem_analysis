@@ -72,6 +72,7 @@ private slots:
     void on_actionDelAtomMode_triggered();
     void on_actionTriMode_triggered();
 
+    void on_actionDeselectAllAtoms_triggered();
 
 
 
@@ -95,6 +96,8 @@ private:
    QVector<Block*> blocks;
    MainViewerForm *main_viewer_form;
    Project* current_project;
+   bool selAtomsInAllFrames;
+   bool addAtomsInAllFrames;
 };
 
 //////////////////////////////////////////////////////////////////////////

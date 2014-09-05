@@ -399,6 +399,16 @@ void MainViewerForm::remove_all_particles_selected()
    particles->remove_all_particles_selected();
 }
 
+void MainViewerForm::invert_particle_selection_all ()
+{
+   particles->invert_particle_selection_all ();
+}
+
+void MainViewerForm::deselect_all_particles ()
+{
+   particles->deselect_all_particles ();
+}
+
 /////////////////////////////////////////////////////////////////////////
 
 bool MainViewerForm::get_is_selection_global()

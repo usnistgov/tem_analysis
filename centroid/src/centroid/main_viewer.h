@@ -54,6 +54,9 @@ public:
    bool get_is_positive_selection_on() { return is_positive_selection_on; }
 
    void remove_all_particles_selected();
+   void invert_particle_selection_all ();
+   void deselect_all_particles ();
+
    void select_all_particles_global(const QPointF& p0, const QPointF& p1, bool state);
    void select_all_particles_current_frame (const QPointF& p0, 
                                             const QPointF& p1, 

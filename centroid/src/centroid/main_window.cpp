@@ -161,11 +161,14 @@ MainWindow::MainWindow()
    // action_ScrollHandDrag->setChecked(true);
    set_interactionMode (MainViewerForm::HandDrag);
 
+   addAtomsInAllFrames = true;
+   selAtomsInAllFrames = true;
 
 
    setUnifiedTitleAndToolBarOnMac(true);
    read_settings();
 
+   
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -269,6 +272,7 @@ void MainWindow::on_action_ReadData_triggered()
 void MainWindow::on_action_ZoomIn_triggered()
 {
    main_viewer_form->zoom_in();
+   main_viewer_form->draw_current_frame();   
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -276,6 +280,7 @@ void MainWindow::on_action_ZoomIn_triggered()
 void MainWindow::on_action_ZoomOut_triggered()
 {
    main_viewer_form->zoom_out();   
+   main_viewer_form->draw_current_frame();   
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -351,30 +356,37 @@ void MainWindow::set_interactionMode (MainViewerForm::InteractionMode iMode)
     switch (iMode)
         {
         case MainViewerForm::HandDrag:
+printf ("hand drag\n");
             action_ScrollHandDrag->setChecked(true);
             break;
 
         case MainViewerForm::SelectAtomsCurrFrame:
+printf ("sel curr\n");
             action_SelectionMode->setChecked(true);
             break;
 
         case MainViewerForm::DeselectAtomsCurrFrame:
+printf ("desel curr\n");
             action_SelectionModeMinus->setChecked(true);
             break;
 
         case MainViewerForm::SelectAtomsAllFrames:
+printf ("sel all\n");
             action_SelectionModePlusGlobal->setChecked(true);
             break;
 
         case MainViewerForm::DeselectAtomsAllFrames:
+printf ("desel all\n");
             action_SelectionModeMinusGlobal->setChecked(true);
             break;
 
         case MainViewerForm::AddAtomCurrFrame:
+printf ("add curr\n");
             action_AddAtom->setChecked(true);
             break;
 
         case MainViewerForm::AddAtomAllFrames:
+printf ("add all\n");
             // nothing here yet
             break;
 
@@ -576,29 +588,41 @@ void MainWindow::on_action_Test2_triggered()
 void MainWindow::on_actionShowHideImages_toggled (bool o)
 {
     printf ("show / hide Images: %s\n", o ? "ON" : "OFF");
+   main_viewer_form->draw_current_frame();   
+
 }
 
 
 void MainWindow::on_actionShowHideAtoms_toggled (bool o)
 {
     printf ("show / hide Atoms: %s\n", o ? "ON" : "OFF");
+   main_viewer_form->draw_current_frame();   
 }
 
 
 void MainWindow::on_actionShowHideTriangulation_toggled (bool o)
 {
     printf ("show / hide Tri : %s\n", o ? "ON" : "OFF");
+   main_viewer_form->draw_current_frame();   
 }
 
 
-void MainWindow::on_actionSelectInAllFrames_toggled(bool o)
+void MainWindow::on_actionSelectInAllFrames_toggled(bool selInAll)
 {
-    printf ("select in all : %s\n", o ? "ON" : "OFF");
+    printf ("select in all : %s\n", selInAll ? "ON" : "OFF");
+    selAtomsInAllFrames = selInAll;
+    set_interactionMode ( selAtomsInAllFrames ?
+                            MainViewerForm::SelectAtomsAllFrames :
+                            MainViewerForm::SelectAtomsCurrFrame   );
 }
 
-void MainWindow::on_actionAddInAllFrames_toggled(bool o)
+void MainWindow::on_actionAddInAllFrames_toggled(bool addInAll)
 {
-    printf ("add in all : %s\n", o ? "ON" : "OFF");
+    printf ("add in all : %s\n", addInAll ? "ON" : "OFF");
+    addAtomsInAllFrames = addInAll;
+    set_interactionMode ( addAtomsInAllFrames ?
+                            MainViewerForm::AddAtomAllFrames :
+                            MainViewerForm::AddAtomCurrFrame   );
 }
 
 
@@ -620,16 +644,21 @@ void MainWindow::on_actionSave_Triangulation_triggered()
 void MainWindow::on_actionDeleteSelected_triggered()
 {
     printf ("save delete selected triggered\n");
+    main_viewer_form->remove_all_particles_selected();
+    main_viewer_form->draw_current_frame();   
 }
 
 void MainWindow::on_actionDeleteUnSelected_triggered()
 {
     printf ("save delete unselected triggered\n");
+    main_viewer_form->draw_current_frame();   
 }
 
 void MainWindow::on_actionInvertSelection_triggered()
 {
     printf ("save invert selection triggered\n");
+    main_viewer_form->invert_particle_selection_all ();
+    main_viewer_form->draw_current_frame();   
 }
 
 
@@ -637,6 +666,7 @@ void MainWindow::on_actionInvertSelection_triggered()
 void MainWindow::on_actionHandDragMode_triggered()
 {
     printf ("hand drag mode triggered\n");
+    set_interactionMode (MainViewerForm::HandDrag);
     viewerToolOptStack->setCurrentIndex(0);
 }
 
@@ -644,12 +674,23 @@ void MainWindow::on_actionBoxSelection_triggered()
 {
     printf ("box sel mode triggered\n");
     viewerToolOptStack->setCurrentIndex(1);
-}
+
+    set_interactionMode ( selAtomsInAllFrames ?
+                            MainViewerForm::SelectAtomsAllFrames :
+                            MainViewerForm::SelectAtomsCurrFrame   );
+
+}  // end of on_actionBoxSelection_triggered
 
 void MainWindow::on_actionAddAtom_triggered()
 {
     printf ("add atom mode triggered\n");
     viewerToolOptStack->setCurrentIndex(2);
+
+    set_interactionMode ( addAtomsInAllFrames ?
+                            MainViewerForm::AddAtomAllFrames :
+                            MainViewerForm::AddAtomCurrFrame   );
+
+
 }
 
 
@@ -658,6 +699,7 @@ void MainWindow::on_actionDelAtomMode_triggered()
 {
     printf ("del atom mode triggered\n");
     viewerToolOptStack->setCurrentIndex(3);
+    set_interactionMode (MainViewerForm::HandDrag);
 }
 
 
@@ -665,6 +707,7 @@ void MainWindow::on_actionTriMode_triggered()
 {
     printf ("triangulation mode triggered\n");
     viewerToolOptStack->setCurrentIndex(4);
+    set_interactionMode (MainViewerForm::HandDrag);
 }
 
 
@@ -696,6 +739,7 @@ void MainWindow::on_action_RemoveParticles_triggered()
 
 void MainWindow::on_action_ImageViewerMulti_triggered()
 {
+   main_viewer_form->draw_current_frame();
 }
 
 
@@ -712,6 +756,15 @@ void MainWindow::on_action_AddAtom_triggered()
 void MainWindow::on_action_SelectionModePlusGlobal_triggered()
 {
    set_interactionMode (MainViewerForm::SelectAtomsAllFrames);
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void MainWindow::on_actionDeselectAllAtoms_triggered()
+{
+printf ("main_window: desel all\n");
+   main_viewer_form->deselect_all_particles ();
+   main_viewer_form->draw_current_frame();   
 }
 
 //////////////////////////////////////////////////////////////////////////

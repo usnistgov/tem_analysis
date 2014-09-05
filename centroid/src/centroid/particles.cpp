@@ -501,6 +501,67 @@ void Particles::remove_all_particles_selected()
    }
 }
 
+
+//////////////////////////////////////////////////////////////////////////
+//
+// deselect across all frames
+//
+
+void Particles::deselect_all_particles ()
+{
+   int i, k;
+
+   for (k=0; k<list_all_particles.size(); k++)
+   {
+        particles *ps0 = list_all_particles[k];
+
+        for (i=0; i<ps0->size(); i++)
+        {
+            (*ps0)[i].is_selected = false;
+        }
+   }
+}
+
+//////////////////////////////////////////////////////////////////////////
+//
+// Invert particle selection across all frames
+//
+
+void Particles::invert_particle_selection_all ()
+{
+   int i, k;
+
+   for (k=0; k<list_all_particles.size(); k++)
+   {
+        particles *ps0 = list_all_particles[k];
+
+        for (i=0; i<ps0->size(); i++)
+        {
+            (*ps0)[i].is_selected = !  (*ps0)[i].is_selected;
+        }
+   }
+}
+
+
+
+void Particles::invert_particle_selection (int frame)
+{
+    int i;
+
+    particles *ps0 = list_all_particles[frame];
+
+    for (i=0; i<ps0->size(); i++)
+    {
+        (*ps0)[i].is_selected = !  (*ps0)[i].is_selected;
+    }
+}
+
+
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////
 //
 // Remove all particles selected from selected region in all frames

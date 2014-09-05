@@ -476,7 +476,7 @@
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="currentIndex">
-         <number>3</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="handDragPage">
          <widget class="QLabel" name="label">
@@ -529,7 +529,7 @@
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
-         <widget class="QPushButton" name="invertSelBut_5">
+         <widget class="QPushButton" name="deselectAllBut">
           <property name="geometry">
            <rect>
             <x>30</x>
@@ -546,7 +546,7 @@
           <property name="geometry">
            <rect>
             <x>30</x>
-            <y>50</y>
+            <y>45</y>
             <width>121</width>
             <height>20</height>
            </rect>
@@ -1324,6 +1324,23 @@
     <string>Add Atom Mode</string>
    </property>
   </action>
+  <action name="actionDeselectAllAtoms">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>deselectAllAtoms</string>
+   </property>
+   <property name="toolTip">
+    <string>Deselect All Atoms</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../main_window.qrc"/>
@@ -1546,6 +1563,22 @@
     <hint type="sourcelabel">
      <x>154</x>
      <y>86</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>deselectAllBut</sender>
+   <signal>released()</signal>
+   <receiver>actionDeselectAllAtoms</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>181</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
