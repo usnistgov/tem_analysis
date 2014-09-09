@@ -1,3 +1,5 @@
+#include <stdio.h>
+#include "main.h"
 #include "main_window.h"
 #include "log.h"
 using namespace logging;
@@ -7,6 +9,8 @@ using namespace logging;
 #include <functional>
 
 static logging::Logger* s_logger;
+
+
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -40,6 +44,16 @@ static void messageLogger(QtMsgType type, const QMessageLogContext &context,
    }
 }
 
+MainWindow *MainWin = NULL;
+
+void writeLog (const QString msg)
+{
+    if (MainWin)
+    {
+        MainWin->writeLog (msg);
+    }
+}
+
 int main(int argc, char *argv[])  
 {
    QSharedPointer<LogPolicyInterface> policy(new FileLogPolicy);
@@ -59,6 +73,8 @@ int main(int argc, char *argv[])
 
    MainWindow mainWin;
    mainWin.show();
+
+   MainWin = &mainWin;
 
    return app.exec();
 }

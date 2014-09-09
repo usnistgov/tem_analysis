@@ -18,6 +18,7 @@ ViewerGraphicsScene::ViewerGraphicsScene(QObject *parent)
 
 void ViewerGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+   // printf ("mouse press\n");
    QGraphicsView *view = views().at(0);
 
    if (view->dragMode() == QGraphicsView::RubberBandDrag)
@@ -35,18 +36,27 @@ void ViewerGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void ViewerGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
+    // printf ("mouse release at position %f %f\n", 
+            // mouseEvent->scenePos().x(), mouseEvent->scenePos().y());
+
+
    // Here's where all the action is for interactive mouse manipulations
    // inside the image/atom viewer.
 
+   MainViewerForm *myParent= qobject_cast<MainViewerForm *>(parent()); 
+   myParent->mouseReleaseEvent (mouseEvent);
+
    QGraphicsView *view = views().at(0);
+
+
    if (view->dragMode() == QGraphicsView::RubberBandDrag)
    {
       end_point = mouseEvent->scenePos();
 
-      MainViewerForm *myParent= qobject_cast<MainViewerForm *>(parent()); 
       if (myParent->get_is_selection_global())
       {
-         myParent->select_all_particles_global(start_point, end_point, myParent->get_is_positive_selection_on());
+         myParent->select_all_particles_global(start_point, end_point, 
+                                myParent->get_is_positive_selection_on());
          myParent->draw_current_frame();      
       }
       else

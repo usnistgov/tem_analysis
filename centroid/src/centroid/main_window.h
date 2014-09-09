@@ -19,6 +19,7 @@ public:
    MainWindow();
 
    void addModuleToDock(Block *block);
+   void writeLog ( const QString & message );
 
 signals:
    void aboutToLoadProject(Project* proj);
@@ -37,8 +38,12 @@ private slots:
    void on_action_SelectionMode_triggered();
    void on_action_ParticlesViewer_triggered();
    void on_action_SelectParticles_triggered();
-   void on_action_Photo_triggered();
-   void on_action_PhotoAll_triggered();
+
+   // void on_action_Photo_triggered();
+   // void on_action_PhotoAll_triggered();
+   void on_actionSnapshotAllFrames_triggered();
+   void on_actionSnapshot_Current_Frame_triggered();
+
    void on_action_LineSelection_triggered();
    void on_action_ShowLines_triggered();
    void on_action_SelectionModeMinus_triggered();
@@ -58,7 +63,9 @@ private slots:
    void on_actionAddInAllFrames_toggled(bool);
 
    void on_actionSave_Snapshots_triggered();
-   void on_actionSave_Atom_Positions_triggered();
+   // void on_actionSave_Atom_Positions_triggered();
+   void on_actionSaveAtomPosAll_triggered();
+   void on_actionSaveAtomPosCurr_triggered();
    void on_actionSave_Triangulation_triggered();
    void on_actionDeleteSelected_triggered();
    void on_actionDeleteUnSelected_triggered();
@@ -73,6 +80,9 @@ private slots:
     void on_actionTriMode_triggered();
 
     void on_actionDeselectAllAtoms_triggered();
+
+    void on_actionTriangSel_triggered();
+    void on_actionClearTriang_triggered();
 
 
 

@@ -21,6 +21,9 @@ MainViewerForm::MainViewerForm(QWidget *parent)
      is_triangulation_on(false),
      is_positive_selection_on(true),
      is_selection_global(false),
+     triangulation_visible (true),
+     particles_visible (true),
+     image_visible (true),
      interactionMode (HandDrag)
 {
    setupUi(this);
@@ -114,7 +117,7 @@ void MainViewerForm::draw_frame(int frame)
    scene->clear();
 
    // draw the image for this frame
-   if (file_list_images->size() > 0)
+   if (image_visible && (file_list_images->size() > 0) )
    {
 
       // load the image from the file
@@ -166,17 +169,21 @@ void MainViewerForm::draw_frame(int frame)
    }
 
    // now we draw the particles for the current frame
-   if (particles->get_number_of_frames() > 0)
+   if (particles->get_number_of_frames() > 0) 
    {
       particles->set_is_positive_selection_on(is_positive_selection_on);
-      if (is_triangulation_on)
+      if ( triangulation_visible && (is_triangulation_on))
       {
-         particles->draw_triangles(scene, frame);
+         particles->draw_triangles(scene, frame, 
+                                   (triangulationMode==Triangulate_Selected) );
       }
-      particles->draw_particles(scene, frame);
+      if (particles_visible)
+      {
+        particles->draw_particles(scene, frame);
+      }
    }
 
-}
+}  // end of void MainViewerForm::draw_frame(int frame)
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -198,14 +205,14 @@ void MainViewerForm::zoom_out()
 
 void MainViewerForm::on_action_ZoomIn_triggered()
 {
-    printf ("Zoom In triggered\n");
+    // printf ("Zoom In triggered\n");
     zoom_in ();
 }
 
 
 void MainViewerForm::on_action_ZoomOut_triggered()
 {
-    printf ("Zoom Out triggered\n");
+    // printf ("Zoom Out triggered\n");
     zoom_out ();
 }
 
@@ -387,6 +394,26 @@ void MainViewerForm::set_is_triangulation_on(bool state)
 
 /////////////////////////////////////////////////////////////////////////
 
+void MainViewerForm::set_triangulation_visibility (bool onOff)
+{
+    triangulation_visible = onOff;
+}
+/////////////////////////////////////////////////////////////////////////
+
+void MainViewerForm::set_particle_visibility (bool onOff)
+{
+    particles_visible = onOff;
+}
+/////////////////////////////////////////////////////////////////////////
+
+void MainViewerForm::set_image_visibility (bool onOff)
+{
+    image_visible = onOff;
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+
 void MainViewerForm::draw_current_frame()
 {
    draw_frame(current_frame);
@@ -399,15 +426,34 @@ void MainViewerForm::remove_all_particles_selected()
    particles->remove_all_particles_selected();
 }
 
+
+
 void MainViewerForm::invert_particle_selection_all ()
 {
    particles->invert_particle_selection_all ();
 }
 
+
+void MainViewerForm::invert_particle_selection_curr ()
+{
+   particles->invert_particle_selection (current_frame);
+}
+
+
+
+
 void MainViewerForm::deselect_all_particles ()
 {
    particles->deselect_all_particles ();
 }
+
+
+void MainViewerForm::deselect_all_particles_curr ()
+{
+   particles->deselect_all_particles (current_frame);
+}
+
+
 
 /////////////////////////////////////////////////////////////////////////
 
@@ -496,6 +542,20 @@ void MainViewerForm::set_interactionMode (MainViewerForm::InteractionMode iMode)
 
 /////////////////////////////////////////////////////////////////////////
 
+void MainViewerForm::set_triangulationMode (
+                            MainViewerForm::TriangulationMode tMode)
+{
+    triangulationMode = tMode;
+}
+
+MainViewerForm::TriangulationMode MainViewerForm::get_triangulationMode ()
+{
+    return triangulationMode;
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+
 MainViewerForm::InteractionMode MainViewerForm::get_interactionMode ()
 {
     return interactionMode;
@@ -503,5 +563,70 @@ MainViewerForm::InteractionMode MainViewerForm::get_interactionMode ()
 
 /////////////////////////////////////////////////////////////////////////
 
+
+void MainViewerForm::addAtom (float x, float y, bool allFrames)
+{
+
+   // printf ("add atom called : %f  %f  %s\n", x, y, allFrames?"ALL":"CURR");
+   if (particles->get_number_of_frames() > 0)
+   {
+        particles->add_particle (x, y, allFrames ? -1 : current_frame );
+   }
+
+}  // end of addAtom
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+
+void MainViewerForm::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+
+    switch (interactionMode)
+        {
+        case MainViewerForm::AddAtomCurrFrame:
+            addAtom ( mouseEvent->scenePos().x(),
+                      mouseEvent->scenePos().y(), false   );
+            break;
+
+        case MainViewerForm::AddAtomAllFrames:
+            addAtom ( mouseEvent->scenePos().x(),
+                      mouseEvent->scenePos().y(), true    );
+            break;
+
+        }
+
+    draw_current_frame();
+
+}  // end of void MainViewerForm::mouseReleaseEvent
+
+
+/////////////////////////////////////////////////////////////////////////
+
+QString MainViewerForm::get_frame_image_filename (int frame)
+{
+    if ( (frame < 0) || (frame >= file_list_images->size()) )
+        {
+        return "";
+        }
+
+    return file_list_images->at(frame).absoluteFilePath();
+}
+/////////////////////////////////////////////////////////////////////////
+
+QString MainViewerForm::get_frame_particle_filename (int frame)
+{
+    return particles->get_frame_filename (frame);
+}
+/////////////////////////////////////////////////////////////////////////
+
+void MainViewerForm::writeActiveAtomPosFile 
+                        (const int frame, const QString fileName)
+{
+    particles->writeActiveAtomPosFile (frame, fileName);
+}
 
 

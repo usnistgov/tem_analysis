@@ -25,9 +25,7 @@
   <property name="statusTip">
    <string/>
   </property>
-  <widget class="QWidget" name="centralwidget">
-   <zorder>verticalFrame_2</zorder>
-  </widget>
+  <widget class="QWidget" name="centralwidget"/>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -42,15 +40,29 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_ReadData"/>
+    <widget class="QMenu" name="menuSave_Snapshots">
+     <property name="title">
+      <string>Save Snapshots</string>
+     </property>
+     <addaction name="actionSnapshotAllFrames"/>
+     <addaction name="actionSnapshot_Current_Frame"/>
+    </widget>
+    <widget class="QMenu" name="menuSave_Atom_Positions">
+     <property name="title">
+      <string>Save Atom Positions</string>
+     </property>
+     <addaction name="actionSaveAtomPosAll"/>
+     <addaction name="actionSaveAtomPosCurr"/>
+    </widget>
+    <addaction name="separator"/>
     <addaction name="action_NewProject"/>
     <addaction name="action_OpenProject"/>
     <addaction name="separator"/>
     <addaction name="action_ImageViewer"/>
     <addaction name="action_ParticlesViewer"/>
     <addaction name="separator"/>
-    <addaction name="actionSave_Snapshots"/>
-    <addaction name="actionSave_Atom_Positions"/>
+    <addaction name="menuSave_Snapshots"/>
+    <addaction name="menuSave_Atom_Positions"/>
     <addaction name="actionSave_Triangulation"/>
     <addaction name="separator"/>
     <addaction name="action_Quit"/>
@@ -166,10 +178,10 @@
         <enum>QAbstractScrollArea::AdjustToContents</enum>
        </property>
        <property name="headerHidden">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <attribute name="headerVisible">
-        <bool>true</bool>
+        <bool>false</bool>
        </attribute>
        <attribute name="headerMinimumSectionSize">
         <number>1</number>
@@ -661,11 +673,11 @@
          </widget>
         </widget>
         <widget class="QWidget" name="triOptPage">
-         <widget class="QPushButton" name="delUnSelBut_6">
+         <widget class="QPushButton" name="triangAllBut">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>30</y>
+            <y>20</y>
             <width>161</width>
             <height>20</height>
            </rect>
@@ -674,11 +686,11 @@
            <string>Triangulate All</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="delUnSelBut_7">
+         <widget class="QPushButton" name="triangSelBut">
           <property name="geometry">
            <rect>
             <x>10</x>
-            <y>60</y>
+            <y>45</y>
             <width>161</width>
             <height>20</height>
            </rect>
@@ -706,6 +718,19 @@
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="clearTriangBut">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>70</y>
+            <width>161</width>
+            <height>20</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Clear Triangulation</string>
           </property>
          </widget>
         </widget>
@@ -839,7 +864,7 @@
      <normaloff>:/icons/photo.png</normaloff>:/icons/photo.png</iconset>
    </property>
    <property name="text">
-    <string>Photo</string>
+    <string>Snapshot Current Frame</string>
    </property>
   </action>
   <action name="action_LineSelection">
@@ -1074,48 +1099,6 @@
     <string>Show Triangulation</string>
    </property>
   </action>
-  <action name="actionSave_Snapshots">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../main_window.qrc">
-     <normaloff>:/icons/photo.png</normaloff>:/icons/photo.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save Snapshots</string>
-   </property>
-   <property name="toolTip">
-    <string>Save Snapshots</string>
-   </property>
-  </action>
-  <action name="actionSave_Atom_Positions">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-   <property name="enabled">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../main_window.qrc">
-     <normaloff>:/icons/particles.png</normaloff>:/icons/particles.png</iconset>
-   </property>
-   <property name="text">
-    <string>Save Atom Positions</string>
-   </property>
-   <property name="toolTip">
-    <string>Save Atom Positions</string>
-   </property>
-  </action>
   <action name="actionSave_Triangulation">
    <property name="checkable">
     <bool>true</bool>
@@ -1124,7 +1107,7 @@
     <bool>false</bool>
    </property>
    <property name="enabled">
-    <bool>true</bool>
+    <bool>false</bool>
    </property>
    <property name="icon">
     <iconset resource="../main_window.qrc">
@@ -1341,6 +1324,48 @@
     <string>Deselect All Atoms</string>
    </property>
   </action>
+  <action name="actionTriangSel">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>TriangSel</string>
+   </property>
+   <property name="toolTip">
+    <string>Generate Triangulation of Selected Atom Positions</string>
+   </property>
+  </action>
+  <action name="actionClearTriang">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>ClearTriang</string>
+   </property>
+   <property name="toolTip">
+    <string>Clear Triangulation</string>
+   </property>
+  </action>
+  <action name="actionSnapshotAllFrames">
+   <property name="text">
+    <string>Snapshot All Frames</string>
+   </property>
+  </action>
+  <action name="actionSnapshot_Current_Frame">
+   <property name="text">
+    <string>Snapshot Current Frame</string>
+   </property>
+  </action>
+  <action name="actionSaveAtomPosAll">
+   <property name="text">
+    <string>Save Displayed Positions At All Frames</string>
+   </property>
+  </action>
+  <action name="actionSaveAtomPosCurr">
+   <property name="text">
+    <string>Save Displayed Positions At Current Frame</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../main_window.qrc"/>
@@ -1373,8 +1398,8 @@
      <y>125</y>
     </hint>
     <hint type="destinationlabel">
-     <x>122</x>
-     <y>154</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
    </hints>
   </connection>
@@ -1523,14 +1548,14 @@
    </hints>
   </connection>
   <connection>
-   <sender>triangulateBut</sender>
+   <sender>triangAllBut</sender>
    <signal>released()</signal>
    <receiver>action_ShowLines</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>154</x>
-     <y>124</y>
+     <x>113</x>
+     <y>141</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>
@@ -1574,6 +1599,38 @@
    <sender>deselectAllBut</sender>
    <signal>released()</signal>
    <receiver>actionDeselectAllAtoms</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>181</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>triangSelBut</sender>
+   <signal>released()</signal>
+   <receiver>actionTriangSel</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>113</x>
+     <y>156</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>clearTriangBut</sender>
+   <signal>released()</signal>
+   <receiver>actionClearTriang</receiver>
    <slot>trigger()</slot>
    <hints>
     <hint type="sourcelabel">

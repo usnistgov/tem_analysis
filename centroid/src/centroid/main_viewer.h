@@ -8,6 +8,8 @@
 
 #include <QtGlobal>
 #include <QDebug>
+#include <QGraphicsScene>
+#include <QGraphicsSceneMouseEvent>
 
 class QStatusBar;
 
@@ -30,8 +32,15 @@ public:
         AddAtomCurrFrame,
         AddAtomAllFrames
    };
+
+   enum TriangulationMode {
+        Triangulate_All,
+        Triangulate_Selected
+   };
         
    void setStatusBar(QStatusBar *statusBar);
+
+   void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
    void clearScene();
    void draw_frame(int frame);
@@ -47,6 +56,14 @@ public:
 
    bool get_is_triangulation_on();
    void set_is_triangulation_on(bool state);
+
+   void set_triangulation_visibility (bool onOff);
+   void set_particle_visibility (bool onOff);
+   void set_image_visibility (bool onOff);
+
+   void addAtom (float x, float y, bool allFrames);
+
+
    bool get_is_selection_global();
    void set_is_selection_global(bool state);
 
@@ -54,16 +71,29 @@ public:
    bool get_is_positive_selection_on() { return is_positive_selection_on; }
 
    void remove_all_particles_selected();
+
    void invert_particle_selection_all ();
+   void invert_particle_selection_curr ();
+
    void deselect_all_particles ();
+   void deselect_all_particles_curr ();
 
    void select_all_particles_global(const QPointF& p0, const QPointF& p1, bool state);
    void select_all_particles_current_frame (const QPointF& p0, 
                                             const QPointF& p1, 
                                             bool state);
 
+    
    void set_interactionMode (InteractionMode iMode);
    InteractionMode get_interactionMode ();
+
+   void set_triangulationMode (TriangulationMode tMode);
+   TriangulationMode get_triangulationMode ();
+
+    QString get_frame_image_filename (int);
+    QString get_frame_particle_filename (int);
+
+    void writeActiveAtomPosFile (const int frame, const QString fileName);
 
 private slots:
 
@@ -96,6 +126,7 @@ private:
    int number_of_frames;
 
    InteractionMode interactionMode;
+   TriangulationMode triangulationMode;
 
    // data
    //
@@ -106,6 +137,10 @@ private:
    QTimer *timer;
 
    QStatusBar *status_bar;
+
+   bool image_visible;
+   bool particles_visible;
+   bool triangulation_visible;
 
 };
 

@@ -13,6 +13,7 @@
 #include "new_project.h"
 #include "version.h"
 
+#include "filter_support.h"
 
 //////////////////////////////////////////////////////////////////////////
 
@@ -123,6 +124,23 @@ void MainWindow::addModuleToDock(Block *block)
 
 //////////////////////////////////////////////////////////////////////////
 
+void MainWindow::writeLog ( const QString & message )
+{
+    if (plainLogsTextEdit) {
+        plainLogsTextEdit->insertPlainText(message);
+        QTextCursor c = plainLogsTextEdit->textCursor();
+        c.movePosition(QTextCursor::End);
+        plainLogsTextEdit->setTextCursor(c);
+        plainLogsTextEdit->repaint (); // make the output appear immediately
+                          // do we need something like: qApp->processEvents()?
+        plainLogsTextEdit->viewport()->update();
+    }
+
+    qDebug() << message;
+}
+
+
+//////////////////////////////////////////////////////////////////////////
 MainWindow::MainWindow()
     : current_project(NULL)
 {
@@ -356,37 +374,30 @@ void MainWindow::set_interactionMode (MainViewerForm::InteractionMode iMode)
     switch (iMode)
         {
         case MainViewerForm::HandDrag:
-printf ("hand drag\n");
             action_ScrollHandDrag->setChecked(true);
             break;
 
         case MainViewerForm::SelectAtomsCurrFrame:
-printf ("sel curr\n");
             action_SelectionMode->setChecked(true);
             break;
 
         case MainViewerForm::DeselectAtomsCurrFrame:
-printf ("desel curr\n");
             action_SelectionModeMinus->setChecked(true);
             break;
 
         case MainViewerForm::SelectAtomsAllFrames:
-printf ("sel all\n");
             action_SelectionModePlusGlobal->setChecked(true);
             break;
 
         case MainViewerForm::DeselectAtomsAllFrames:
-printf ("desel all\n");
             action_SelectionModeMinusGlobal->setChecked(true);
             break;
 
         case MainViewerForm::AddAtomCurrFrame:
-printf ("add curr\n");
             action_AddAtom->setChecked(true);
             break;
 
         case MainViewerForm::AddAtomAllFrames:
-printf ("add all\n");
             // nothing here yet
             break;
 
@@ -470,9 +481,13 @@ void MainWindow::on_action_ImageViewer_triggered()
 
 //////////////////////////////////////////////////////////////////////////
 
-void MainWindow::on_action_Photo_triggered()
+//void MainWindow::on_action_Photo_triggered()
+void MainWindow::on_actionSnapshot_Current_Frame_triggered()
 {
-   file_dialog->setWindowTitle("Select screenshot file name");
+
+   // printf ("on_actionSnapshot_Current_Frame_triggered() called\n");
+
+   file_dialog->setWindowTitle("Select screen shot file name");
    file_dialog->setFileMode(QFileDialog::AnyFile);
 
    if (!file_dialog->exec()) {
@@ -481,24 +496,22 @@ void MainWindow::on_action_Photo_triggered()
    }
 
    QString fileName = file_dialog->selectedFiles()[0];
-   qDebug() << "Saving screenshot to" << fileName;
+   writeLog ("\nWriting snapshot to file " + fileName + "\n\n");
 
    // revised to grab only the viewport; omit scrollbars
-   // QPixmap pm = main_viewer_form->graphicsView->grab(main_viewer_form->graphicsView->rect()); 
    QWidget * viewport = main_viewer_form->graphicsView->viewport();
    QPixmap pm = viewport->grab(viewport->rect()); 
    pm.save(fileName);  
 
 
-   // test 
-   // on_action_PhotoAll_triggered();
 }
 
 //////////////////////////////////////////////////////////////////////////
 
-// This seems to work
-void MainWindow::on_action_PhotoAll_triggered()
+void MainWindow::on_actionSnapshotAllFrames_triggered()
 {
+
+    // printf ("on_actionSnapshotAllFrames_triggered() called\n");
 
     // Loop through frames; grab and write image file for each
 
@@ -508,7 +521,7 @@ void MainWindow::on_action_PhotoAll_triggered()
     QString outFN;  // to be constructed in the loop
 
     // Get directory where we'll write the output images
-    file_dialog->setWindowTitle("Select output folder for screenshots");
+    file_dialog->setWindowTitle("Select output folder for screen shots");
     file_dialog->setFileMode(QFileDialog::Directory);
 
     if (!file_dialog->exec()) {
@@ -525,8 +538,9 @@ void MainWindow::on_action_PhotoAll_triggered()
 
     QString projTag = current_project->getShortTag ();
 
-    QString outTag = projTag + ".grab";
+    QString outTag = projTag + ".snapshot";
 
+    writeLog ("\nWriting snapshot images.  ");
 
     // loop through all frames
     for (int i = 0; i < nFrames; i++)
@@ -534,31 +548,31 @@ void MainWindow::on_action_PhotoAll_triggered()
         // start at curr frame and wrap around
         int f = (i + currFrame) % nFrames;
 
-
         // draw it and grab the pixmap
         main_viewer_form->draw_frame (f);
         QPixmap pm = viewport->grab(viewport->rect()); 
 
-        // construct file name based on f and outDir
-        char cSeqStr[1000];
-        sprintf (cSeqStr, "%06d", f);
-        // QString qSeqStr (cSeqStr);
-        outFN = outDir + "/" + QString (cSeqStr) + "." + outTag + ".png";
-    
+        QString fn = main_viewer_form->get_frame_image_filename (f);
+        if (fn == "") fn = main_viewer_form->get_frame_particle_filename (f);
 
-        //FilterSupport::makeOutFN ( "00000."+projTag+".grab.png", // not used
-            // outDir, false, f, outTag, "png", outFN);
+        FilterSupport::makeOutFN (fn, outDir, 
+                                    true, f, outTag, "png", outFN);
+
+        writeLog (".");
 
         qDebug () << "writing file " + outFN;
+
         // write it out
         pm.save (outFN);
         }
+
+    writeLog ("   Snapshots done.\n\n");
 
     // return to what was the current frame
     main_viewer_form->draw_frame (currFrame);
 
     return;
-} // end of void MainWindow::on_action_PhotoAll_triggered()
+} // end of void MainWindow::on_actionSnapshotAllFrames_triggered()
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -585,31 +599,30 @@ void MainWindow::on_action_Test2_triggered()
 
 
 
-void MainWindow::on_actionShowHideImages_toggled (bool o)
+void MainWindow::on_actionShowHideImages_toggled (bool onOff)
 {
-    printf ("show / hide Images: %s\n", o ? "ON" : "OFF");
+   main_viewer_form->set_image_visibility (onOff);
    main_viewer_form->draw_current_frame();   
 
 }
 
 
-void MainWindow::on_actionShowHideAtoms_toggled (bool o)
+void MainWindow::on_actionShowHideAtoms_toggled (bool onOff)
 {
-    printf ("show / hide Atoms: %s\n", o ? "ON" : "OFF");
+   main_viewer_form->set_particle_visibility (onOff);
    main_viewer_form->draw_current_frame();   
 }
 
 
-void MainWindow::on_actionShowHideTriangulation_toggled (bool o)
+void MainWindow::on_actionShowHideTriangulation_toggled (bool onOff)
 {
-    printf ("show / hide Tri : %s\n", o ? "ON" : "OFF");
+   main_viewer_form->set_triangulation_visibility (onOff);
    main_viewer_form->draw_current_frame();   
 }
 
 
 void MainWindow::on_actionSelectInAllFrames_toggled(bool selInAll)
 {
-    printf ("select in all : %s\n", selInAll ? "ON" : "OFF");
     selAtomsInAllFrames = selInAll;
     set_interactionMode ( selAtomsInAllFrames ?
                             MainViewerForm::SelectAtomsAllFrames :
@@ -618,7 +631,6 @@ void MainWindow::on_actionSelectInAllFrames_toggled(bool selInAll)
 
 void MainWindow::on_actionAddInAllFrames_toggled(bool addInAll)
 {
-    printf ("add in all : %s\n", addInAll ? "ON" : "OFF");
     addAtomsInAllFrames = addInAll;
     set_interactionMode ( addAtomsInAllFrames ?
                             MainViewerForm::AddAtomAllFrames :
@@ -628,13 +640,87 @@ void MainWindow::on_actionAddInAllFrames_toggled(bool addInAll)
 
 void MainWindow::on_actionSave_Snapshots_triggered()
 {
-    printf ("save snaps triggered\n");
 }
 
+#if 0
 void MainWindow::on_actionSave_Atom_Positions_triggered()
 {
     printf ("save atoms triggered\n");
 }
+#endif
+
+
+void MainWindow::on_actionSaveAtomPosAll_triggered()
+{
+
+    // Loop through frames; grab and write image file for each
+
+    int nFrames = main_viewer_form->get_number_of_frames ();
+    int currFrame = main_viewer_form->get_current_frame ();
+
+    QString outFN;  // to be constructed in the loop
+
+    // Get directory where we'll write the output images
+    file_dialog->setWindowTitle("Select output folder for atom position files");
+    file_dialog->setFileMode(QFileDialog::Directory);
+
+    if (!file_dialog->exec()) {
+       qDebug() << "Output folder dialog cancelled.";
+       return;
+    }
+
+
+    QString outDir = file_dialog->selectedFiles()[0];
+
+    QString projTag = current_project->getShortTag ();
+    QString outTag = projTag + ".snapshot";
+
+    writeLog ("\nWriting atom position files.  ");
+
+    // loop through all frames
+    for (int i = 0; i < nFrames; i++)
+        {
+
+        QString fn = main_viewer_form->get_frame_particle_filename (i);
+        if (fn == "") fn = main_viewer_form->get_frame_image_filename (i);
+
+        FilterSupport::makeOutFN (fn, outDir,
+                                    true, i, outTag, "apos", outFN);
+
+        writeLog (".");
+
+        qDebug () << "writing file " + outFN;
+
+        // write it out
+        main_viewer_form->writeActiveAtomPosFile (i, outFN);
+        
+        }
+
+    writeLog ("   Done writing atom pos files.\n\n");
+
+}  // end of void MainWindow::on_actionSaveAtomPosAll_triggered()
+
+
+void MainWindow::on_actionSaveAtomPosCurr_triggered()
+{
+
+    file_dialog->setWindowTitle("Select atom position file name");
+    file_dialog->setFileMode(QFileDialog::AnyFile);
+
+    if (!file_dialog->exec()) 
+    {
+        qDebug() << "Atom position dialog cancelled";
+        return;
+    }
+
+    QString fileName = file_dialog->selectedFiles()[0];
+    writeLog ("\nWriting atom positions to file " + fileName + "\n\n");
+
+    int currFrame = main_viewer_form->get_current_frame ();
+    main_viewer_form->writeActiveAtomPosFile (currFrame, fileName);
+
+}
+
 
 void MainWindow::on_actionSave_Triangulation_triggered()
 {
@@ -643,21 +729,33 @@ void MainWindow::on_actionSave_Triangulation_triggered()
 
 void MainWindow::on_actionDeleteSelected_triggered()
 {
-    printf ("save delete selected triggered\n");
-    main_viewer_form->remove_all_particles_selected();
+    main_viewer_form->remove_all_particles_selected ();
     main_viewer_form->draw_current_frame();   
 }
 
 void MainWindow::on_actionDeleteUnSelected_triggered()
 {
-    printf ("save delete unselected triggered\n");
+
+    // invert selection; remove selected; invert again
+    main_viewer_form->invert_particle_selection_all ();
+    main_viewer_form->remove_all_particles_selected ();
+    main_viewer_form->invert_particle_selection_all ();
+
     main_viewer_form->draw_current_frame();   
 }
 
 void MainWindow::on_actionInvertSelection_triggered()
 {
-    printf ("save invert selection triggered\n");
-    main_viewer_form->invert_particle_selection_all ();
+
+    if (selAtomsInAllFrames)
+    {
+        main_viewer_form->invert_particle_selection_all ();
+    }
+    else
+    {
+        main_viewer_form->invert_particle_selection_curr ();
+    }
+
     main_viewer_form->draw_current_frame();   
 }
 
@@ -665,14 +763,12 @@ void MainWindow::on_actionInvertSelection_triggered()
 
 void MainWindow::on_actionHandDragMode_triggered()
 {
-    printf ("hand drag mode triggered\n");
     set_interactionMode (MainViewerForm::HandDrag);
     viewerToolOptStack->setCurrentIndex(0);
 }
 
 void MainWindow::on_actionBoxSelection_triggered()
 {
-    printf ("box sel mode triggered\n");
     viewerToolOptStack->setCurrentIndex(1);
 
     set_interactionMode ( selAtomsInAllFrames ?
@@ -683,21 +779,17 @@ void MainWindow::on_actionBoxSelection_triggered()
 
 void MainWindow::on_actionAddAtom_triggered()
 {
-    printf ("add atom mode triggered\n");
     viewerToolOptStack->setCurrentIndex(2);
 
     set_interactionMode ( addAtomsInAllFrames ?
                             MainViewerForm::AddAtomAllFrames :
                             MainViewerForm::AddAtomCurrFrame   );
-
-
 }
 
 
 
 void MainWindow::on_actionDelAtomMode_triggered()
 {
-    printf ("del atom mode triggered\n");
     viewerToolOptStack->setCurrentIndex(3);
     set_interactionMode (MainViewerForm::HandDrag);
 }
@@ -705,7 +797,6 @@ void MainWindow::on_actionDelAtomMode_triggered()
 
 void MainWindow::on_actionTriMode_triggered()
 {
-    printf ("triangulation mode triggered\n");
     viewerToolOptStack->setCurrentIndex(4);
     set_interactionMode (MainViewerForm::HandDrag);
 }
@@ -718,10 +809,17 @@ void MainWindow::on_actionTriMode_triggered()
 //////////////////////////////////////////////////////////////////////////
 void MainWindow::on_action_ShowLines_triggered()
 {
+    main_viewer_form->set_triangulationMode (MainViewerForm::Triangulate_All);
+    main_viewer_form->set_is_triangulation_on(true);
+    main_viewer_form->draw_current_frame();
+
+#if 0
    bool tri = main_viewer_form->get_is_triangulation_on();
    tri = !tri;
    main_viewer_form->set_is_triangulation_on(tri);
    main_viewer_form->draw_current_frame();
+#endif
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -762,8 +860,17 @@ void MainWindow::on_action_SelectionModePlusGlobal_triggered()
 
 void MainWindow::on_actionDeselectAllAtoms_triggered()
 {
-printf ("main_window: desel all\n");
-   main_viewer_form->deselect_all_particles ();
+
+
+   if (selAtomsInAllFrames)
+        {
+        main_viewer_form->deselect_all_particles ();
+        }
+    else
+        {
+        main_viewer_form->deselect_all_particles_curr ();
+        }
+
    main_viewer_form->draw_current_frame();   
 }
 
@@ -773,4 +880,26 @@ void MainWindow::on_action_SelectionModeMinusGlobal_triggered()
 {
    set_interactionMode (MainViewerForm::DeselectAtomsAllFrames);
 }
+
+//////////////////////////////////////////////////////////////////////////
+
+void MainWindow::on_actionTriangSel_triggered()
+{
+
+    main_viewer_form->
+        set_triangulationMode (MainViewerForm::Triangulate_Selected);
+    main_viewer_form->set_is_triangulation_on(true);
+    main_viewer_form->draw_current_frame();
+}
+
+//////////////////////////////////////////////////////////////////////////
+
+void MainWindow::on_actionClearTriang_triggered()
+{
+
+   main_viewer_form->set_is_triangulation_on(false);
+   main_viewer_form->draw_current_frame();   
+
+}
+
 
