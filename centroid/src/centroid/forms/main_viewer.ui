@@ -22,6 +22,34 @@
      <item>
       <layout class="QHBoxLayout" name="controlsLayout">
        <item>
+        <widget class="QPushButton" name="zoomInBut">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/zoom-out.png</normaloff>:/icons/zoom-out.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="zoomOutBut">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../main_window.qrc">
+           <normaloff>:/icons/zoom-in.png</normaloff>:/icons/zoom-in.png</iconset>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="jumpToFirstButton">
          <property name="enabled">
           <bool>false</bool>
@@ -273,6 +301,30 @@
     <string>Jump to the last frame</string>
    </property>
   </action>
+  <action name="action_ZoomIn">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/zoom-out.png</normaloff>:/icons/zoom-out.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom In</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom In</string>
+   </property>
+  </action>
+  <action name="action_ZoomOut">
+   <property name="icon">
+    <iconset resource="../main_window.qrc">
+     <normaloff>:/icons/zoom-in.png</normaloff>:/icons/zoom-in.png</iconset>
+   </property>
+   <property name="text">
+    <string>Zoom Out</string>
+   </property>
+   <property name="toolTip">
+    <string>Zoom Out</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../main_window.qrc"/>
@@ -383,6 +435,38 @@
     <hint type="sourcelabel">
      <x>559</x>
      <y>388</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoomInBut</sender>
+   <signal>clicked()</signal>
+   <receiver>action_ZoomIn</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>23</x>
+     <y>480</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>zoomOutBut</sender>
+   <signal>clicked()</signal>
+   <receiver>action_ZoomOut</receiver>
+   <slot>trigger()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>55</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
      <x>-1</x>

@@ -60,6 +60,11 @@ public:
    void remove_all_particles_selected();
    void remove_all_particles_in_rect(const QPointF& p0, const QPointF& p1);
 
+   void invert_particle_selection_all ();
+   void invert_particle_selection (int frame);
+
+   void deselect_all_particles ();
+
 private:
    QVector<particles*> list_all_particles; 
 

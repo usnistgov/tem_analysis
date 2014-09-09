@@ -96,6 +96,14 @@ readAndRescaleTo8Bit(const char *inFN, UCharImageType::Pointer & img)
 
 //////////////////////////////////////////////////////////////////////////
 
+int MainViewerForm::get_current_frame ()
+{
+    return current_frame;
+} 
+
+
+//////////////////////////////////////////////////////////////////////////
+
 void MainViewerForm::draw_frame(int frame)
 {
    if (frame > get_number_of_frames() || frame < 0) return;
@@ -105,20 +113,34 @@ void MainViewerForm::draw_frame(int frame)
    frameSlider->setValue(current_frame+1);
    scene->clear();
 
+   // draw the image for this frame
    if (file_list_images->size() > 0)
    {
+
+      // load the image from the file
       QImage *image = new QImage;
       if (image->load(file_list_images->at(current_frame).absoluteFilePath()));
       {
+
+         // if format of image is not valid, we use ITK to read image
          if (image->format() == QImage::Format_Invalid)
          {
+
+            // Get an ITK 8-bit image from the file
             UCharImageType::Pointer img;
-            readAndRescaleTo8Bit (file_list_images->at(current_frame).absoluteFilePath().toStdString().c_str(), img);
-            const UCharImageType::SizeType & imgSize = img->GetLargestPossibleRegion().GetSize();
+            readAndRescaleTo8Bit (
+                file_list_images->at(current_frame).absoluteFilePath().
+                                                    toStdString().c_str(), 
+                img);
+            const UCharImageType::SizeType & imgSize = 
+                    img->GetLargestPossibleRegion().GetSize();
             unsigned char *imgData = img->GetBufferPointer();
 
-            QImage *imageBW = new QImage(imgSize[0], imgSize[1], QImage::Format_RGB32);
+            // create a QImage to receive the ITK image data
+            QImage *imageBW = 
+                      new QImage(imgSize[0], imgSize[1], QImage::Format_RGB32);
 
+            // move the ITK pixel data to the QImage
             for (unsigned int i=0; i<imgSize[0]; i++)
             {
                for(unsigned int j=0; j<imgSize[1]; j++)
@@ -127,12 +149,15 @@ void MainViewerForm::draw_frame(int frame)
                   imageBW->setPixel(i, j, pv+(pv<<8)+(pv<<16));
                }
             }
+
+            // Add the pixmap to the scene
             QPixmap pixmap = QPixmap::fromImage(*imageBW);
             scene->addPixmap(pixmap); 
             delete(image);
          }
          else
          {
+            // If the QImage format is valid, add the pixmap to the scene
             QPixmap pixmap = QPixmap::fromImage(*image);
             scene->addPixmap(pixmap); 
             delete(image);
@@ -140,6 +165,7 @@ void MainViewerForm::draw_frame(int frame)
       }
    }
 
+   // now we draw the particles for the current frame
    if (particles->get_number_of_frames() > 0)
    {
       particles->set_is_positive_selection_on(is_positive_selection_on);
@@ -149,6 +175,7 @@ void MainViewerForm::draw_frame(int frame)
       }
       particles->draw_particles(scene, frame);
    }
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -168,6 +195,20 @@ void MainViewerForm::zoom_out()
 }
 
 //////////////////////////////////////////////////////////////////////////
+
+void MainViewerForm::on_action_ZoomIn_triggered()
+{
+    printf ("Zoom In triggered\n");
+    zoom_in ();
+}
+
+
+void MainViewerForm::on_action_ZoomOut_triggered()
+{
+    printf ("Zoom Out triggered\n");
+    zoom_out ();
+}
+
 
 void MainViewerForm::on_action_JumpToFirst_triggered()
 {
@@ -262,6 +303,9 @@ void MainViewerForm::viewer_icons_show(bool is_enabled)
    jumpToLastButton->setEnabled(is_enabled);
    frameSlider->setEnabled(is_enabled);
    frameSpinBox->setEnabled(is_enabled);
+
+   zoomOutBut->setEnabled (is_enabled);
+   zoomInBut->setEnabled (is_enabled);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -353,6 +397,16 @@ void MainViewerForm::draw_current_frame()
 void MainViewerForm::remove_all_particles_selected()
 {
    particles->remove_all_particles_selected();
+}
+
+void MainViewerForm::invert_particle_selection_all ()
+{
+   particles->invert_particle_selection_all ();
+}
+
+void MainViewerForm::deselect_all_particles ()
+{
+   particles->deselect_all_particles ();
 }
 
 /////////////////////////////////////////////////////////////////////////

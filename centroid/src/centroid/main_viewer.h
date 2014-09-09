@@ -36,14 +36,14 @@ public:
    void clearScene();
    void draw_frame(int frame);
    void draw_current_frame();
+   int get_current_frame();
+   int get_number_of_frames();
 
    void images_from_dir(const QString& dir);
    void particles_from_dir(const QString& dir);
 
    void zoom_in();
    void zoom_out();
-
-   int get_number_of_frames();
 
    bool get_is_triangulation_on();
    void set_is_triangulation_on(bool state);
@@ -54,6 +54,9 @@ public:
    bool get_is_positive_selection_on() { return is_positive_selection_on; }
 
    void remove_all_particles_selected();
+   void invert_particle_selection_all ();
+   void deselect_all_particles ();
+
    void select_all_particles_global(const QPointF& p0, const QPointF& p1, bool state);
    void select_all_particles_current_frame (const QPointF& p0, 
                                             const QPointF& p1, 
@@ -63,6 +66,7 @@ public:
    InteractionMode get_interactionMode ();
 
 private slots:
+
    void on_action_JumpToFirst_triggered();
    void on_action_PlayBackward_triggered();
    void on_action_StepBackward_triggered();
@@ -70,6 +74,9 @@ private slots:
    void on_action_StepForward_triggered();
    void on_action_PlayForward_triggered();
    void on_action_JumpToLast_triggered();
+   void on_action_ZoomIn_triggered();
+   void on_action_ZoomOut_triggered();
+
    void set_frame(int);
    void animate_loop();
 
