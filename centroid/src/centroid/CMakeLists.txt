@@ -16,7 +16,9 @@ qt5_wrap_ui(UIS_HDRS
 
 qt5_add_resources(RES_SRC main_window.qrc)
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../../modules/filter_base)
 add_executable(${PROJECT_NAME} main.cpp main_window.cpp modules_manager.cpp block.cpp project.cpp metadata.cpp module_button.cpp main_viewer.cpp viewer_graphics_scene.cpp new_project.cpp particles.cpp particle_item.cpp ${UIS_HDRS} ${RES_SRC})
+target_link_libraries(${PROJECT_NAME} ${CMAKE_BINARY_DIR}/lib/libfilter_base.a)
 
 qt5_use_modules(${PROJECT_NAME} Core)
 qt5_use_modules(${PROJECT_NAME} Gui)

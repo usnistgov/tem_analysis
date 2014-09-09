@@ -30,5 +30,5 @@ cmake_policy(SET CMP0020 NEW) # automatically link to qtmain.lib on Windows
 include_directories(${CMAKE_BINARY_DIR}/../src/centroid)
 include(GenerateExportHeader)
 
-add_subdirectory(src)
 add_subdirectory(modules)
+add_subdirectory(src)
