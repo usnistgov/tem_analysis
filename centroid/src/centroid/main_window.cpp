@@ -186,6 +186,8 @@ MainWindow::MainWindow()
    setUnifiedTitleAndToolBarOnMac(true);
    read_settings();
 
+    viewerToolOptStack->setCurrentIndex(0);
+    tabbedToolsPanel->setCurrentIndex(0);
    
 }
 

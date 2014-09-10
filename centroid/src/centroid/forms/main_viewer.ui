@@ -50,6 +50,16 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="loopCB">
+         <property name="text">
+          <string>Loop</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="jumpToFirstButton">
          <property name="enabled">
           <bool>false</bool>
@@ -325,6 +335,17 @@
     <string>Zoom Out</string>
    </property>
   </action>
+  <action name="actionLoop">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Loop</string>
+   </property>
+   <property name="toolTip">
+    <string>Loop On/Off</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../main_window.qrc"/>
@@ -466,6 +487,22 @@
    <hints>
     <hint type="sourcelabel">
      <x>55</x>
+     <y>480</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>loopCB</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>actionLoop</receiver>
+   <slot>toggle()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>100</x>
      <y>480</y>
     </hint>
     <hint type="destinationlabel">

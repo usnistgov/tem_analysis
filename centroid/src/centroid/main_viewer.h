@@ -106,6 +106,8 @@ private slots:
    void on_action_JumpToLast_triggered();
    void on_action_ZoomIn_triggered();
    void on_action_ZoomOut_triggered();
+   void on_actionLoop_toggled(bool);
+
 
    void set_frame(int);
    void animate_loop();
@@ -142,6 +144,7 @@ private:
    bool particles_visible;
    bool triangulation_visible;
 
+   bool loopAnimation;
 };
 
 //////////////////////////////////////////////////////////////////////////

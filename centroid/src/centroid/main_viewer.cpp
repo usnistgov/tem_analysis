@@ -24,6 +24,7 @@ MainViewerForm::MainViewerForm(QWidget *parent)
      triangulation_visible (true),
      particles_visible (true),
      image_visible (true),
+     loopAnimation (true),
      interactionMode (HandDrag)
 {
    setupUi(this);
@@ -203,6 +204,20 @@ void MainViewerForm::zoom_out()
 
 //////////////////////////////////////////////////////////////////////////
 
+void MainViewerForm::on_actionLoop_toggled(bool onOff)
+{
+
+    // I am getting reversed onOff values, so I'm querying isChecked()
+
+    // printf ("\n");
+    // printf ("loop %s\n", onOff?"on":"off");
+    onOff = loopCB->isChecked();
+    // printf ("loop %s\n", onOff?"on":"off");
+    // printf ("\n");
+    loopAnimation = onOff;
+}
+
+
 void MainViewerForm::on_action_ZoomIn_triggered()
 {
     // printf ("Zoom In triggered\n");
@@ -234,11 +249,16 @@ void MainViewerForm::on_action_PlayBackward_triggered()
 
 void MainViewerForm::on_action_StepBackward_triggered()
 {
-   if (current_frame > 0)
-   {
-      draw_frame(current_frame-1);
-      update();
-   }
+    if ( (!loopAnimation) && (current_frame == 0 ) )
+    {
+        return;
+    }
+
+    int newFrame = current_frame-1;
+    if (newFrame < 0) newFrame = get_number_of_frames() - 1;
+
+    draw_frame(newFrame);
+    update();
 }
 
 void MainViewerForm::on_action_Pause_triggered()
@@ -248,11 +268,14 @@ void MainViewerForm::on_action_Pause_triggered()
 
 void MainViewerForm::on_action_StepForward_triggered()
 {
-   if (current_frame < (get_number_of_frames()-1))
+   if ( (!loopAnimation) && (current_frame == get_number_of_frames()-1) )
    {
-      draw_frame(current_frame+1);
-      update();
+        return;
    }
+
+   draw_frame ( (current_frame+1) % get_number_of_frames() );
+   update();
+
 }
 
 void MainViewerForm::on_action_PlayForward_triggered()
@@ -280,13 +303,24 @@ void MainViewerForm::animate_loop()
 {
    if (animate_forward)
    {
-       draw_frame((current_frame+1) % get_number_of_frames());
+        if ( (!loopAnimation) && (current_frame == get_number_of_frames()-1) )
+        {
+            timer->stop();
+            return;
+        }
+        
+        draw_frame((current_frame+1) % get_number_of_frames());
    }
    else
    {
-       int frame = current_frame-1;
-       if (frame < 0) frame = get_number_of_frames()-1;
-       draw_frame(frame);
+        if ( (!loopAnimation) && (current_frame == 0) )
+        {
+            timer->stop();
+            return;
+        }
+        int frame = current_frame-1;
+        if (frame < 0) frame = get_number_of_frames()-1;
+        draw_frame(frame);
    }
 
    update();
