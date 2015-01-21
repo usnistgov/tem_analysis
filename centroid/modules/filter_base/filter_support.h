@@ -7,7 +7,15 @@
 #include <QMap>
 #include <QVariant>
 
+#include "itkImage.h"
+
 #include "project.h"
+
+
+
+typedef itk::Image< unsigned char,  2 >   UCharImageType;
+typedef itk::Image< float, 2 >   FltImageType;
+
 
 class FilterSupport
 {
@@ -48,6 +56,8 @@ public:
 
 
    static bool imgIsGray (const char *imgFN);
+   static void setNominalImageCoordSys ( UCharImageType::Pointer & img );
+   static void setNominalImageCoordSys ( FltImageType::Pointer & img );
 };
 
 #endif // __H__FILTER_SUPPORT__

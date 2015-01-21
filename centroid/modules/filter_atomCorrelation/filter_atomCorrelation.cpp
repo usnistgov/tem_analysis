@@ -801,31 +801,6 @@ InputImageType::Pointer & templateImg
     }  // end of makeTemplateImage
 
 
-static void
-setNominalImageCoordSys ( InputImageType::Pointer & img )
-    {
-
-    // OK for the purposes of this module we are going to set
-    // nominal origin, spacing, and direction.
-    // Note that this means that the output will have these 
-    // nominal origin, spacing, and direction which may be 
-    // different than input.
-    InputImageType::SpacingType origin;
-    InputImageType::SpacingType spacing;
-    InputImageType::DirectionType direction;
-
-    origin[0] = origin[1] = 0.0;
-    spacing[0] = spacing[1] = 1.0;
-    direction[0][0] = direction[1][1] = 1.0;
-    direction[1][0] = direction[0][1] = 0.0;
-
-    img->SetOrigin (origin);
-    img->SetSpacing (spacing);
-    img->SetDirection (direction);
-
-    }  // end of setNominalImageCoordSys ()
-
-
 
 // This is the main ITK-based correlation function. This is called by the
 // Qt-based stuff, and it calls the ITK stuff.
@@ -849,32 +824,13 @@ atomCorr (
 
 
     readImage (inImgFN, inImg);
-
-
-#if 0
-    // OK for the purposes of this module we are going to set
-    // nominal origin, spacing, and direction.
-    // Note that this means that the output will have these 
-    // nominal origin, spacing, and direction which may be 
-    // different than input.
-    InputImageType::SpacingType origin;
-    InputImageType::SpacingType spacing;
-    InputImageType::DirectionType direction;
-    origin[0] = origin[1] = 0.0;
-    spacing[0] = spacing[1] = 1.0;
-    direction[0][0] = direction[1][1] = 1.0;
-    direction[1][0] = direction[0][1] = 0.0;
-    inImg->SetOrigin (origin);
-    inImg->SetSpacing (spacing);
-    inImg->SetDirection (direction);
-#else
-    setNominalImageCoordSys ( inImg );
-#endif
+    FilterSupport::setNominalImageCoordSys ( inImg );
 
 
 
     // makeTemplateImage (3.5, 39.0, 255.0, 2.0, inTemplateImg);
     makeTemplateImage (atomTemplateRadius, 39.0, 255.0, 2.0, inTemplateImg);
+    FilterSupport::setNominalImageCoordSys ( inTemplateImg );
 
     // So we now have the two images for correlation.
     // There are actually two correlation steps.
@@ -906,8 +862,12 @@ atomCorr (
     // image has bright spots where we think the atoms are.
     invertImg (stretchImg, invertedCorrImg1);
 
+    FilterSupport::setNominalImageCoordSys ( invertedCorrImg1 );
+
     // do the correlation again with the inverted correlation image
     correlateImg (invertedCorrImg1, fltTemplateImg, corrImg2);
+
+    FilterSupport::setNominalImageCoordSys ( corrImg2 );
 
     // Done! Write it out.
     writeFloatImage (outImgFN, corrImg2);

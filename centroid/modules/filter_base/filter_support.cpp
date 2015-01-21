@@ -60,7 +60,7 @@ FilterSupport::parseFileName
   )
     {
 
-    dirName = fileInfo.filePath();
+    dirName = fileInfo.dir().canonicalPath();
     QString baseName = fileInfo.fileName();
 
     seqNum = -1;
@@ -451,5 +451,55 @@ FilterSupport::filesAreSame (const char *fnA, const char *fnB)
 
 
 
+
+
+void
+FilterSupport::setNominalImageCoordSys ( UCharImageType::Pointer & img )
+    {
+
+    // OK for the purposes of this module we are going to set
+    // nominal origin, spacing, and direction.
+    // Note that this means that the output will have these
+    // nominal origin, spacing, and direction which may be
+    // different than input.
+    UCharImageType::SpacingType origin;
+    UCharImageType::SpacingType spacing;
+    UCharImageType::DirectionType direction;
+
+    origin[0] = origin[1] = 0.0;
+    spacing[0] = spacing[1] = 1.0;
+    direction[0][0] = direction[1][1] = 1.0;
+    direction[1][0] = direction[0][1] = 0.0;
+
+    img->SetOrigin (origin);
+    img->SetSpacing (spacing);
+    img->SetDirection (direction);
+
+    }  // end of setNominalImageCoordSys ()
+
+
+void
+FilterSupport::setNominalImageCoordSys ( FltImageType::Pointer & img )
+    {
+
+    // OK for the purposes of this module we are going to set
+    // nominal origin, spacing, and direction.
+    // Note that this means that the output will have these
+    // nominal origin, spacing, and direction which may be
+    // different than input.
+    FltImageType::SpacingType origin;
+    FltImageType::SpacingType spacing;
+    FltImageType::DirectionType direction;
+
+    origin[0] = origin[1] = 0.0;
+    spacing[0] = spacing[1] = 1.0;
+    direction[0][0] = direction[1][1] = 1.0;
+    direction[1][0] = direction[0][1] = 0.0;
+
+    img->SetOrigin (origin);
+    img->SetSpacing (spacing);
+    img->SetDirection (direction);
+
+    }  // end of setNominalImageCoordSys ()
 
 
