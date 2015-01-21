@@ -802,7 +802,7 @@ InputImageType::Pointer & templateImg
 
 
 static void
-setNominalImageCharacteristics ( InputImageType::Pointer & img )
+setNominalImageCoordSys ( InputImageType::Pointer & img )
     {
 
     // OK for the purposes of this module we are going to set
@@ -823,7 +823,7 @@ setNominalImageCharacteristics ( InputImageType::Pointer & img )
     img->SetSpacing (spacing);
     img->SetDirection (direction);
 
-    }  // end of setNominalImageCharacteristics ()
+    }  // end of setNominalImageCoordSys ()
 
 
 
@@ -868,7 +868,7 @@ atomCorr (
     inImg->SetSpacing (spacing);
     inImg->SetDirection (direction);
 #else
-    setNominalImageCharacteristics ( inImg );
+    setNominalImageCoordSys ( inImg );
 #endif
 
 
