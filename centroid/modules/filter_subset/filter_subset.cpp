@@ -331,9 +331,13 @@ cropImg
     ImageType::Pointer inImg;
     readImage (inImgFN, inImg);
 
+    FilterSupport::setNominalImageCoordSys ( inImg );
+
     // crop image
     ImageType::Pointer outImg;
     cropImg (cropRect, inImg, outImg);
+
+    FilterSupport::setNominalImageCoordSys ( outImg );
 
     // write outImg as outImgFN
     writeImage (outImgFN, outImg);
@@ -360,11 +364,13 @@ cropImgs
 
 
     writeLog (QString ("\nSubset: Begin...\n\n"));
+    writeLog ("Subset: Processing images in "  + inputDir + "\n");
 
     for (int i=0; i < cropFileList.size(); i++)
     {
 
-        writeLog ("Subset: processing image "  + cropFileList[i].filePath() + "\n");
+        writeLog ("Subset:      "  + cropFileList[i].fileName() + "\n");
+
         cropImg (cropRect, 
                  cropFileList[i].filePath().toStdString().c_str(), 
                  outputDir.toStdString().c_str(), 
@@ -436,7 +442,7 @@ subsetImages
 
         bool deriveSeqNumFromInputFN = seqNumDigits > 0;
 
-        cropImgs (inputDir, cropFileList, outputDir, 
+        cropImgs (dirName, cropFileList, outputDir, 
                     deriveSeqNumFromInputFN, outProjTag, cropRect);
         }
     else
@@ -571,7 +577,7 @@ void FilterSubset::execute(const QVector<QMap<QString, QVariant> >& parameters)
     for (int i=0; i < inputFileList.size(); ++i)
     {
         QFileInfo fileInfo = inputFileList.at(i);
-        // qDebug() << "FILE NAME " << fileInfo.fileName();
+        qDebug() << "FILE NAME " << fileInfo.fileName();
     }
 
 

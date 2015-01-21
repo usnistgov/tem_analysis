@@ -503,3 +503,78 @@ FilterSupport::setNominalImageCoordSys ( FltImageType::Pointer & img )
     }  // end of setNominalImageCoordSys ()
 
 
+void
+FilterSupport::setNominalImageCoordSys ( UShortImageType::Pointer & img )
+    {
+
+    // OK for the purposes of this module we are going to set
+    // nominal origin, spacing, and direction.
+    // Note that this means that the output will have these
+    // nominal origin, spacing, and direction which may be
+    // different than input.
+    UShortImageType::SpacingType origin;
+    UShortImageType::SpacingType spacing;
+    UShortImageType::DirectionType direction;
+
+    origin[0] = origin[1] = 0.0;
+    spacing[0] = spacing[1] = 1.0;
+    direction[0][0] = direction[1][1] = 1.0;
+    direction[1][0] = direction[0][1] = 0.0;
+
+    img->SetOrigin (origin);
+    img->SetSpacing (spacing);
+    img->SetDirection (direction);
+
+    }  // end of setNominalImageCoordSys ()
+
+
+void
+FilterSupport::setNominalImageCoordSys ( UCharRGBImageType::Pointer & img )
+    {
+
+    // OK for the purposes of this module we are going to set
+    // nominal origin, spacing, and direction.
+    // Note that this means that the output will have these
+    // nominal origin, spacing, and direction which may be
+    // different than input.
+    UCharRGBImageType::SpacingType origin;
+    UCharRGBImageType::SpacingType spacing;
+    UCharRGBImageType::DirectionType direction;
+
+    origin[0] = origin[1] = 0.0;
+    spacing[0] = spacing[1] = 1.0;
+    direction[0][0] = direction[1][1] = 1.0;
+    direction[1][0] = direction[0][1] = 0.0;
+
+    img->SetOrigin (origin);
+    img->SetSpacing (spacing);
+    img->SetDirection (direction);
+
+    }  // end of setNominalImageCoordSys ()
+
+
+void
+FilterSupport::setNominalImageCoordSys ( UCharRGBAImageType::Pointer & img )
+    {
+
+    // OK for the purposes of this module we are going to set
+    // nominal origin, spacing, and direction.
+    // Note that this means that the output will have these
+    // nominal origin, spacing, and direction which may be
+    // different than input.
+    UCharRGBAImageType::SpacingType origin;
+    UCharRGBAImageType::SpacingType spacing;
+    UCharRGBAImageType::DirectionType direction;
+
+    origin[0] = origin[1] = 0.0;
+    spacing[0] = spacing[1] = 1.0;
+    direction[0][0] = direction[1][1] = 1.0;
+    direction[1][0] = direction[0][1] = 0.0;
+
+    img->SetOrigin (origin);
+    img->SetSpacing (spacing);
+    img->SetDirection (direction);
+
+    }  // end of setNominalImageCoordSys ()
+
+

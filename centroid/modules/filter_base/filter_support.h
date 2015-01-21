@@ -8,14 +8,21 @@
 #include <QVariant>
 
 #include "itkImage.h"
+#include "itkRGBPixel.h"
+#include "itkRGBAPixel.h"
 
 #include "project.h"
 
 
 
 typedef itk::Image< unsigned char,  2 >   UCharImageType;
+typedef itk::Image< unsigned short,  2 >   UShortImageType;
 typedef itk::Image< float, 2 >   FltImageType;
 
+typedef itk::RGBPixel<unsigned char>  UCharRGBPixelType;
+typedef itk::RGBAPixel<unsigned char>  UCharRGBAPixelType;
+typedef itk::Image< UCharRGBPixelType,  2 >   UCharRGBImageType;
+typedef itk::Image< UCharRGBAPixelType,  2 >   UCharRGBAImageType;
 
 class FilterSupport
 {
@@ -56,8 +63,13 @@ public:
 
 
    static bool imgIsGray (const char *imgFN);
+
+   // There must be a better way than repeating the same code N times.
    static void setNominalImageCoordSys ( UCharImageType::Pointer & img );
    static void setNominalImageCoordSys ( FltImageType::Pointer & img );
+   static void setNominalImageCoordSys ( UShortImageType::Pointer & img );
+   static void setNominalImageCoordSys ( UCharRGBImageType::Pointer & img );
+   static void setNominalImageCoordSys ( UCharRGBAImageType::Pointer & img );
 };
 
 #endif // __H__FILTER_SUPPORT__

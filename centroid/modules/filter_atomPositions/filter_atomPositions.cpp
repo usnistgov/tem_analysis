@@ -284,10 +284,14 @@ const char * outPosFN
     float minmax[2];
 
     readImage (inImgFN, inImg);
+    FilterSupport::setNominalImageCoordSys ( inImg );
 
     makeProportionThresholdedImage (inImg, threshold, thresholdedImg, minmax);
+    FilterSupport::setNominalImageCoordSys ( thresholdedImg );
 
     makeConnectedComponentImage (thresholdedImg, connCompImg);
+    FilterSupport::setNominalImageCoordSys ( connCompImg );
+
 
 
     double weightThreshold = 
@@ -376,7 +380,11 @@ atomPositions
     bool deriveSeqNumFromInputFN = seqNumDigits > 0;
 
 
-    writeLog ("\nAtomPositions: Begin...\n");
+    writeLog ( "\nAtomPositions: Begin...\n");
+    writeLog ( "AtomPositions: Processing " + 
+               QString::number(inputFileList.size()) + 
+               " images in " + dirName + ".\n");
+
     qDebug () << "AtomPositions for " << inputFileList.size() << " files.";
     
     QString outputCroppedDir = outputDir + "/../subset";
@@ -414,8 +422,7 @@ atomPositions
         ///////////////
 #endif
 
-        writeLog ("AtomPositions: processing " + 
-                    inputFileList[i].filePath() + "\n");
+        writeLog ("AtomPositions:      " + inputFileList[i].fileName() + "\n");
 
         atomPositions ( minClusterSize, threshold,
                         inputFileList[i].filePath().toStdString().c_str(), 

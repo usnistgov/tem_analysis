@@ -409,6 +409,7 @@ doResamp
     FloatImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     // printImageInfo ("In image", inPtr);
 
@@ -444,6 +445,8 @@ doResamp
     UCharImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
+
 
     inPtr->Update();
     resamp->SetOutputSpacing(inPtr->GetSpacing());
@@ -473,6 +476,7 @@ doResamp
     UCharRGBImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     inPtr->Update();
     resamp->SetOutputSpacing(inPtr->GetSpacing());
@@ -502,6 +506,7 @@ doResamp
     UCharRGBAImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     inPtr->Update();
     resamp->SetOutputSpacing(inPtr->GetSpacing());
@@ -690,16 +695,21 @@ applyImageRegistration (
 
 
 
-    writeLog ("\nRegisterImages: Begin...\n");
-    writeLog ("Applying registration to " +
-                    QString::number (inputImgs.size()) + " image files.\n");
+    writeLog ("RegisterImages: Applying registration transformations...\n");
+    writeLog ("RegisterImages: Processing " +
+              QString::number (inputImgs.size()) + 
+              " images in " + outputDir + ".\n");
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-            FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN,
+
+        writeLog ("RegisterImages:      " + inputImgs[i].fileName() + 
+                  "       " + inputXforms[i].fileName() + "\n");
+
+        FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN,
                 inImgNDigits, inImgProjTag, inImgOpTag, inImgExt);
 
-            FilterSupport::parseFileName (inputXforms[i], inXDir, inXN,
+        FilterSupport::parseFileName (inputXforms[i], inXDir, inXN,
                 inXNDigits, inXProjTag, inXOpTag, inXExt);
 
         if (inImgN != inXN)
@@ -733,12 +743,11 @@ applyImageRegistration (
 
         // qDebug() << "out fn = " << outImgFN;
 
-        writeLog (".");
+        // writeLog (".");
 
         }
 
-    writeLog ("\n");
-    writeLog ("RegisterImages: Done.\n\n");
+    writeLog ("RegisterImages: Done applying transformations.\n");
 
     return;
     } // end of applyImageRegistration
@@ -845,6 +854,8 @@ generateRegistrationTransformsIJ
   const QString projectShortTag
   )
     {
+
+    writeLog ("RegisterImages: Generating registration transformations...\n");
 
     QFileInfoList inputFileList;
     FilterSupport::getImageFileList (inputImageDir, inputFileList);
@@ -1017,6 +1028,8 @@ generateRegistrationTransformsIJ
         }
 
 
+    writeLog (
+        "RegisterImages: Done generating registration transformations.\n");
 
     return;
     } // end of generateRegistrationTransformsIJ
@@ -1119,6 +1132,7 @@ void FilterRegisterImages::execute
     // QFileInfoList inputFileList;
     // getImageFileList (inputDir, inputFileList);
 
+    writeLog ("\nRegisterImages: Begin...\n");
     generateRegistrationTransformsIJ (inputImageDir, 
                                       outputTransformDir, 
                                       allowRotation,
@@ -1130,6 +1144,8 @@ void FilterRegisterImages::execute
                                             outputImageDir, projectShortTag);
         }
     
+    writeLog ("RegisterImages: Done.\n\n");
+
     qDebug() << "Exiting module " + getMetaData()->getName() + "\n";
 
 }  // end of FilterRegisterImages::execute

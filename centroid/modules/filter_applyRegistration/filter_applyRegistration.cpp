@@ -407,6 +407,7 @@ doResamp
     FloatImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     // printImageInfo ("In image", inPtr);
 
@@ -442,6 +443,7 @@ doResamp
     UCharImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     inPtr->Update();
     resamp->SetOutputSpacing(inPtr->GetSpacing());
@@ -471,6 +473,7 @@ doResamp
     UCharRGBImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     inPtr->Update();
     resamp->SetOutputSpacing(inPtr->GetSpacing());
@@ -500,6 +503,7 @@ doResamp
     UCharRGBAImageType::Pointer outPtr;
 
     readImage (inImg, inPtr);
+    FilterSupport::setNominalImageCoordSys ( inPtr );
 
     inPtr->Update();
     resamp->SetOutputSpacing(inPtr->GetSpacing());
@@ -790,17 +794,28 @@ applyImageRegistration (
     int inXN, inXNDigits;
 
     
+    FilterSupport::parseFileName (inputImgs[0], 
+                                  inImgDir, inImgN, inImgNDigits, 
+                                  inImgProjTag, inImgOpTag, inImgExt);
 
-    writeLog ("Applying registration to " + 
-                    QString::number (inputImgs.size()) + " image files.\n");
+    writeLog ("ApplyRegistration: Processing " + 
+              QString::number (inputImgs.size()) + 
+              " images in " + inImgDir + ".\n");
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-            FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
-                                          inImgProjTag, inImgOpTag, inImgExt);
 
-            FilterSupport::parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
-                                          inXProgTag, inXOpTag, inXExt);
+        writeLog ("ApplyRegistration:      " + 
+                        inputImgs[i].fileName() + "      " +
+                        inputXforms[i].fileName() + "\n");
+
+        FilterSupport::parseFileName (inputImgs[i], 
+                                      inImgDir, inImgN, inImgNDigits, 
+                                      inImgProjTag, inImgOpTag, inImgExt);
+
+        FilterSupport::parseFileName (inputXforms[i], 
+                                      inXDir, inXN, inXNDigits, 
+                                      inXProgTag, inXOpTag, inXExt);
 
         if (inImgN != inXN)
             {
@@ -829,11 +844,9 @@ applyImageRegistration (
         xformImage (inputImgs[i].filePath(), 
                         inputXforms[i].filePath(), outImgFN);
 
-        writeLog (".");
 
         }
 
-    writeLog ("\n");
 
     return;
     } // end of applyImageRegistration
@@ -878,16 +891,28 @@ applyAtomPosRegistration (
     int inXN, inXNDigits;
 
 
-    writeLog ("Applying registration to " + 
-              QString::number (inputImgs.size()) + " atom position files.\n");
+
+    FilterSupport::parseFileName (inputImgs[0], 
+                                  inImgDir, inImgN, inImgNDigits, 
+                                  inImgProjTag, inImgOpTag, inImgExt);
+
+    writeLog ("ApplyRegistration: Processing " + 
+              QString::number (inputImgs.size()) + 
+              " position files in " + inImgDir + ".\n");
 
     for (int i = 0; i < inputImgs.size(); i++)
         {
-            FilterSupport::parseFileName (inputImgs[i], inImgDir, inImgN, inImgNDigits, 
-                                          inImgProjTag, inImgOpTag, inImgExt);
+        FilterSupport::parseFileName (inputImgs[i], 
+                                      inImgDir, inImgN, inImgNDigits, 
+                                      inImgProjTag, inImgOpTag, inImgExt);
 
-            FilterSupport::parseFileName (inputXforms[i], inXDir, inXN, inXNDigits, 
-                                          inXProgTag, inXOpTag, inXExt);
+        FilterSupport::parseFileName (inputXforms[i], 
+                                      inXDir, inXN, inXNDigits, 
+                                      inXProgTag, inXOpTag, inXExt);
+
+        writeLog ("ApplyRegistration:      " + 
+                        inputImgs[i].fileName() + "      " +
+                        inputXforms[i].fileName() + "\n");
 
         if (inImgN != inXN)
             {
@@ -949,7 +974,6 @@ applyAtomPosRegistration (
         xformApos (inputImgs[i].filePath(), 
                         inputXforms[i].filePath(), outImgFN);
 
-        writeLog (".");
 
         }
 

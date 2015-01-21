@@ -869,6 +869,7 @@ atomCorr (
 
     FilterSupport::setNominalImageCoordSys ( corrImg2 );
 
+
     // Done! Write it out.
     writeFloatImage (outImgFN, corrImg2);
 
