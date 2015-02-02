@@ -549,72 +549,93 @@ conformImgSpace (const FloatImageType::Pointer & imgFixed,
 // Modify the correlation image by enhancing regions of high standard deviation.
 static int
 modByStdDev (
+  double radiusP,
+  double sdEmph,
   InputImageType::Pointer & inImg, 
   FloatImageType::Pointer & corrImg, 
   FloatImageType::Pointer & modImg
   )
     {
-    typedef itk::NoiseImageFilter<
+
+
+    if (sdEmph > 0.001)
+        {
+        // modImg = corrImg; return 0;
+
+        typedef itk::NoiseImageFilter<
                InputImageType, FloatImageType >  NoiseFilterType;
 
-    double radius = 15.0;  // should be parameterized
+        double radius = 15.0;  // should be parameterized
 
-    NoiseFilterType::Pointer sdFilter = NoiseFilterType::New();
+        radius = radiusP;
 
-    sdFilter->SetInput ( inImg );
-    sdFilter->SetRadius ( radius );
+        NoiseFilterType::Pointer sdFilter = NoiseFilterType::New();
 
-    FloatImageType::Pointer sdImg = sdFilter->GetOutput();
-    sdImg->Update();
+        sdFilter->SetInput ( inImg );
+        sdFilter->SetRadius ( radius );
 
-
-    FloatImageType::Pointer sdStretchImg;
-
-    // stretch the std dev image.  
-    // (note that this is disabled by the use of (0,1) range.).
-    stretch (sdImg, 0.0, 1.0, sdStretchImg);
+        FloatImageType::Pointer sdImg = sdFilter->GetOutput();
+        sdImg->Update();
 
 
-    typedef itk::MultiplyImageFilter <FloatImageType, FloatImageType >
-        MultiplyImageFilterType;
+
+        FloatImageType::Pointer sdStretchImg;
+
+        // stretch the std dev image.  
+        // (note that this is disabled by the use of (0,1) range.).
+        // stretch (sdImg, 0.0, 1.0, sdStretchImg);
+        stretch (sdImg, 0.0, sdEmph, sdStretchImg);
+
+
+        typedef itk::MultiplyImageFilter <FloatImageType, FloatImageType >
+            MultiplyImageFilterType;
  
-    MultiplyImageFilterType::Pointer sqIF = 
+        FloatImageType::Pointer multiplierImg;
+
+#if 0
+        MultiplyImageFilterType::Pointer sqIF = 
                                     MultiplyImageFilterType::New ();
-    sqIF->SetInput1(sdStretchImg);
-    sqIF->SetInput2(sdStretchImg);
+        sqIF->SetInput1(sdStretchImg);
+        sqIF->SetInput2(sdStretchImg);
 
-    FloatImageType::Pointer multiplierImg;
-    multiplierImg = sqIF->GetOutput();
+        multiplierImg = sqIF->GetOutput();
 
-    multiplierImg = sdStretchImg;
+#endif
 
-    multiplierImg->Update();
+        multiplierImg = sdStretchImg;
 
-
-    // printf ("Before conforming\n");
-    // printImageInfo ("mult input 1 (multiplierImg) ", multiplierImg);
-    // printImageInfo ("mult input 2 (corrImg) ", corrImg);
+        multiplierImg->Update();
 
 
-    // conformImgSpace (corrImg, multiplierImg);
-    conformImgSpace (multiplierImg, corrImg);
-
-    // printf ("After conforming\n");
-    // printImageInfo ("mult input 1 (multiplierImg) ", multiplierImg);
-    // printImageInfo ("mult input 2 (corrImg) ", corrImg);
+        // printf ("Before conforming\n");
+        // printImageInfo ("mult input 1 (multiplierImg) ", multiplierImg);
+        // printImageInfo ("mult input 2 (corrImg) ", corrImg);
 
 
+        // conformImgSpace (corrImg, multiplierImg);
+        conformImgSpace (multiplierImg, corrImg);
 
-    MultiplyImageFilterType::Pointer multIF = 
+        // printf ("After conforming\n");
+        // printImageInfo ("mult input 1 (multiplierImg) ", multiplierImg);
+        // printImageInfo ("mult input 2 (corrImg) ", corrImg);
+    
+
+
+        MultiplyImageFilterType::Pointer multIF = 
                                     MultiplyImageFilterType::New ();
 
-    multIF->SetInput1 (multiplierImg);
-    multIF->SetInput2 (corrImg);
+        multIF->SetInput1 (multiplierImg);
+        multIF->SetInput2 (corrImg);
+    
+        modImg = multIF->GetOutput();
 
-    modImg = multIF->GetOutput();
+        modImg->Update();
 
-    modImg->Update();
-
+        }
+    else
+        {
+        modImg = corrImg; 
+        }
     
 
     return 0;
@@ -808,6 +829,8 @@ InputImageType::Pointer & templateImg
 static void
 atomCorr ( 
   double atomTemplateRadius,
+  double sdRadius,
+  double sdEmph,
   const char * inImgFN, 
   const char *outImgFN 
   )
@@ -849,7 +872,8 @@ atomCorr (
 
     // enhance the intermediate correlation to emphasize regions
     // of high variance in the original input image
-    modByStdDev (inImg, corrImg1, modCorrImg1);
+    // modByStdDev (15.0, 0.3, inImg, corrImg1, modCorrImg1);
+    modByStdDev (sdRadius, sdEmph, inImg, corrImg1, modCorrImg1);
 
     // do an additional constrast stretch of the image
     FloatImageType::Pointer stretchImg;
@@ -892,6 +916,8 @@ static void
 atomCorrelateImages
   (
   double atomTemplateRadius,
+  double sdRadius,
+  double sdEmph,
   const QFileInfoList & inputFileList, 
   const QString & outputDir,
   const QString & projectShortTag
@@ -957,6 +983,7 @@ atomCorrelateImages
 
         // Do the correlation, write the output file.
         atomCorr (  atomTemplateRadius,
+                    sdRadius, sdEmph,
                     inputFileList[i].filePath().toStdString().c_str(), 
                     outImgFN.toStdString().c_str()     );
 
@@ -1002,6 +1029,8 @@ void FilterAtomCorrelation::execute
     QString inputDir;   
     QString outputDir;
     double atomTemplateRadius = 3.0;  // smaller radius seems to work better
+    double varRadius = 15.0;
+    double varEmph = 1.0;
    
     // The parameters are just a list of QMaps where each
     // map is just a set of (keyword, value) pairs.
@@ -1028,6 +1057,14 @@ void FilterAtomCorrelation::execute
         else if (paramName == "atomTemplateRadius")
         {
             atomTemplateRadius = parameters[i]["value"].toFloat();
+        }
+        else if (paramName == "varEmphFactor")
+        {
+            varEmph = parameters[i]["value"].toFloat();
+        }
+        else if (paramName == "varNbhdRadius")
+        {
+            varRadius = parameters[i]["value"].toFloat();
         }
 
         else
@@ -1077,11 +1114,17 @@ void FilterAtomCorrelation::execute
     }
 
 
+
+
     qDebug () << "Begin atom correlation....\n";
 
     // do the correlations!
-    atomCorrelateImages (atomTemplateRadius, inputFileList, 
-                                    outputDir, projectShortTag);
+    atomCorrelateImages (atomTemplateRadius, 
+                         varRadius, 
+                         varEmph, 
+                         inputFileList, 
+                         outputDir, 
+                         projectShortTag);
 
     qDebug () << "Done with atom correlation.\n";
 

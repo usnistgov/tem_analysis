@@ -31,6 +31,24 @@
          "form" : "Atom Template Radius (pixels)",
          "value" : "3.0",
          "tooltip" : "Radius (in pixels) of the atom template image that is generated for correlation."
+      },
+
+
+      {
+         "name" : "varEmphFactor",
+         "type" : "float",
+         "form" : "Variance Emphasis Factor",
+         "value" : "1.0",
+         "tooltip" : "Factor for emphasizing features with high variance."
+      },
+
+
+      {
+         "name" : "varNbhdRadius",
+         "type" : "float",
+         "form" : "Variance Neighborhood Radius",
+         "value" : "15.0",
+         "tooltip" : "Radius of neighborhood for measuring variance at each pixel."
       }
 
 
