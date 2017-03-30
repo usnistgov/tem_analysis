@@ -69,113 +69,97 @@ aware that there are various processing parameters that can be changed.
 Each of the parameters will be discussed in more detail in subsequent
 sections.
 
-    * Create a folder to encompass the project. Let's call
-        it "Example1"
+* Create a folder to encompass the project. Let's call it "Example1"
 
-    * Create a sub-folder called "original" inside of the folder
-        Example1
+* Create a sub-folder called "original" inside of the folder Example1
 
-    * Move or copy a sequence of raw TEM images into the sub-folder
-        original.
+* Move or copy a sequence of raw TEM images into the sub-folder original.
 
-    * Start up the TEM Analysis software.
+* Start up the TEM Analysis software.
 
-    * Go to the File menu and select "New Project".  This brings up
-        a dialog where you are asked to select a "base directory" and 
-        to specify a "short tag".
+* Go to the File menu and select "New Project".  This brings up
+        a dialog where you are asked to select a "base directory" and to
+        specify a "short tag".
+  - press the "Select Base Directory" button and select the Example1 folder
+    that you created.
+  - put "ex1" in the short tag field. (You could put anything you want.)
+  - hit "Save". (You can use any file extension you want.)
 
-        - press the "Select Base Directory" button and select the 
-            Example1 folder that you created.
+* You should now see a list of "Data Processing Modules" at the right.
 
-        - put "ex1" in the short tag field. (You could put anything 
-            you want.)
+* Click on the module "Subset", then click execute. This uses the default
+  settings to process the images in the folder "original" and places the
+  output images in a sub-folder called "subset". By default, it removes
+  duplicate images, singleton images, and any images which have differing R,
+  G, and B channels.
 
-        - hit "Save". (You can use any file extension you want.)
+* In the list of icons at the upper left, click on the eye icon.
+  This brings up a file dialog box. Select the "subset" folder. You should see
+  the first of the subsetted image sequence. You can use the controls below
+  the image display to run through the image sequence, and you can use the -
+  and + controls at the top to zoom in and out.  
 
-    * You should now see a list of "Data Processing Modules" at the
-        right.
+* Click on the module Subset button to close up the Subset 
+  interface.
 
-    * Click on the module "Subset", then click execute. This uses the
-        default settings to process the images in the folder "original"
-        and places the output images in a sub-folder called "subset".
-        By default, it removes duplicate images, singleton images,
-        and any images which have differing R, G, and B channels.
+* Click on AtomCorrelation to open up it's interface, and hit the
+  Execute button to run it.  By default it processes the images in the subset
+  folder and it creates the subfolder atomCorrelation and places its output
+  there.
 
-    * In the list of icons at the upper left, click on the eye icon.
-        This brings up a file dialog box. Select the "subset" folder.
-        You should see the first of the subsetted image sequence.
-        You can use the controls below the image display to run
-        through the image sequence, and you can use the - and + 
-        controls at the top to zoom in and out.  
+* At any point, you can view the images as described above.
 
-    * Click on the module Subset button to close up the Subset 
-        interface.
+* Click on the AtomPosition module, and hit its Execute button. 
+  By default, this writes output to the sub-folder called atomPositions. In
+  this case, the output is a set of files that give derived atom positions for
+  each input file.
 
-    * Click on AtomCorrelation to open up it's interface, and hit the
-        Execute button to run it.  By default it processes the images
-        in the subset folder and it creates the subfolder 
-        atomCorrelation and places its output there.
+* Click on the RegisterImages module, then hit its Execute button.
+  By default this produces transformations for each image that us to transform
+  image coordinates between each image and the coordinate system of the first
+  image in the sequence.
 
-    * At any point, you can view the images as described above.
+  The default inputs to the registration process are the images produced by
+  the AtomCorrelation module.  The output transformations are placed in the
+  sub-folder called registrationTransformations. By default it also transforms
+  the input images and places the registered images into the folder called
+  atomCorrelationRegistered.
 
-    * Click on the AtomPosition module, and hit its Execute button. 
-        By default, this writes output to the sub-folder called 
-        atomPositions. In this case, the output is a set of files that
-        give derived atom positions for each input file.
+  You will see an ImageJ window launch after clicking the Execute button. This
+  is expected, and the ImageJ window should disappear after the registration
+  is complete.
 
-    * Click on the RegisterImages module, then hit its Execute button.
-        By default this produces transformations for each image that
-        us to transform image coordinates between each image and the
-        coordinate system of the first image in the sequence.
+* Click on the ApplyRegistration module, and hit its Exectute 
+  button. By default, this transforms the images in the subset folder based on
+  the transformations created by the RegisterImages module. The output images
+  are placed in a folder called subsetRegistered.
 
-        The default inputs to the registration process are the images 
-        produced by the AtomCorrelation module.  The output 
-        transformations are placed in the sub-folder called 
-        registrationTransformations. By default it also transforms the 
-        input images and places the registered images into the folder
-        called atomCorrelationRegistered.
+* We're now going to run ApplyRegistration again, but instead of
+  applying the registration transformations to image data, we'll apply them to
+  the atom position files that were created by the AtomPosition module. This
+  is done in the ApplyRegistration interface with these steps:
+  - Hit the "..." button to the right of the "Input Folder" field.
+    This opens a dialog; select the atomPositions folder.
+  - Hit the "..." button to the right of the "Output Folder" 
+    field. This opens a dialog; in this dialog hit the button or icon for
+    creating a new folder. Name the new folder "atomPosRegistered".  Select
+    this folder in the dialog.
+  - Hit the Execute button.  This will transform the coordinates
+    in the files in the atomPositions folders and place its output in the
+    atomPosRegistered folder.
 
-        You will see an ImageJ window launch after clicking the Execute
-        button. This is expected, and the ImageJ window should disappear
-        after the registration is complete.
+* Go back to the image viewer and its set of controls.
 
-    * Click on the ApplyRegistration module, and hit its Exectute 
-        button. By default, this transforms the images in the subset 
-        folder based on the transformations created by the 
-        RegisterImages module. The output images are placed in a 
-        folder called subsetRegistered.
+* Hit the eye icon and select the subsetRegistered folder
 
-    * We're now going to run ApplyRegistration again, but instead of
-        applying the registration transformations to image data, we'll
-        apply them to the atom position files that were created by the
-        AtomPosition module. This is done in the ApplyRegistration 
-        interface with these steps:
+* Hit the icon that looks like a bunch of dots and select the
+  atomPosRegistered folder.
 
-        - Hit the "..." button to the right of the "Input Folder" field.
-            This opens a dialog; select the atomPositions folder.
-
-        - Hit the "..." button to the right of the "Output Folder" 
-            field. This opens a dialog; in this dialog hit the button or
-            icon for creating a new folder. Name the new folder 
-            "atomPosRegistered".  Select this folder in the dialog.
-
-        - Hit the Execute button.  This will transform the coordinates
-            in the files in the atomPositions folders and place its 
-            output in the atomPosRegistered folder.
-
-    * Go back to the image viewer and its set of controls.
-
-    * Hit the eye icon and select the subsetRegistered folder
-
-    * Hit the icon that looks like a bunch of dots and select the
-        atomPosRegistered folder.
-
-    * You should see the atom positions overlayed as dots on top
-        of the registered TEM images.  You can use the controls at the
-        bottom to play through the image sequence and examine 
-        individual frames.  You can zoom in and out to look at 
-        more detail.  The other image viewer controls will be 
-        described below.
+* You should see the atom positions overlayed as dots on top
+  of the registered TEM images.  You can use the controls at the bottom to
+  play through the image sequence and examine individual frames.  You can zoom
+  in and out to look at more detail.  The other image viewer controls will be
+  described below.
 
 
 ## 2. The Organization of the Software and Some Conventions
@@ -192,8 +176,7 @@ The user interface is divided into four sections:
     modules is displayed.
 
 Note: In the discussion below, we use the term "folder" and "directory"
-      interchangeably. These two terms are intended to be entirely 
-      equivalent.
+interchangeably. These two terms are intended to be entirely equivalent.
 
 The software has the concept of a "project".  Projects are just all of
 the files associated with a given TEM image sequence. These files 
@@ -222,9 +205,10 @@ then be used as input.
 We also use a naming convention for the files output by a processing
 step. The names typically look like this:
 
-   seqNum.shortTag.procTag.fileType
+    seqNum.shortTag.procTag.fileType
 
 where:
+
     seqNum      is a zero-filled sequence number, e.g. "000020"
     shortTag    is determined by the project, e.g. "set01"
     procTag     is generated by the processing step and will
@@ -233,7 +217,8 @@ where:
     fileType    is the extension that indicates the type of data
                     in the file, e.g. "png" or "tif".
 
-So a generated image file may have a name like: 
+So a generated image file may have a name like:
+
     "000020.set01.registered.png"
 
 We also generate data files of other types. For example when we derive
@@ -271,11 +256,11 @@ The data analysis provided by this tool is provided as a serise of "Modules",
 which are accessed by the sub-panel at the right. In this initial version of
 the software, there are five modules:
 
-    - Subset
-    - AtomCorrelation
-    - AtomPositions
-    - RegisterImages
-    - Apply Registration
+- Subset
+- AtomCorrelation
+- AtomPositions
+- RegisterImages
+- Apply Registration
 
 This is typically the order in which you would execute the modules
 
@@ -298,38 +283,35 @@ TEM images to produce a working set of images.
 
 The parameters are:
 
-    Input Folder            The folder with the images to be subsetted
-                            Default: a folder named "original" under the
-                                   project base folder.
+- Input Folder            The folder with the images to be subsetted
+                          Default: a folder named "original" under the project
+                          base folder.
 
-    Output Folder           The folder where the output subset images
-                            will be written.
-                            Default: a folder named "subset" under the 
-                                   project base folder.
+- Output Folder           The folder where the output subset images
+                          will be written.
+                          Default: a folder named "subset" under the project
+                          base folder.
 
-    Remove Duplicates       Remove any image that is identical to the 
-                            previous image
+- Remove Duplicates       Remove any image that is identical to the 
+                          previous image
 
-    Remove Singles          Removes any image that is present only
-                            once in the image sequence
+- Remove Singles          Removes any image that is present only
+                          once in the image sequence
 
-    Remove Imgs with Color  Removes any images that contain pixels 
-                            that are not strictly gray-level. 
+- Remove Imgs with Color  Removes any images that contain pixels 
+                          that are not strictly gray-level. 
 
 
-    Crop Lower/Upper X/Y    Four numeric entries that indicate the
-                            pixel coordinates of the cropping limit.
-                            Defaults: 0, 0, 0, 0
-                            If the crop coords are not changed and
-                            the defaults of 0,0,0,0 are used, then
-                            no cropping is done.
-
-                            We have noticed that it is not necessary
-                            to crop the images at this stage. In fact,
-                            in the cases that we've looked at, having 
-                            the full image area available improves
-                            the subsequent image registration step.
-
+- Crop Lower/Upper X/Y    Four numeric entries that indicate the
+                          pixel coordinates of the cropping limit.
+                          Defaults: 0, 0, 0, 0
+                          If the crop coords are not changed and the defaults
+                          of 0,0,0,0 are used, then no cropping is done.
+                          We have noticed that it is not necessary to crop the
+                          images at this stage. In fact, in the cases that
+                          we've looked at, having the full image area
+                          available improves the subsequent image registration
+                          step.
 
 ### AtomCorrelation
 
@@ -341,18 +323,18 @@ position in each input image.
 
 The parameters are:
 
-    Input Folder            The folder with the images to be processed.
-                            Default: folder named "subset" under the
-                                   project base folder.
+- Input Folder            The folder with the images to be processed.
+                          Default: folder named "subset" under the project
+                          base folder.
 
-    Output Folder           The folder where the output atom correlation
-                            images will be written.
-                            Default: folder named "atomCorrelation" 
-                                    under the project base folder.
+- Output Folder           The folder where the output atom correlation
+                          images will be written.
+                          Default: folder named "atomCorrelation" under the
+                          project base folder.
 
-    Atom Template Radius    The radius of the atom in the template 
-                            image that is generated.
-                            Default: 3.0
+- Atom Template Radius    The radius of the atom in the template 
+                          image that is generated.
+                          Default: 3.0
 
 This is the most compute-intensive step; it may take several seconds to
 process each input image. The output images are TIFF files with floating
@@ -363,7 +345,6 @@ detection of atoms in the output correlation images.
 
 Note: We plan to expand the capability of this module in various ways in
 subsequent versions of the software.
-
 
 ### AtomPositions
 
@@ -379,28 +360,22 @@ file.
 
 The parameters are:
 
-    Input Folder            The folder with the images to be processed.
-                            Default: folder named "atomCorrelation" 
-                                under the project base folder.
+- Input Folder            The folder with the images to be processed.
+                          Default: folder named "atomCorrelation" under the
+                          project base folder.
 
-    Output Folder           The folder where the output atom position
-                            files will be written.
-                            Default: folder named "atomPositions" 
-                                    under the project base folder.
+- Output Folder           The folder where the output atom position
+                          files will be written.
+                          Default: folder named "atomPositions" under the
+                          project base folder.
 
-    Percent Threshold       The percent of the input image range to be
-                            excluded. 
-
-                            The range of correlation values in each 
-                            input image is determined and this 
-                            parameter is used to determine a 
-                            threshold pixel value. Pixels below the 
-                            threshold are assumed to not be in any 
-                            atom cluster.
-
-                            Default: 5%
-
-
+- Percent Threshold       The percent of the input image range to be
+                          excluded.
+                          The range of correlation values in each input image
+                          is determined and this parameter is used to
+                          determine a threshold pixel value. Pixels below the
+                          threshold are assumed to not be in any atom cluster.
+                          Default: 5%
 
 ### RegisterImages
 
@@ -417,41 +392,31 @@ original TEM images (even when cropped).
 
 The parameters are:
 
-    Input Image Folder      The folder with the images to be registered.
-                            Default: folder named "atomCorrelation" 
-                                under the project base folder.
+- Input Image Folder      The folder with the images to be registered.
+                          Default: folder named "atomCorrelation" under the
+                          project base folder.
 
-    Output Transform Folder  The folder where the output image 
-                             transform files will be written.
+- Output Transform Folder  The folder where the output image
+                           transform files will be written.
+                           These transform files describe the spatial
+                           transformation (typically XY translation) that can
+                           be used to transform between the pixel coordinates
+                           of the first image and those of each subsequent
+                           image.
+                           Default: folder named "registrationTransforms"
+                           under the project base folder.
 
-                             These transform files describe the spatial
-                             transformation (typically XY translation) 
-                             that can be used to transform between the 
-                             pixel coordinates of the first image and 
-                             those of each subsequent image.
+- Output Image Folder     The folder where the transformed image
+                          files will be written. Each input image is resampled
+                          based on the transformation determined in this
+                          processing step.
+                          Default: folder named "atomCorrelationRegistered"
+                          under the project base folder.
 
-                             Default: folder named 
-                                    "registrationTransforms"
-                                    under the project base folder.
-
-    Output Image Folder     The folder where the transformed image
-                            files will be written. Each input image
-                            is resampled based on the transformation
-                            determined in this processing step.
-
-                            Default: folder named 
-                                    "atomCorrelationRegistered"
-                                    under the project base folder.
-
-    Allow Rotation          If this is checked then the method allows
-                            rotations as well as translations to be 
-                            introduced as it tries to match up the 
-                            images.
-                            Default: Rotations not allowed 
-                                     (translation only)
-
-
-
+- Allow Rotation          If this is checked then the method allows
+                          rotations as well as translations to be introduced
+                          as it tries to match up the images.
+                          Default: Rotations not allowed (translation only)
 
 ### ApplyRegistration
 
@@ -462,101 +427,86 @@ module AtomPositions).
 
 The parameters are:
 
-    Input Folder            The folder with the images or atom position 
-                            files to which to apply the registration 
-                            transforms.
-                            Default: folder named "atomPositions" 
-                                under the project base folder.
+- Input Folder            The folder with the images or atom position 
+                          files to which to apply the registration transforms.
+                          Default: folder named "atomPositions" under the
+                          project base folder.
 
 
-    Input Transforms Folder  The folder containing the registration 
-                             transform files as output by the module 
-                             RegisterImages.
+- Input Transforms Folder  The folder containing the registration
+                           transform files as output by the module
+                           RegisterImages.
+                           Default: folder named "registrationTransforms"
+                           under the project base folder.
 
-                             Default: folder named 
-                                "registrationTransforms"
-                             under the project base folder. 
-
-    Output Folder           The folder where the output image or atom 
-                            position files will be written.
-                            Default: folder named "atomPosRegistered" 
-                                    under the project base folder.
-
+- Output Folder           The folder where the output image or atom
+                          position files will be written.
+                          Default: folder named "atomPosRegistered" under the
+                          project base folder.
 
 NOTE: This is the module that you are most likely to want to run 
       several times with inputs and outputs that are different than
       the defaults.
 
-      In particular, you will probably want to run this again to process
-      the "subset" images to produce images that are visually like the  
-      raw TEM images but that are registered to the same spatial    
-      coordinate system.
+In particular, you will probably want to run this again to process the
+"subset" images to produce images that are visually like the raw TEM images
+but that are registered to the same spatial coordinate system.
 
-      To do this, you could set:
+To do this, you could set:
 
-        Input Folder:  "subset" sub-folder of the base 
-                        project folder
-
-        Output Folder: "subsetRegistered" sub-folder of the 
-                        base project folder
+- Input Folder:  "subset" sub-folder of the base project folder
+- Output Folder: "subsetRegistered" sub-folder of the base project folder
 
 ## 4. The Display of Images and Atom Positions
 
 This is the most visual and interactive part of the software. This 
 enables you to:
-    - look at an image
-    - play through the images, 
-    - zoom in and out 
-    - overlay atom positions, 
-    - select and remove unwanted atoms
-    - look at overlaid trianglulations based on atom positions
+- look at an image
+- play through the images
+- zoom in and out
+- overlay atom positions
+- select and remove unwanted atoms
+- look at overlaid trianglulations based on atom positions
 
 There are a series of icons at the top of the display panel:
 
-    - Create a new project file
-    - Open an existing project file
-        When you create a new project, a project file is written.
-        This enables to you to read that project file and to
-        place you back in that project folder.
+- Create a new project file
 
-    - Display an image sequence
-        Reads in an image sequence and displays it
+- Open an existing project file
+  When you create a new project, a project file is written. This enables to
+  you to read that project file and to place you back in that project folder.
 
-    - Display an atom position sequence
-        Reads in atom positions and overlays them on the images
+- Display an image sequence
+  Reads in an image sequence and displays it
 
-    - Zoom Out
-    - Zoom In
+- Display an atom position sequence
+  Reads in atom positions and overlays them on the images
 
-    - Scroll a zoomed image by dragging
-        Enables you to scroll around a zoomed image just by
-        clicking and dragging on the image.
+- Zoom Out
+- Zoom In
 
-        This does not work when you're in one of the
-        select/deselect modes described below.
+- Scroll a zoomed image by dragging
+  Enables you to scroll around a zoomed image just by clicking and dragging on
+  the image. This does not work when you're in one of the select/deselect
+  modes described below.
 
-    - Select atom positions through all frame
-    - Deselect atom positions through all frame
-    - Select atom positions only in current frame
-    - Deselect atom positions only in current frame
-        These four selection modes let you sweep out
-        a rectangular region to select and deselect
-        atom positions. See additional comments below.
+- Select atom positions through all frame
+- Deselect atom positions through all frame
+- Select atom positions only in current frame
+- Deselect atom positions only in current frame
+  These four selection modes let you sweep out a rectangular region to select
+  and deselect atom positions. See additional comments below. Selected atoms
+  are shown in green. Unselected atoms are shown in red.
 
-        Selected atoms are shown in green. Unselected
-        atoms are shown in red.
+- Remove selected atom positions 
+  This removes the selected (green) atoms from the display. See additional
+  comments below.
 
+- Turn on/off triangulation display
+  Displays a triangulation based on all of the atoms remaining in the display
 
-    - Remove selected atom positions 
-        This removes the selected (green) atoms from
-        the display. See additional comments below.
-
-    - Turn on/off triangulation display
-        Displays a triangulation based on all of the
-        atoms remaining in the display
-
-    - Write image based on current display
-        Creates an image file of what is currently displayed.
+- Write image based on current display
+  Creates an image file of what is currently displayed.
 
 At the bottom of the display panel are some "VCR" controls that enable
 you to play or step through the image sequence.
