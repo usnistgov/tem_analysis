@@ -1,63 +1,33 @@
-A Tool for Visualizing and Analyizing TEM Imagery
-=================================================
+An Image Processing Scheme (IPS) to Visualize and Analyze Time Resolved TEM Video Images
+========================================================================================
 
-This writeup is a short description of the initial implemenation of a software
-tool for the visualization and analysis of some aspects of TEM imagery. This
-software is being written by the High Performance and Visualization Group.
+This writeup is a short description of the initial implemenation of an image
+processing scheme (software tool) for the visualization and analysis of time
+resolved TEM video images.
 
-This is a preliminary version of the software. There are various capabilities
-and fixes that will be added in the future.  We want to get this to you so
-that you can begin to work with it and we can plot out a path for improvement.
+This software has been written by the High Performance and Visualization Group
+(HPCVG) in the Applied and Computational Mathematics Division (ACMD) of the
+Information Technology Lab (ITL). This software was developed in collaboration
+with the CNST-Nanofabrication Research Group.
+
+This is a preliminary version of the software. There are possible bugs. Please
+ensure you have a backup of your data prior to using this software.
 
 This discussion is in these sections:
 
-0. Building, Installing, and Starting the Software
+0. Install the Software
 1. A Simple Scenario
 2. The Organization of the Software and Some Conventions
 3. The Processing Modules
 4. The Display of Images and Atom Positions
+5. Building the Software from Source (Advanced Users)
 
-## 0. Build Instructions
+## 0. Installation Instructions
 
-### Build Dependencies
-- QT 5
-- CMake 2.8
-- Java 7 JRE
-
-### UNIX Build Instructions
-1. cd sdk
-2. ./compile
-3. cd ../centroid
-4. mkdir build
-5. cd build
-6. cmake ..
-7. make -j8
-
-### Windows Build Environment
-1. Download Java SE 7 JRE and install with the default options.
-   - Make sure the java\bin directory is present on your PATH
-2. Download Qt (5.3 is the latest version of Qt5 at this writing) and install
-   with the default options.
-3. Download CMake 2.8 and installed with the default options.
-4. Download the latest version of Git
-   - This is only necessary if you are going to use the Git repository to
-     update the source tree. Configuring Git on Windows to use SSH is not
-     covered here.
-5. Download and install 7-zip: http://www.7-zip.org/
-   - The sdk\compile.bat file expects to use 7-zip to extract the tar files.
-6. To open a Qt-enabled command prompt:
-   - Start -> All Programs -> Qt -> 5.3 -> MinGW 4.8 (32bit) ->
-     Qt 5.3 for Desktop (MinGW 4.8 32bit)
-7. Verify you can run 7z, cmake, and java from the command prompt.
-
-### Windows Build Instructions
-1. cd sdk
-2. compile.bat
-3. cd ..\centroid
-4. mkdir build
-5. cd build
-6. cmake -G "MinGW Makefiles" ..
-7. make -j8
+1. Download the latest release zip file from the [Releases
+page](https://github.com/usnistgov/tem_analysis/releases)
+2. Extract the contents of the zip file to a directory.
+3. Run the `centroid.exe` executable.
 
 ## 1. A Simple Scenario
 
@@ -94,7 +64,7 @@ parameters will be discussed in more detail in subsequent sections.
   This brings up a file dialog box. Select the "subset" folder. You should see
   the first of the subsetted image sequence. You can use the controls below
   the image display to run through the image sequence, and you can use the -
-  and + controls at the top to zoom in and out.  
+  and + controls at the top to zoom in and out.
 
 * Click on the module Subset button to close up the Subset 
   interface.
@@ -106,7 +76,7 @@ parameters will be discussed in more detail in subsequent sections.
 
 * At any point, you can view the images as described above.
 
-* Click on the AtomPosition module, and hit its Execute button. 
+* Click on the AtomPosition module, and hit its Execute button.
   By default, this writes output to the sub-folder called atomPositions. In
   this case, the output is a set of files that give derived atom positions for
   each input file.
@@ -494,10 +464,57 @@ your selection.  We don't yet have an undo function here, so it's best to
 proceed with care.  Of course, you can just re-read the atom position files to
 restore the full set of atom positions.
 
+## 5. Build Instructions
+
+The [Releases page](https://github.com/usnistgov/tem_analysis/releases) will
+always have the latest released version. If you need to build from source, the
+instructions are below. Building from source is for advanced users only.
+
+### Build Dependencies
+- QT 5
+- CMake 2.8
+- Java 7 JRE
+
+### UNIX Build Instructions
+1. cd sdk
+2. ./compile
+3. cd ../centroid
+4. mkdir build
+5. cd build
+6. cmake ..
+7. make -j8
+
+### Windows Build Environment
+1. Download Java SE 7 JRE and install with the default options.
+   - Make sure the java\bin directory is present on your PATH
+2. Download Qt (5.3 is the latest version of Qt5 at this writing) and install
+   with the default options.
+3. Download CMake 2.8 and installed with the default options.
+4. Download the latest version of Git
+   - This is only necessary if you are going to use the Git repository to
+     update the source tree. Configuring Git on Windows to use SSH is not
+     covered here.
+5. Download and install 7-zip: http://www.7-zip.org/
+   - The sdk\compile.bat file expects to use 7-zip to extract the tar files.
+6. To open a Qt-enabled command prompt:
+   - Start -> All Programs -> Qt -> 5.3 -> MinGW 4.8 (32bit) ->
+     Qt 5.3 for Desktop (MinGW 4.8 32bit)
+7. Verify you can run 7z, cmake, and java from the command prompt.
+
+### Windows Build Instructions
+1. cd sdk
+2. compile.bat
+3. cd ..\centroid
+4. mkdir build
+5. cd build
+6. cmake -G "MinGW Makefiles" ..
+7. make -j8
+
 ## Contributors
 - Tomasz Bednarz, CSIRO, tomasz.bednarz@gmail.com
 - Wesley Griffin, NIST, wesley.griffin@nist.gov
-- John Hagedorn, NIST, john.hagedorn@nist.gov
+- Zahra Hussaini, NIST
+- John Hagedorn, NIST
 
 ## PI
 
