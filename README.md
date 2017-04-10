@@ -511,8 +511,8 @@ instructions are below. Building from source is for advanced users only.
 7. mingw32-make
 
 ## Contributors
-- Tomasz Bednarz, CSIRO, tomasz.bednarz@gmail.com
-- Wesley Griffin, NIST, wesley.griffin@nist.gov
+- Wesley Griffin, NIST
+- Tomasz Bednarz, CSIRO
 - Zahra Hussaini, NIST
 - John Hagedorn, NIST
 
@@ -522,5 +522,5 @@ Wesley Griffin
 301.975.8855
 wesley.griffin@nist.gov
 
-**Updated:** 2017 Mar 30
+**Updated:** 2017 Apr 10
 
