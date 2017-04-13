@@ -60,7 +60,7 @@ parameters will be discussed in more detail in subsequent sections.
   duplicate images, singleton images, and any images which have differing R,
   G, and B channels.
 
-* In the list of icons at the upper left, click on the eye icon.
+* Under the "File Menu", select "Read Images for Viewing".
   This brings up a file dialog box. Select the "subset" folder. You should see
   the first of the subsetted image sequence. You can use the controls below
   the image display to run through the image sequence, and you can use the -
@@ -74,7 +74,8 @@ parameters will be discussed in more detail in subsequent sections.
   folder and it creates the subfolder atomCorrelation and places its output
   there.
 
-* At any point, you can view the images as described above.
+* At any point, you can view the images as described above, but selecting the
+  "atomCorrelation" folder.
 
 * Click on the AtomPosition module, and hit its Execute button.
   By default, this writes output to the sub-folder called atomPositions. In
@@ -117,9 +118,10 @@ parameters will be discussed in more detail in subsequent sections.
 
 * Go back to the image viewer and its set of controls.
 
-* Hit the eye icon and select the subsetRegistered folder
+* Select "Read Images for Viewing" from the File Menu and select the
+  subsetRegistered folder.
 
-* Hit the icon that looks like a bunch of dots and select the
+* Select "Read Atom Positions for Viewing" from the File Menu and select the
   atomPosRegistered folder.
 
 * You should see the atom positions overlayed as dots on top
